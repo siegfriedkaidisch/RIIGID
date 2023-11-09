@@ -15,7 +15,7 @@ def apply_boundaries_mol(mol, xmin, xmax, ymin, ymax):
     com = mol.get_center_of_mass()
     x = com[0]
     y = com[1]
-    print(mol.get_center_of_mass())
+    #print(mol.get_center_of_mass())
     if x < xmin:
         mol.positions[:,0] = 2* xmin - mol.positions[:,0]
     elif x > xmax:
@@ -25,6 +25,6 @@ def apply_boundaries_mol(mol, xmin, xmax, ymin, ymax):
         mol.positions[:,1] = 2* ymin - mol.positions[:,1]
     elif y > ymax:
         mol.positions[:,1] = 2* ymax - mol.positions[:,1]
-    print(mol.get_center_of_mass())
+    #print(mol.get_center_of_mass())
 
     return mol.positions.copy()
