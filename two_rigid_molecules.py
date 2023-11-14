@@ -107,7 +107,7 @@ mol.positions[:,2] += - min(mol.positions[:,2]) + mol_height
 full = mol_base+mol
 
 # Apply random step to possibly leave a saddle point
-mol_indices = get_mol_indices(full=full, middle_height=middle_height)
+mol_indices = get_mol_indices(full=full, middle_height=middle_height, above=True)
 del full[mol_indices]
 add_rot_props_mol(mol)
 if do_random_step:
@@ -141,6 +141,7 @@ full.set_calculator(calc)
 stepsize = 100 # the value set here doesn't matter, it's just for the first test step, so it will be changed anyway
 count_bad_steps = 0 # needed to cope with bad iterations (where energy got larger)
 mol_list = []
+mol_separation_list = []
 pos_list = []
 mol_inertia_list = []
 mol_inertia_inv_list = []
@@ -157,7 +158,14 @@ for i in range(max_rigid_steps):
     mol_list.append(copy_mol(mol))
 
     # Get indices of the atoms forming the molecule
-    mol_indices = get_mol_indices(full=full, middle_height=middle_height)
+    mol_indices = get_mol_indices(full=full, middle_height=middle_height, above=True)
+    mol_base_indices = get_mol_indices(full=full, middle_height=middle_height, above=False)
+
+    # Get separation between molecules:
+    max_z_mol_base = np.max(full[mol_base_indices].positions[:,2])
+    min_z_mol      = np.min(full[mol_indices].positions[:,2])
+    mol_separation = np.abs(min_z_mol-max_z_mol_base)
+    mol_separation_list.append(mol_separation)
 
     # Save center of mass of current geometry
     mol_com = mol.get_center_of_mass()
@@ -259,7 +267,7 @@ for i in range(max_rigid_steps):
 ######################################################################################################################
 
 # Export optimization data from rigid and vasp optim
-optim_data = {'position': pos_list, 'rotation': rot_list, 'energy': energy_list, 'force': f_center_list, 'torque': t_center_list, 'inertia':mol_inertia_list, 'inertia_inv':mol_inertia_inv_list, 'mol':mol_list}
+optim_data = {'position': pos_list, 'rotation': rot_list, 'energy': energy_list, 'force': f_center_list, 'torque': t_center_list, 'inertia':mol_inertia_list, 'inertia_inv':mol_inertia_inv_list, 'mol':mol_list, 'mol_separation':mol_separation_list}
 f = open(str(working_dir) + '/optim_data.pk','wb')
 pickle.dump(optim_data, f)
 f.close()
@@ -277,6 +285,8 @@ print('Torque:')
 print(optim_data['torque'])
 print('Rotation')
 print(optim_data['rotation'])
+print('Separation between molecules')
+print(optim_data['mol_separation'])
 
 print("\n")
 print('Final Geometry:')
@@ -285,6 +295,7 @@ print("Position: "+str(optim_data['position'][-1]))
 print("Rotation: "+str(optim_data['rotation'][-1]))
 print("Force: "+str(optim_data['force'][-1]))
 print("Torque: "+str(optim_data['torque'][-1]))
+print("Separation between molecules: "+str(optim_data['mol_separation'][-1]))
 
 # Move files of the rigid optimization to the subdirectory
 for filename in orca_files:
