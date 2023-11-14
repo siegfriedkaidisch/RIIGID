@@ -15,7 +15,7 @@ from lib.rotation_functions import rotate_mol
 ######################################################################################################################
 
 def transrot_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_trans_z, 
-                    mol_inertia_inv, t_center, stepsize_rot):
+                    mol_inertia_inv, t_center, stepsize_rot, z_only_rot=False):
     '''
     Translate molecule in direction of the applied force and rotate it around its center of mass following the applied torque
 
@@ -30,6 +30,8 @@ def transrot_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_tra
             The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
         t_center: np.ndarray of shape (3,) or list of length 3
             Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
+        z_only_rot: Bool
+            Rotate only around the z-axis?
 
     Returns:
         np.ndarray of shape (n_atoms_in_molecule,3)
@@ -38,7 +40,7 @@ def transrot_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_tra
     # Translate molecule
     translate_mol(mol=mol, f_center=f_center, stepsize_trans_x=stepsize_trans_x, stepsize_trans_y=stepsize_trans_y, stepsize_trans_z=stepsize_trans_z)
     # Rotate molecule 
-    rotate_mol(mol=mol, mol_inertia_inv=mol_inertia_inv, t_center=t_center, stepsize_rot=stepsize_rot)
+    rotate_mol(mol=mol, mol_inertia_inv=mol_inertia_inv, t_center=t_center, stepsize_rot=stepsize_rot, z_only_rot=z_only_rot)
     return mol.positions.copy()
 
 ######################################################################################################################
@@ -68,7 +70,7 @@ def random_step_mol(mol, displacement, angle, seed):
     # Translate molecule
     translate_mol(mol=mol, f_center=f_center, stepsize_trans_x=stepsize_trans_x, stepsize_trans_y=stepsize_trans_y, stepsize_trans_z=stepsize_trans_z)
     # Rotate molecule 
-    rotate_mol(mol=mol, mol_inertia_inv=mol_inertia_inv, t_center=t_center, stepsize_rot=stepsize_rot)
+    rotate_mol(mol=mol, mol_inertia_inv=mol_inertia_inv, t_center=t_center, stepsize_rot=stepsize_rot, z_only_rot=False)
     return mol.positions.copy()
 
 ######################################################################################################################

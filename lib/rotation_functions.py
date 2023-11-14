@@ -204,7 +204,7 @@ def get_torque_mol(full, mol_indices, f):
 
 ######################################################################################################################
 
-def rotate_mol(mol, mol_inertia_inv, t_center, stepsize_rot):
+def rotate_mol(mol, mol_inertia_inv, t_center, stepsize_rot, z_only_rot=False):
     '''
     Rotate molecule around its center of mass following the applied torque
 
@@ -217,6 +217,8 @@ def rotate_mol(mol, mol_inertia_inv, t_center, stepsize_rot):
             Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
         stepsize_rot: number
             Timestep (in Dalton*Angstroem**2/eV)
+        z_only_rot: Bool
+            Rotate only around the z-axis?
 
     Returns:
         np.ndarray of shape (n_atoms_in_molecule,3)
@@ -225,11 +227,15 @@ def rotate_mol(mol, mol_inertia_inv, t_center, stepsize_rot):
     t_center = np.array(t_center)
     mol_com = mol.get_center_of_mass()
     tmp = mol_inertia_inv@t_center
-    angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in degrees
+    if z_only_rot:
+        angle = tmp[2] * (180/np.pi) * stepsize_rot 
+    else:
+        angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in degrees
     if angle != 0:
-        axis = tmp/np.linalg.norm(tmp)
-        #angle = tmp[2] * stepsize_rot 
-        #axis = 'z'
+        if z_only_rot:
+            axis = np.array([0.0,0.0,1.0])
+        else:
+            axis = tmp/np.linalg.norm(tmp)
         center = mol_com
         mol.rotate(angle,axis,center)
         update_rot_props_mol(mol=mol, angle=angle, axis=axis)
