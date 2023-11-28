@@ -3,29 +3,25 @@
 """
 Created on Thu Jul 13 13:49:28 2023
 
-Find optimal distance (and angle) between two rigid molecules
+Local geometry optimization of rigid molecule on top of rigid surface
 
 @author: kaidisch_siegfried
 """
 import numpy as np
 import pickle
 import time
-import os
 
 from ase import Atom, Atoms
 from ase.build import add_adsorbate, make_supercell, sort, add_vacuum
 from ase.visualize import view
 from ase.io import read
+from ase.io.vasp import write_vasp
 from ase.constraints import FixAtoms, FixBondLengths
+from ase.io.vasp import read_vasp
 import os
+from ase.calculators.vasp.vasp import Vasp
 from ase.optimize import BFGS, MDMin
 from ase.optimize.sciopt import SciPyFminBFGS, SciPyFminCG
-
-from ase.io import read, write
-
-from ase.calculators.orca import OrcaProfile
-from ase.calculators.orca import ORCA
-from pathlib import Path
 
 from lib.rotation_functions import add_rot_props_mol, rotate_mol2, get_inertia_mat_and_inv, get_torque_mol
 from lib.translation_functions import get_force_mol
@@ -34,114 +30,154 @@ from lib.boundary_functions import apply_boundaries_mol
 from lib.misc_functions import get_mol_indices, copy_mol
     
 t1 = time.time()
+
 ######################################################################################################################
 ##########################                      Settings                         #####################################
 ######################################################################################################################
-working_dir = '/gpfs/data/fs71335/skaidisch/development/rigid_optim/23.11.09/two_rigid_molecules/'
-working_dir = Path(working_dir)
 
-
-# Geometry Settings
-initial_separation = 3 #Angstroem, initial separation between molecules
-middle_height      = 0.1 #Angstroem, used to separate molecules
+# General settings
+middle_height = 8.5 #in Angstroem, used to separate molecule and surface ### obsolete
+vacuum = 10 # in Angstroem, total height of vacuum
 
 # Settings for rigid geometry optimization
-max_rigid_steps = 200 # maximal number of rigid optimization steps
+max_rigid_steps = 100 # maximal number of rigid optimization steps
+
+### better switch to force-related convergence criterion?
 pos_conv = 0.00000000001 # in Angstroem, stop rigid optimization if all atoms of the molecule move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
+
+### property of new class?
 max_step_0 = 0.1 #max allowed change of position of an atom (translation+rotation) in iteration 0
 max_step = 0.1 #max allowed change of position of an atom (translation+rotation) in iterations 1+
+
+### idea: individual stepsize per molecule? rather not, how would that be determined?
+### rather: property of optimizer class (see below)?
 stepsize_factor_up = 1.2 # increase stepsize by this factor, if last iteration successfully lowered energy
 stepsize_factor_dn = 0.2 # decrease stepsize by this factor, if last iteration led to higher energy
-zero_stepsize = 0 #disable rotations and translations in x or y direction
 
-# Where is your orca executable?
-MyOrcaProfile = OrcaProfile("/gpfs/opt/sw/skylake/spack-0.19.0/opt/spack/linux-almalinux8-skylake_avx512/gcc-12.2.0/orca-5.0.4-rmsud3mol2l2zzkksrembfofifwfbcrl/bin/orca")
+# Flags to control motion ### property of new atoms class?
+do_trans_x = 0
+do_trans_y = 0
+do_trans_z = 0
+z_only_rot = True
 
 # Calculator settings for rigid optimization
-charge = 0
-multiplicity = 1
-orcasimpleinput_rigid = 'TightOpt TightSCF B3LYP D3BJ 6-311G*'
-orcablocks_rigid = '%geom MaxIter 1 end \n %pal nprocs 48 end \n %output xyzfile true end \n %output print [p_InputFile] 1 end \n %output PrintLevel Normal end'
-rigid_opt_dir = working_dir / 'rigid_opt'
-rigid_opt_dir.mkdir(parents=True, exist_ok=True)
+rigid_opt_vasp_settings = {
+    'directory':'./rigid_opt/',
+    'txt':"out",
 
-# Calculator settings for normal Orca optimization
-orcasimpleinput_orca = 'TightOpt TightSCF B3LYP D3BJ 6-311G*'
-orcablocks_orca = '%pal nprocs 48 end \n %output xyzfile true end \n %output print [p_InputFile] 1 end \n %output PrintLevel Normal end'
-orca_opt_dir = working_dir / 'orca_opt'
-orca_opt_dir.mkdir(parents=True, exist_ok=True)
+    'istart':1,
+    'npar':4,
 
-# Randomness used to escape saddle points (at the moment, only used to escape saddle point initial guesses)
-do_random_step      = False
-random_seed         = 12345
-random_displacement = 0.01 #Angstroem
-random_angle        = 0.5 #Degrees
+    'lorbit':11,
+    'nwrite':2,
+    'lvhar':True,
+    'lwave':True,
+    'lasph':True,
 
-# A list of Orca input and output files
-orca_files = [
-    "orca.inp",
-    "orca_property.txt",
-    "orca.densities",
-    "orca.gbw",
-    "orca.xyz",
-    "orca.out",
+    'isif':2,
+    'isym':0,
 
-    "orca.engrad",              
-    "orca_trj.xyz",              
-    "orca.opt"
-    ]            
+    'prec':'Accu',
+    'encut':300,
+    'ediff':1e-5,
+    'nelmin':4,
+    'nelm':300,
+    'algo':'Fast',
+
+#    'enaug':644.9,
+
+    'xc':'PBE',
+    'ivdw':12,
+    'ismear':0,
+    'sigma':0.05,
+
+    'idipol':3,
+    'ldipol':True,
+
+    'ispin':2,
+    'magmom':[0.0]*48 + [0.0]*16 + [0.0]*16 + [-1.5]*2,
+#    'icharg':1,
+
+    'nsw':0, # leave this at zero!
+
+    'ldau':True,
+    'ldautype':2,
+    'ldaul':[-1, -1, -1, 2],
+    'ldauu':[0.0, 0.0, 0.0, 3.0],
+    'ldauj':[0.0]*4,
+    'ldauprint':1,
+    'lmaxmix':4,
+
+    'kpts':[1, 1, 1],
+    'gamma':True,  # Gamma-centered k-mesh
+
+    'setups':"recommended"
+}
 
 ######################################################################################################################
 ##########################           Prepare Geometry Optimization               #####################################
 ######################################################################################################################
 
-# Import geometry of both molecules
-mol_base = read(str(working_dir)+'/ptcda.xyz')
-mol = read(str(working_dir)+'/h2tpp.xyz')
+### method of new class
+def get_mol_indices2(full, mol, cutoff=1e-4):
+    mol_indices = []
+    for mol_atom in mol:
+        for full_atom in full:
+            if np.linalg.norm(mol_atom.position - full_atom.position) < cutoff:
+                mol_indices.append(full_atom.index)
+    return mol_indices
 
-# Align molecules' center of masses and position mol above mol_base
-mol_base.positions -= mol_base.get_center_of_mass()
-mol.positions -= mol.get_center_of_mass()
-mol_height = max(mol_base.positions[:,2]) + initial_separation
-mol.positions[:,2] += - min(mol.positions[:,2]) + mol_height
-full = mol_base+mol
+# Import Geometry
+full = read_vasp(file='./POSCAR_Dominik')
 
-# Apply random step to possibly leave a saddle point
-mol_indices = get_mol_indices(full=full, middle_height=middle_height, above=True)
+# Remove substrate to speed up tests
+full = full[full.positions[:,2]>middle_height]
+
+### instantiate class objects
+mol0 = read_vasp(file='./POSCAR_Dominik_mol0')
+mol1 = read_vasp(file='./POSCAR_Dominik_mol1')
+mol2 = read_vasp(file='./POSCAR_Dominik_mol2')
+mol3 = read_vasp(file='./POSCAR_Dominik_mol3')
+molecules = [mol0,mol1,mol2,mol3]
+
+### should happen automatically at instantiation
+for mol in molecules:
+    add_rot_props_mol(mol)
+
+# Control initial geometry
+#mol_indices = get_mol_indices(full=full[~(full.symbols=='Ni')], middle_height=middle_height)
+mol_indices = [get_mol_indices2(full=full, mol=mol) for mol in molecules]
 del full[mol_indices]
-add_rot_props_mol(mol)
-if do_random_step:
-    # Random step to get rid of symmetry in starting point
-    random_step_mol(mol=mol, displacement=random_displacement, angle=random_angle, seed=random_seed)
-full += mol.copy()
+full += mol0.copy()
+full += mol1.copy()
+full += mol2.copy()
+full += mol3.copy()
 
 # Sort atoms
 full = sort(full)
 
-# Export geometry for documentation purposes
-write(str(working_dir)+'/dimer_start.xyz', full, format='xyz')
-#view(full)
+# Fix vacuum height
+existing_vac = full.get_cell_lengths_and_angles()[2] - np.max(full.positions[:,2]) + np.min(full.positions[:,2])
+add_vacuum(full, vacuum-existing_vac) #added on top, s.t. atom positions don't change? may be needed for get_mol_indices2
+
+# Export POSCAR for documentation purposes
+write_vasp('./POSCAR_start', full, direct=True, vasp5=True, sort=True)
 
 ######################################################################################################################
 ##########################          RIGID Geometry Optimization                  #####################################
 ######################################################################################################################
 
-# Set up Orca calculator 
-calc = ORCA(profile=MyOrcaProfile,
-            charge=charge, mult=multiplicity,
-            directory = working_dir,
-            orcasimpleinput=orcasimpleinput_rigid,
-            orcablocks=orcablocks_rigid
-            )
+# Set up VASP calculator (determines INCAR, KPOINTS and POTCAR)
+calculator = Vasp(**rigid_opt_vasp_settings)
 
 # Set calculator
-full.set_calculator(calc)
+full.set_calculator(calculator)
 
 # Optimize location and rotation of rigid molecule on rigid surface
+### create additional class "rigid optimizer" with stepsize etc as properties?
 stepsize = 100 # the value set here doesn't matter, it's just for the first test step, so it will be changed anyway
 count_bad_steps = 0 # needed to cope with bad iterations (where energy got larger)
 mol_list = []
-mol_separation_list = []
 pos_list = []
 mol_inertia_list = []
 mol_inertia_inv_list = []
@@ -153,31 +189,30 @@ for i in range(max_rigid_steps):
     print('-----')
     print('Iteration ',i)
     #####################################################################
-
     # Save for later
-    mol_list.append(copy_mol(mol))
+    ### override copy function of atoms object? (otherwise euler angles are not copied)
+    mol_list.append([copy_mol(mol) for mol in molecules])
 
     # Get indices of the atoms forming the molecule
-    mol_indices = get_mol_indices(full=full, middle_height=middle_height, above=True)
-    mol_base_indices = get_mol_indices(full=full, middle_height=middle_height, above=False)
-
-    # Get separation between molecules:
-    max_z_mol_base = np.max(full[mol_base_indices].positions[:,2])
-    min_z_mol      = np.min(full[mol_indices].positions[:,2])
-    mol_separation = np.abs(min_z_mol-max_z_mol_base)
-    mol_separation_list.append(mol_separation)
+    ### maybe these indices could be updated automatically somehow in the background, without user needing to do it by hand
+    mol_indices = [get_mol_indices2(full=full, mol=mol) for mol in molecules]
 
     # Save center of mass of current geometry
-    mol_com = mol.get_center_of_mass()
+    ### can use method from Atoms object -> inheriting makes sense
+    mol_com = [mol.get_center_of_mass() for mol in molecules]
     pos_list.append(mol_com)
 
     # Get inertia matrix and inverse
-    mol_inertia, mol_inertia_inv = get_inertia_mat_and_inv(mol=full[mol_indices])
+    ### inertia mat should be method and property of new class
+    tmp = np.array([get_inertia_mat_and_inv(mol=full[mol_indices_i]) for mol_indices_i in mol_indices])
+    mol_inertia = tmp[:,0].copy()
+    mol_inertia_inv = tmp[:,1].copy()
+    del tmp
     mol_inertia_list.append(mol_inertia)
     mol_inertia_inv_list.append(mol_inertia_inv)
 
     # Save rotation angles of current geometry
-    rot_list.append(mol.euler_angles)
+    rot_list.append([mol.euler_angles for mol in molecules])
     
     # Run one SCF cycle
     f = full.get_forces(apply_constraint=False)
@@ -187,11 +222,12 @@ for i in range(max_rigid_steps):
     energy_list.append(e)
 
     # Get net force on molecule
-    f_center = get_force_mol(mol_indices=mol_indices, f=f)
+    ### as method of new class
+    f_center = [get_force_mol(mol_indices=mol_indices_i, f=f) for mol_indices_i in mol_indices]
     f_center_list.append(f_center)
 
     # get torque on molecule
-    t_center = get_torque_mol(full=full, mol_indices=mol_indices, f=f)
+    t_center = [get_torque_mol(full=full, mol_indices=mol_indices_i, f=f) for mol_indices_i in mol_indices]
     t_center_list.append(t_center)
 
     #####################################################################
@@ -207,7 +243,8 @@ for i in range(max_rigid_steps):
             # Last step led to higher energy -> forget last step and continue from 2nd last step with smaller stepsize
             count_bad_steps +=1  # needed to handle situation of two consecutive bad iterations
             stepsize *= stepsize_factor_dn 
-            mol = copy_mol(mol_list[-1 - count_bad_steps])
+            ### there surely is a more elegant way to do this
+            molecules = [copy_mol(mol) for mol in mol_list[-1 - count_bad_steps]]
             f_center = f_center_list[-1 - count_bad_steps]
             mol_inertia_inv = mol_inertia_inv_list[-1 - count_bad_steps]
             t_center = t_center_list[-1 - count_bad_steps]
@@ -215,15 +252,19 @@ for i in range(max_rigid_steps):
 
     # Prepare movement of molecule
     del full[mol_indices]
-    mol_pos_old = mol.positions.copy()
+    ### property of optimizer class?
+    mol_pos_old = [mol.positions.copy() for mol in molecules]
 
     # Test step to find max displacement of atoms
-    mol_test = copy_mol(mol)
-    mol_pos_new = transrot_mol(mol=mol_test, f_center=f_center, stepsize_trans_x=zero_stepsize, stepsize_trans_y=zero_stepsize, stepsize_trans_z=stepsize, 
-                                        mol_inertia_inv=mol_inertia_inv, t_center=t_center, stepsize_rot=zero_stepsize)
-    mol_pos_diff = np.abs(mol_pos_new - mol_pos_old)
-    mol_pos_diff_max = np.max(np.linalg.norm(mol_pos_diff, axis=1))
-    del mol_test
+    ### test step as method of new class, or is that too much? (would return max atomic displacement or something like that)
+    molecules_test = [copy_mol(mol) for mol in molecules]
+    mol_pos_diff_max = -1
+    for j in range(len(molecules)):
+        mol_pos_new = transrot_mol(mol=molecules_test[j], f_center=f_center[j], stepsize_trans_x=stepsize*do_trans_x, stepsize_trans_y=stepsize*do_trans_y, stepsize_trans_z=stepsize*do_trans_z, 
+                                            mol_inertia_inv=mol_inertia_inv[j], t_center=t_center[j], stepsize_rot=stepsize, z_only_rot=z_only_rot)
+        mol_pos_diff = np.abs(mol_pos_new - mol_pos_old[j])
+        mol_pos_diff_max = np.max([np.max(np.linalg.norm(mol_pos_diff, axis=1)), mol_pos_diff_max])
+    del molecules_test
 
     # Initialize stepsize or adapt it to too large atomic displacements
     if i==0: # In the first iteration we determine the initial stepsize, such that a step of max_step is performed
@@ -237,38 +278,40 @@ for i in range(max_rigid_steps):
     print('Actual Stepsize: ' + str(stepsize))
 
     # Move molecule and get new positions
-    mol_pos_new = transrot_mol(mol=mol, f_center=f_center, stepsize_trans_x=zero_stepsize, stepsize_trans_y=zero_stepsize, stepsize_trans_z=stepsize, 
-                                        mol_inertia_inv=mol_inertia_inv, t_center=t_center, stepsize_rot=zero_stepsize)
+    mol_pos_new = []
+    for j in range(len(molecules)):
+        mol_pos_new_i = transrot_mol(mol=molecules[j], f_center=f_center[j], stepsize_trans_x=stepsize*do_trans_x, stepsize_trans_y=stepsize*do_trans_y, stepsize_trans_z=stepsize*do_trans_z, 
+                                        mol_inertia_inv=mol_inertia_inv[j], t_center=t_center[j], stepsize_rot=stepsize, z_only_rot=z_only_rot)
+        mol_pos_new.append(mol_pos_new_i)
 
-    # Apply boundary conditions
-    #apply_boundaries_mol(mol=mol, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax)    
-
-    full += mol.copy()
+    for mol in molecules:
+        full += mol
 
     #####################################################################
 
     # Print some stuff for testing purposes
     #print('Displacement/stepsize: ' + str(f_center/np.sum(mol.get_masses())))
     #print('Angle/stepsize: ' + str(np.linalg.norm(mol_inertia_inv@t_center) * (180/np.pi)))
-    print('-----')
+    #print('-----')
 
     # Save geometry
-    write(str(rigid_opt_dir)+'/dimer_rigid_iter_' + str(i) + '.xyz', full, format='xyz')
-
+    write_vasp('./rigid_opt/CONTCAR_'+str(i), full, direct=True, vasp5=True, sort=True)
+    
     # Check for convergence
-    mol_pos_diff = np.abs(mol_pos_new - mol_pos_old)
-    mol_pos_diff = np.linalg.norm(mol_pos_diff, axis=1) 
+    mol_pos_diff = np.abs(np.array(mol_pos_new) - np.array(mol_pos_old))
+    mol_pos_diff = np.linalg.norm(mol_pos_diff, axis=2) 
     if np.max(mol_pos_diff) < pos_conv:
         print('-----')
         break
+
 
 ######################################################################################################################
 ##########################                 Finish the job                        #####################################
 ######################################################################################################################
 
 # Export optimization data from rigid and vasp optim
-optim_data = {'position': pos_list, 'rotation': rot_list, 'energy': energy_list, 'force': f_center_list, 'torque': t_center_list, 'inertia':mol_inertia_list, 'inertia_inv':mol_inertia_inv_list, 'mol':mol_list, 'mol_separation':mol_separation_list}
-f = open(str(working_dir) + '/optim_data.pk','wb')
+optim_data = {'position': pos_list, 'rotation': rot_list, 'energy': energy_list, 'force': f_center_list, 'torque': t_center_list, 'inertia':mol_inertia_list, 'inertia_inv':mol_inertia_inv_list, 'mol':mol_list}
+f = open('optim_data.pk','wb')
 pickle.dump(optim_data, f)
 f.close()
 
@@ -285,8 +328,6 @@ print('Torque:')
 print(optim_data['torque'])
 print('Rotation')
 print(optim_data['rotation'])
-print('Separation between molecules')
-print(optim_data['mol_separation'])
 
 print("\n")
 print('Final Geometry:')
@@ -295,12 +336,6 @@ print("Position: "+str(optim_data['position'][-1]))
 print("Rotation: "+str(optim_data['rotation'][-1]))
 print("Force: "+str(optim_data['force'][-1]))
 print("Torque: "+str(optim_data['torque'][-1]))
-print("Separation between molecules: "+str(optim_data['mol_separation'][-1]))
-
-# Move files of the rigid optimization to the subdirectory
-for filename in orca_files:
-    if os.path.isfile(str(working_dir) + '/' + filename):
-        os.rename(str(working_dir) + '/' + filename,str(rigid_opt_dir) + '/' + filename)
 
 print("\n")
 print('Duration / h:')
