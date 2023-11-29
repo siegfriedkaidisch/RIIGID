@@ -41,6 +41,54 @@ max_step = 0.1 #max allowed change of position of an atom (translation+rotation)
 stepsize_factor_up = 1.2 # increase stepsize by this factor, if last iteration successfully lowered energy
 stepsize_factor_dn = 0.2 # decrease stepsize by this factor, if last iteration led to higher energy
 
+# Calculator settings for rigid optimization
+rigid_opt_vasp_settings = {
+    'directory':'./rigid_opt/',
+    'txt':"out",
+
+    'istart':1,
+    'npar':4,
+
+    'lorbit':11,
+    'lvhar':True,
+    'lwave':True,
+
+    'prec':'Accu',
+    'encut':300,
+    'ediff':1e-7,
+    'nelmin':4,
+    'nelm':200,
+    'algo':'Fast',
+#    'enaug':644.9,
+
+    'xc':'PBE',
+    'ivdw':12,
+    'ismear':0,
+    'sigma':0.05,
+
+    'idipol':3,
+    'ldipol':True,
+
+#    'ispin':2,
+#    'magmom':[0.0]*224 + [1.5],
+#    'icharg':1,
+
+    'nsw':0, # leave this at zero!
+
+#    'ldau':True,
+#    'ldautype':2,
+#    'ldaul':[-1]*5 + [2],
+#    'ldauu':[0.0]*5 + [3.0],
+#    'ldauj':[0.0]*6,
+#    'ldauprint':2,
+#    'lmaxmix':4,
+
+    'kpts':[2, 2, 1],
+    'gamma':True,  # Gamma-centered k-mesh
+
+    'setups':"recommended"
+}
+
 ######################################################################################################################
 ##########################           Prepare Geometry Optimization               #####################################
 ######################################################################################################################
@@ -61,6 +109,12 @@ write_vasp('./POSCAR_start', full, direct=True, vasp5=True, sort=True)
 ######################################################################################################################
 ##########################          RIGID Geometry Optimization                  #####################################
 ######################################################################################################################
+
+# Set up VASP calculator (determines INCAR, KPOINTS and POTCAR)
+calculator = Vasp(**rigid_opt_vasp_settings)
+
+# Set calculator
+full.set_calculator(calculator)
 
 # Optimize location and rotation of rigid fragment on rigid surface
 stepsize = 100 # the value set here doesn't matter, it's just for the first test step, so it will be changed anyway

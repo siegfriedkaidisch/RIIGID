@@ -1,20 +1,3 @@
-from RIGID import *
-
-###rigid = RIGID(Path (fullstructure) | Atoms)
-###fragment = rigid.define_fragment(list of indicies)
-###fragment.set_constraint("Rx", vary=True)
-rigid.vasp_settings({})
-rigid.set_convergence()
-
-
-# RIGID.add_substrate(Path | Atoms)
-# RIGID.add_fragment(Path | Atoms)
-
-# RIGID.set_structure(Path)
-# RIGID.set_fragmnet(indices)
-
-RIGID.run()
-
 
 class RIGID():
     def __init__(self):
