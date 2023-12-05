@@ -6,11 +6,11 @@ from src.optimizers import Optimizer
 from convergence_criteria import Convergence1
 
 # User defines full system and specifies the indices of a molecule
-full_system = Atoms()
+atoms = Atoms()
 molecule_indices = [1,2,3]
 
 # User instantiates a RIGID calculation object using an ASE atoms object of the full system
-rigid = RIGID(full_system=full_system)
+rigid = RIGID(atoms=atoms)
 
 # User defines a fragment using the molecule's coordinates and defines what kind of motion is allowed
 rigid.define_fragment(indices=molecule_indices, translation="xy", rotation="z")
