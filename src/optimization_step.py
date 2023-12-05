@@ -16,6 +16,3 @@ class Optimization_Step():
 
     def remove_updated_structure(self):
         self.updated_structure = None
-
-
-

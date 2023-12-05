@@ -1,3 +1,5 @@
+from structure import Structure
+
 class RIGID():
     '''
     I/O class, user should ideally only interact with this class
@@ -32,17 +34,3 @@ class RIGID():
     def print_optimization_summary(self):
         pass
 
-
-
-class Structure:
-    def move(forces):
-        for i, fragment in enumerate(self.framgnets):
-            fragmnet.move(forces[self.indcies[i]])
-
-    def calculate_energy_and_forces(self, calculator):
-        # better: method of Structure?
-        atoms = self.atoms
-        atoms.set_calculator(calculator)
-        energy = atoms.get_potential_energy()
-        forces = atoms.get_forces()
-        return energy, forces
