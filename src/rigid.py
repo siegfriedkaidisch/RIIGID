@@ -19,11 +19,18 @@ class RIGID():
 
     def run(self):
         # Perform rigid optimization
-        self.optimizer.run(self.structure, self.calculator, self.convergence_criterion)
+        self.optimizer.run(start_structure=self.structure, calculator=self.calculator, 
+                           convergence_criterion=self.convergence_criterion)
         
         # Save and print results
-        self.save_optimization_data() # get from optimizer
-        self.print_optimization_summary() # get from optimizer
+        self.save_optimization_data() # get raw data from optimizer
+        self.print_optimization_summary() # get raw data from optimizer
+
+    def save_optimization_data(self):
+        pass
+
+    def print_optimization_summary(self):
+        pass
 
 
 
