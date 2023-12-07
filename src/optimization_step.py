@@ -1,6 +1,3 @@
-from copy import deepcopy
-import numpy as np
-
 class Optimization_Step():
     '''
     Data-class, i.e. only to store data

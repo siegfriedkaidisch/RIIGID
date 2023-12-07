@@ -1,6 +1,3 @@
-from copy import deepcopy
-import numpy as np
-
 from optimization_step import Optimization_Step
 
 class Optimizer():
@@ -12,6 +9,7 @@ class Optimizer():
         self.iteration = 0
 
     def run(self, start_structure, calculator, convergence_criterion, *args, **kwargs):
+        # restart/continue flag?
         pass
 
 class GDWALR(Optimizer):
@@ -27,6 +25,10 @@ class GDWALR(Optimizer):
         self.max_step_0 = max_step_0
 
     def run(self, start_structure, calculator, convergence_criterion, *args, **kwargs):
+        self.start_structure = start_structure
+        self.calculator = calculator
+        self.convergence_criterion = convergence_criterion
+
         while not convergence_criterion.is_converged:
             if self.iteration == 0:
                 structure = start_structure
@@ -47,7 +49,8 @@ class GDWALR(Optimizer):
             energy = self.optimization_history[-1].energy
 
             # Adapt stepsize again, if necessary (do test step to prevent too large movement)
-            self.adapt_stepsize_to_prevent_too_large_steps(structure=structure, forces=forces)
+            max_atomic_displacement_test, _, _ = structure.move(forces=forces, stepsize=self.stepsize, change=False)
+            self.adapt_stepsize_to_prevent_too_large_steps(max_atomic_displacement=max_atomic_displacement_test)
 
             # Move atoms
             _, _, updated_structure = structure.move(forces=forces, stepsize=self.stepsize, change=False)#don't change in place, only return new structure with moved atoms
@@ -66,9 +69,7 @@ class GDWALR(Optimizer):
         else: # No -> make stepsize smaller and drop latest optimization step
             self.stepsize *= self.stepsize_factor_dn
 
-    def adapt_stepsize_to_prevent_too_large_steps(self, structure, forces):
-        max_atomic_displacement, _, _ = structure.move(forces=forces, stepsize=self.stepsize, change=False)
-
+    def adapt_stepsize_to_prevent_too_large_steps(self, max_atomic_displacement):
         # Initialize stepsize or adapt it to too large atomic displacements
         if self.iteration == 0: # In the first iteration we determine the initial stepsize, such that a step of max_step_0 is performed
             factor = self.max_step_0/max_atomic_displacement

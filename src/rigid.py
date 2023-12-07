@@ -7,8 +7,8 @@ class RIGID():
     def __init__(self, atoms):
         self.structure = Structure(atoms=atoms)
 
-    def define_fragment(self, *args, **kwargs):
-        self.structure.define_fragment(*args, **kwargs)
+    def define_fragment_by_indices(self, *args, **kwargs):
+        self.structure.define_fragment_by_indices(*args, **kwargs)
 
     def set_calculator(self, calculator):
         self.calculator = calculator
