@@ -1,18 +1,29 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 13 13:49:28 2023
-
-@author: kaidisch_siegfried
-"""
 import numpy as np
 
 from ase import Atom, Atoms
 
+def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
+        '''
+        Find the indices of the (the atoms of) atoms1 inside the atoms2 object
+        #additionally returns a bool, specifying if all atoms have been found
 
-######################################################################################################################
+        # maybe not here but as misc function in separate file?
+        '''
+        atomic_indices = []
+        for a1 in atoms1:
+            for a2 in atoms2:
+                if np.linalg.norm(a1.position - a2.position) < cutoff:
+                    atomic_indices.append(a2.index)
 
-def get_mol_indices(full, middle_height, above=True):
+        if len(atomic_indices) == len(atoms1):
+            return atomic_indices, True
+        elif len(atomic_indices) < len(atoms1):
+            return atomic_indices, False
+        else:
+            raise Exception('More atoms found than looked for... Are there atoms unphysically close to each other, or duplicate atoms?')
+        
+
+def get_mol_indices_old(full, middle_height, above=True):
     '''
     Given the full system ("full"=surface+molecule), find the indices of the molecule's atoms. 
     To do so, specifiy a height ("middle_height") separating the surface from the molecule. 
@@ -39,6 +50,3 @@ def get_mol_indices(full, middle_height, above=True):
         return [ atom.index for atom in full if atom.position[2] >= middle_height ]
     else:
         return [ atom.index for atom in full if atom.position[2] < middle_height ]
-
-
-######################################################################################################################

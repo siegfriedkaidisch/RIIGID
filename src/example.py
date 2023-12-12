@@ -13,7 +13,7 @@ rigid = RIGID(atoms=atoms)
 
 # User defines a fragment using the molecule's coordinates and defines what kind of motion is allowed
 molecule_indices = [1,2,3]
-rigid.define_fragment_by_indices(indices=molecule_indices, translation="xy", rotation="z")
+rigid.define_fragment_by_indices(indices=molecule_indices, allowed_translation="xy", allowed_rotation="z")
 #print error if an atom belongs to more than one fragment
 #remaining atoms form a fragment that doesn't move at all (created in background)
 

@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from optimization_step import Optimization_Step
 
 class Optimizer():
@@ -31,36 +33,35 @@ class GDWALR(Optimizer):
 
         while not convergence_criterion.is_converged:
             if self.iteration == 0:
-                structure = start_structure
+                self.current_structure = deepcopy(start_structure)
             else:
-                structure = self.optimization_history[-1].updated_structure
+                self.current_structure = deepcopy(self.optimization_history[-1].updated_structure)
             
             # Do Calculation 
-            energy, forces = structure.calculate_energy_and_forces(calculator=calculator)
+            self.current_energy, self.current_forces = self.current_structure.calculate_energy_and_forces(calculator=calculator)
 
             # Adapt stepsize to energy change
             if self.iteration > 0: 
-                self.adapt_stepsize_to_energy_change(old_energy=self.optimization_history[-1].energy, new_energy=energy)
+                self.adapt_stepsize_to_energy_change(old_energy=self.optimization_history[-1].energy, new_energy=self.current_energy)
 
             # Initialize next optimization step (undo last update if energy got larger)
-            self.initialize_next_optimization_step(structure=structure, forces=forces, energy=energy)
-            structure = self.optimization_history[-1].structure
-            forces = self.optimization_history[-1].forces
-            energy = self.optimization_history[-1].energy
-
+            self.initialize_next_optimization_step()
+            
             # Adapt stepsize again, if necessary (do test step to prevent too large movement)
-            max_atomic_displacement_test, _, _ = structure.move(forces=forces, stepsize=self.stepsize, change=False)
+            test_structure = deepcopy(self.current_structure)
+            max_atomic_displacement_test, _ = test_structure.move(forces=self.current_forces, stepsize=self.stepsize)
             self.adapt_stepsize_to_prevent_too_large_steps(max_atomic_displacement=max_atomic_displacement_test)
 
             # Move atoms
-            _, _, updated_structure = structure.move(forces=forces, stepsize=self.stepsize, change=False)#don't change in place, only return new structure with moved atoms
+            updated_structure = deepcopy(self.current_structure)
+            _, _ = updated_structure.move(forces=self.current_forces, stepsize=self.stepsize)
             self.optimization_history[-1].add_updated_structure(updated_structure=updated_structure)
 
             # Prepare next iteration
             self.iteration +=1
 
             # Check for convergence
-            self.convergence_criterion.check(optimization_step=self.optimization_history[-1])
+            self.convergence_criterion.check(optimization_history=self.optimization_history)
 
     def adapt_stepsize_to_energy_change(self, old_energy, new_energy):
         # Check if energy got smaller
@@ -80,7 +81,11 @@ class GDWALR(Optimizer):
                 factor = 1.0
         self.stepsize *= factor
 
-    def initialize_next_optimization_step(self, structure, forces, energy):
+    def initialize_next_optimization_step(self):
+        structure = self.current_structure
+        forces    = self.current_forces
+        energy    = self.current_energy
+
         if self.iteration == 0:
             self.optimization_history.append(Optimization_Step(structure=structure, forces=forces, energy=energy))
         else:
@@ -90,5 +95,8 @@ class GDWALR(Optimizer):
                 self.optimization_history.append(Optimization_Step(structure=structure, forces=forces, energy=energy))
             else: # No ->  drop latest optimization step
                 self.optimization_history[-1].remove_updated_structure()
+                self.current_structure = self.optimization_history[-1].structure
+                self.current_forces = self.optimization_history[-1].forces
+                self.current_energy = self.optimization_history[-1].energy
 
 
