@@ -5,10 +5,10 @@ class RIGID():
     I/O class, user should ideally only interact with this class
     '''
     def __init__(self, atoms):
-        self.structure = Structure(atoms=atoms)
+        self.start_structure = Structure(atoms=atoms)
 
     def define_fragment_by_indices(self, *args, **kwargs):
-        self.structure.define_fragment_by_indices(*args, **kwargs)
+        self.start_structure.define_fragment_by_indices(*args, **kwargs)
 
     def set_calculator(self, calculator):
         self.calculator = calculator
@@ -25,7 +25,7 @@ class RIGID():
                            convergence_criterion=self.convergence_criterion)
         
         # Save and print results
-        self.save_optimization_data() # get raw data from optimizer
+        self.save_optimization_data() # get raw data (optimization history) from optimizer
         self.print_optimization_summary() # get raw data from optimizer
 
     def save_optimization_data(self):
