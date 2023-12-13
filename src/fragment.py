@@ -6,11 +6,10 @@ from ase import Atoms
 from rotation_functions import angle_between_vectors, angle_between_vectors2, rotmat
 from misc_functions import get_indices_of_atoms1_in_atoms2
 
-#Problem: if user directly interacts with Fragment.atoms, e.g. by rotating it, the rotation properties
-# of the Fragment are not updated... -> User is advised to not directly interact with it!
 class Fragment():
     '''
-    The user is advised to not directly modify Fragment.atoms!
+    The user is advised to not directly modify Fragment's properties, in order not to
+    mess up rotation properties.
     '''
     def __init__(self, atoms:Atoms, allowed_translation, allowed_rotation):
         # Initialize using an already existing Atoms object
@@ -64,7 +63,7 @@ class Fragment():
 
     def update_inertia_matrix(self):
         '''
-        Get inertia tensor (and its inverse) of a fragment.
+        Get inertia matrix (and its inverse) of a fragment.
 
         Inputs:
             fragment: ase.atoms.Atoms
@@ -140,10 +139,10 @@ class Fragment():
         return torque_on_center
 
     def move(self, force_on_fragment, torque_on_fragment, stepsize):
-        self.rotate_fragment(torque_on_center=torque_on_fragment, stepsize=stepsize)
-        self.translate_fragment(force_on_center=force_on_fragment, stepsize=stepsize)
+        self.rotate(torque_on_center=torque_on_fragment, stepsize=stepsize)
+        self.translate(force_on_center=force_on_fragment, stepsize=stepsize)
 
-    def rotate_fragment(self, torque_on_center, stepsize):
+    def rotate(self, torque_on_center, stepsize):
         '''
         Rotate fragment around its center of mass following the applied torque
 
@@ -163,7 +162,7 @@ class Fragment():
             np.ndarray of shape (n_atoms_in_fragment,3)
                 The positions (in Angstroem) of the fragment's atoms after the transformation
         '''
-        tmp = self.inertia_matrix_inv_inv@torque_on_center
+        tmp = self.inertia_matrix_inv@torque_on_center
 
         if self.allowed_rotation == "xyz":
             angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize  # in degrees
@@ -182,7 +181,7 @@ class Fragment():
 
         return copy(self.atoms.positions)
 
-    def translate_fragment(self, force_on_center, stepsize):
+    def translate(self, force_on_center, stepsize):
         '''
         Translate fragment in direction of the applied force
 
@@ -204,7 +203,7 @@ class Fragment():
                 atom.position[0] += stepsize * force_on_center[0]/fragment_mass
                 atom.position[1] += stepsize * force_on_center[1]/fragment_mass
                 atom.position[2] += stepsize * force_on_center[2]/fragment_mass
-            self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #inertia matrix changes due to translation
+            #self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
         else:
             raise Exception('Input for allowed translation of fragment not supported: '+str(self.allowed_rotation))
 
@@ -233,44 +232,42 @@ class Fragment():
     #########################################################################################
     
 
-    def rotate_fragment2(self, angle, axis):
+    def rotate2(self, angle, axis):
         '''
         Rotate fragment around com and rotate its axis system and update euler angle
         Currently ignores self.allowed_rotations! Change?
         '''   
-        self.atoms.rotate(angle,axis, self.atoms.get_center_of_mass())
+        self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
         self.update_rotation_properties(angle=angle, axis=axis)
         return copy(self.atoms.positions)
 
-    def random_step_fragment(self, displacement, angle, seed):
+    def move_random_step(self, displacement, angle, seed):
         '''
         Needs to be fixed
         '''
-        stepsize_trans_x = 1
-        stepsize_trans_y = 1
-        stepsize_trans_z = 1
-        stepsize_rot     = 1
-        fragment_inertia_inv  = np.eye(3)
+        stepsize = 1.0
+        inertia_matrix_inv  = np.eye(3)
         fragment_mass = np.sum(self.atoms.get_masses())
         
         backup_seed = np.random.randint(2**32 - 1)
         np.random.seed(seed)
-        f_center = np.random.rand(3)
-        t_center = np.random.rand(3) 
+        force  = np.random.rand(3)
+        torque = np.random.rand(3) 
         np.random.seed(backup_seed)
         
-        f_center /= np.linalg.norm(f_center)
-        t_center /= np.linalg.norm(t_center)
-        f_center *= displacement * fragment_mass
-        t_center *= angle * (np.pi/180)
+        force  /= np.linalg.norm(force)
+        torque /= np.linalg.norm(torque)
+        force  *= displacement * fragment_mass
+        torque *= angle * (np.pi/180)
         
         # Translate fragment
-        self.translate_fragment(fragment=self.atoms, f_center=f_center, stepsize_trans_x=stepsize_trans_x, stepsize_trans_y=stepsize_trans_y, stepsize_trans_z=stepsize_trans_z)
+        self.translate(force_on_center=force, stepsize=stepsize)
         # Rotate fragment 
-        self.rotate_fragment(fragment=self.atoms, fragment_inertia_inv=fragment_inertia_inv, t_center=t_center, stepsize_rot=stepsize_rot, z_only_rot=False)
-        return self.atoms.positions.copy()
+        self.inertia_matrix_inv = inertia_matrix_inv #temporarily set to diag, such that fragment is rotated arbitrarily
+        self.rotate(torque_on_center=torque, stepsize=stepsize)
+        return copy(self.atoms.positions)
     
-    def apply_boundaries_fragment(self, xmin, xmax, ymin, ymax):
+    def apply_boundaries(self, xmin, xmax, ymin, ymax):
         '''
         Needs to be fixed
         '''

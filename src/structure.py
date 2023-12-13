@@ -65,6 +65,9 @@ class Structure():
             torque_on_fragment = fragment.calculate_torque_on_fragment(forces = forces_on_fragments[i])
             torque_on_fragments.append(torque_on_fragment)
         return torque_on_fragments
+    
+    def update_atoms_attribute_from_fragments(self):
+        self.atoms = self.rest_fragment.atoms + sum([fragment.atoms for fragment in self.fragments])
 
     def move(self, forces, stepsize):
         old_positions = deepcopy(self.atoms.positions)
@@ -75,8 +78,8 @@ class Structure():
         for i, fragment in enumerate(self.fragments):
             fragment.move(force_on_fragment=force_on_fragments[i], torque_on_fragment=torque_on_fragments[i], stepsize=stepsize)
 
-        #update self.atoms by summing up all fragments.atoms (separate method for this update)
-        self.atoms = self.rest_fragment.atoms + sum([fragment.atoms for fragment in self.fragments])
+        #update self.atoms by summing up all fragments.atoms
+        self.update_atoms_attribute_from_fragments()
 
         new_positions = deepcopy(self.atoms.positions)
 
