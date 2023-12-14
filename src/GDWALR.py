@@ -1,7 +1,7 @@
 from copy import deepcopy, copy
 
 from optimization_step import Optimization_Step
-from optimizers import Optimizer
+from optimizer import Optimizer
 
 class GDWALR(Optimizer):
     '''

@@ -2,8 +2,8 @@ from ase import Atoms
 from ase.calculators.vasp.vasp import Vasp
 
 from rigid import RIGID
-from src.optimizers import Optimizer
-from convergence_criteria import Convergence1
+from optimizer import Optimizer
+from convergence_criterion import Convergence1
 
 # User defines full system 
 atoms = Atoms()

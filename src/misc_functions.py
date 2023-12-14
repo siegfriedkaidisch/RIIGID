@@ -50,3 +50,10 @@ def get_mol_indices_old(full, middle_height, above=True):
         return [ atom.index for atom in full if atom.position[2] >= middle_height ]
     else:
         return [ atom.index for atom in full if atom.position[2] < middle_height ]
+    
+def copy_docstring(take_from_fct): 
+    docstring = take_from_fct.__doc__
+    def decorator(give_to_fct):                                                                                                                                                                                                           
+        give_to_fct.__doc__ = docstring   
+        return give_to_fct                                                                                                                                                                                            
+    return decorator
