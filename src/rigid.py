@@ -19,17 +19,12 @@ class RIGID():
     """
     def __init__(self, atoms):
         """
-
         Parameters
         ----------
         atoms : ase.atoms.Atoms
             The atoms forming the structure to be optimized. 
             This is an ase.Atoms object and should include the 
             correct unit cell (for periodic systems).
-
-        Returns
-        -------
-
         """
         self.start_structure = Structure(atoms=atoms)
 
@@ -45,10 +40,6 @@ class RIGID():
         ----------
         calculator : ase.calculators.calculator.Calculator
             The used ASE calculator object
-
-        Returns
-        -------
-
         """
         self.calculator = calculator
 
@@ -60,10 +51,6 @@ class RIGID():
         ----------
         optimizer : optimizer.Optimizer
             The used optimizer object
-
-        Returns
-        -------
-
         """
         self.optimizer = optimizer
 
@@ -75,23 +62,12 @@ class RIGID():
         ----------
         convergence_criterion : convergence_criterion.Convergence_Criterion
             The used convergence criterion object
-
-        Returns
-        -------
-
         """
         self.convergence_criterion = convergence_criterion
 
     def run(self):
         """
         Run the optimization
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-
         """
         # Perform rigid optimization
         self.optimizer.run(start_structure=self.structure, calculator=self.calculator, 
@@ -102,6 +78,9 @@ class RIGID():
         self.print_optimization_summary() # get raw data from optimizer
 
     def save_optimization_data(self, filename):
+        """
+        ??
+        """
         optimization_history = self.optimizer.optimization_history
         f = open(filename,'wb')
         pickle.dump(optimization_history, f)
@@ -109,6 +88,7 @@ class RIGID():
 
     def print_optimization_summary(self, properties):
         """
+        ??
         properties defines which properties will be printed
         extra function regarding final step
         extra function regarding logging this data to a txt file

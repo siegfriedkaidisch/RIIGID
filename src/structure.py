@@ -11,9 +11,9 @@ class Structure():
         self.rest_fragment = Fragment(atoms=self.atoms, allowed_translation='', allowed_rotation='')
 
     def define_fragment_by_indices(self, indices, allowed_translation, allowed_rotation):
-        '''
+        """
         Takes atoms from rest_fragment to from new fragment (indices relative to full atoms object)
-        '''
+        """
         fragment_atoms = deepcopy(self.atoms[indices])
         rest_fragment_atoms = deepcopy(self.rest_fragment.atoms)
 
