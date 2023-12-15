@@ -14,6 +14,7 @@ class CC_Displacement(Convergence_Criterion):
     only very little, even though the forces and torques are still large. If you set the stepsize by hand,
     make sure not to choose a too small value, or use a different/additional convergence criterion. If you 
     use an optimizer with automatic stepsize, the optimizer should prevent this from happening.
+    
     """
 
     def __init__(self, cutoff, *args, **kwargs):
@@ -23,6 +24,7 @@ class CC_Displacement(Convergence_Criterion):
         ----------
         cutoff: number
             If all atoms move less than cutoff, the criterion is fulfilled; [AA]
+
         """
         super().__init__()
         self.cutoff = cutoff
@@ -37,6 +39,7 @@ class CC_Displacement(Convergence_Criterion):
         optimization_history: list of optimization_step.Optimization_Step
             The history of the optimization, which shall be checked for convergence. 
             (The optimization history is an attribute of the optimizer.)
+
         """
         last_step = optimization_history[-1]
         old_positions = last_step.structure.atoms.positions

@@ -16,12 +16,11 @@ class Optimizer():
         ----------
         start_structure: structure.Structure
             The structure to be optimized
-
         calculator : ase.calculators.calculator.Calculator
             The used ASE calculator object
-
         convergence_criterion : convergence_criterion.Convergence_Criterion
             The used convergence criterion object
+            
         """
         # implement restart/continue flag?
         pass

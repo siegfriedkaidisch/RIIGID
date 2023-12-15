@@ -15,6 +15,7 @@ class RIGID():
 
     The user has to provide the structure, define the fragments and choose calculator, 
     optimizer and convergence criterion.
+
     """
     def __init__(self, atoms):
         """Initialize a RIGID geometry optimization.
@@ -25,6 +26,7 @@ class RIGID():
             The atoms forming the structure to be optimized. 
             This is an ase.Atoms object and should include the 
             correct unit cell (for periodic systems).
+
         """
         self.start_structure = Structure(atoms=atoms)
 
@@ -39,6 +41,7 @@ class RIGID():
         ----------
         calculator : ase.calculators.calculator.Calculator
             The used ASE calculator object
+
         """
         self.calculator = calculator
 
@@ -49,6 +52,7 @@ class RIGID():
         ----------
         optimizer : optimizer.Optimizer
             The used optimizer object
+
         """
         self.optimizer = optimizer
 
@@ -59,12 +63,13 @@ class RIGID():
         ----------
         convergence_criterion : convergence_criterion.Convergence_Criterion
             The used convergence criterion object
+
         """
         self.convergence_criterion = convergence_criterion
 
     def run(self):
-        """
-        Run the optimization
+        """Run the optimization
+
         """
         # Perform rigid optimization
         self.optimizer.run(start_structure=self.structure, calculator=self.calculator, 

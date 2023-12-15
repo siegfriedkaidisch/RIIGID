@@ -3,6 +3,7 @@ A collection of functions related to the rotation of fragments.
 
 They are stored here, in a separate file, because they may also be useful somewhere else than just 
 inside the Fragment class.
+
 """
 import numpy as np
 
@@ -21,6 +22,7 @@ def angle_between_vectors(v1,v2):
     -------
     number between 0 and 180
         The angle (in degrees) between the two vectors
+
     """
     return np.arccos(np.dot(v1,v2)/( np.linalg.norm(v1)*np.linalg.norm(v2) ))*180/np.pi
 
@@ -38,6 +40,7 @@ def signed_angle_between_vectors(v1,v2, axis):
     -------
     number between 0 and 360
         The angle (in degrees) between the two vectors
+
     """
     phi = np.arccos(np.dot(v1,v2)/( np.linalg.norm(v1)*np.linalg.norm(v2) ))
     
@@ -64,6 +67,7 @@ def rotmat(axis, angle):
     -------
     np.ndarray of shape (3,3)
         The rotation matrix
+
     """
     angle *= np.pi/180 #convert to radians
     axis = np.array(axis)
@@ -96,6 +100,7 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
     np.ndarray of shape (3,3)
         Matrix containing angels (in degrees) between principal axes and the x,y,z- axis; 
         The element [i,j] of this matrix is the angle between principle axis j and axis i (i=0 means x, 1=y, 2=z)
+    
     """
     eigvals, eigvecs = np.linalg.eig(mat_inertia)
     eigvecs = eigvecs[:,np.argsort(eigvals)] #sort by size of eigenvector
@@ -126,6 +131,7 @@ def get_normal_vector_fragment(fragment):
     -------
     np.ndarray of shape (3,)
         The normal vector
+
     """
     center = fragment.atoms.get_center_of_mass()
     normal_vector = np.zeros(3)

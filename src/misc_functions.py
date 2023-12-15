@@ -1,5 +1,6 @@
 """
 A collection of miscellaneous functions.
+
 """
 import numpy as np
 
@@ -19,10 +20,8 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
         ----------
         atoms1: ase.atoms.Atoms
             The atoms, whose indices are searched
-
         atoms2: ase.atoms.Atoms
             The atoms, where atoms1 is searched in
-
         cutoff: number, default: 1e-4
             Atoms closer than cutoff, which are of the same species, are considered identical
 
@@ -30,7 +29,6 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
         -------
         list of int:
             The list of indices; Normally this should be of the same length as atoms1
-
         bool:
             Was the search successful? 
             If not all atoms were found (the returned list is shorter than len(atoms1)), this 
@@ -41,6 +39,7 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
         
         Note: If some atoms have been found more than once, an exception is raised. This indicates an 
         ill-defined Atoms object.
+
         """
         atomic_indices = []
         for a1 in atoms1:
@@ -84,6 +83,7 @@ def copy_docstring(take_from_fct):
 
     fun2()
     This function has a docstring!
+
     """
     docstring = take_from_fct.__doc__
     def decorator(give_to_fct):                                                                                                                                                                                                           
@@ -108,13 +108,10 @@ def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction=
     ----------
     all_atoms: ase.atoms.Atoms
         The full Atoms object
-
     middle_height: number
         The height used to separate atoms; [AA]
-
     above: Bool, default: True
         See explanation given above
-
     direction: 'x','y' or 'z', default: 'z'
         The direction used to separate the atoms
     
@@ -122,6 +119,7 @@ def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction=
     -------
     list:
         List containing indices of all atoms above/below middle_height
+
     """
     if direction == 'x':
         direction = 0

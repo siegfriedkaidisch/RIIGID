@@ -14,6 +14,7 @@ class Structure():
 
     Via the Structure class, fragments can be defined, forces and torques on all fragments can be 
     calculated and the fragments can be moved accordingly.
+    
     """
 
     def __init__(self, atoms):
@@ -25,6 +26,7 @@ class Structure():
             To initialize a structure, an atoms object must be given, which can later be separated 
             into fragments. It will also be possible to define a fragment by adding additional atoms later
             on (not yet implemented).
+
         """
         self.atoms = atoms
         self.fragments = []
@@ -43,13 +45,11 @@ class Structure():
         ----------
         indices: list of int
             The indices of the atoms forming the new fragment
-
         allowed_translation: str
             How shall the fragment be allowed to translate? 
             If the string contains an "x", translation in x-direction is allowed, etc. 
             E.g., to allow only translation in x- and y-direction, set allowed_translation="xy"
             To completely forbid any translation, use an empty string.
-
         allowed_rotation: str
             Allows the user to set constraints on the rotation axis of a fragment. 
             Generally, the rotation axis (for a rigid body) is given my the matrix-vector product 
@@ -61,6 +61,7 @@ class Structure():
             '' forbids any rotation
             'z' allows only rotation of the fragment around the (space-fixed) z-axis
             'xyz' allows for unrestricted rotation of the fragment
+
         """
         fragment_atoms = deepcopy(self.atoms[indices])
         rest_fragment_atoms = deepcopy(self.rest_fragment.atoms)
@@ -87,6 +88,7 @@ class Structure():
         How to position and orient the new fragment?
         If user wants to first use this fct and then use define_fragment_by_indices, shall user define
         indices relative to original Structure.atoms?
+
         """
         print("Not yet implemented")
 
@@ -100,11 +102,11 @@ class Structure():
 
         Returns
         -------
-        number:
+        number
             The total energy; [eV]
-
         np.ndarray of shape (n_atoms, 3)
             Forces acting on the atoms in Structure.atoms; [eV/AA]
+
         """
 
         atoms = deepcopy(self.atoms)
@@ -121,6 +123,7 @@ class Structure():
         list of lists of int
             A list containing one list per fragment (excluding the rest_fragment) containing 
             the indices of the fragment
+
         """
         fragments_indices = []
         for fragment in self.fragments:
@@ -145,6 +148,7 @@ class Structure():
         -------
         list of np.ndarrays of shape (depends_on_fragment, 3)
             One numpy array per fragment with the forces on atoms belonging to the fragment
+
         """
         fragments_indices = self.get_indices_of_fragments()
         forces_on_fragments = [forces[indices_i] for indices_i in fragments_indices]
@@ -164,6 +168,7 @@ class Structure():
         -------
         list of np.ndarrays of shape (3,)
             Net force on each fragment; [eV/AA]
+
         """
         forces_on_fragments = self.get_forces_on_fragments(forces=forces)
         net_force_on_fragments = []
@@ -187,6 +192,7 @@ class Structure():
         -------
         list of np.ndarrays of shape (3,)
             Torque on each fragment; [eV]
+
         """
         forces_on_fragments = self.get_forces_on_fragments(forces=forces)
         torque_on_fragments = []
@@ -200,6 +206,7 @@ class Structure():
 
         When individual fragments are moved, the atoms object of the structure must also be updated 
         accordingly.
+
         """
         self.atoms = self.rest_fragment.atoms + sum([fragment.atoms for fragment in self.fragments])
 
@@ -224,6 +231,7 @@ class Structure():
             The farthest distance an atom was moved in this update step; [AA]
         np.ndarray of shape (n_atoms, 3)
             xyz displacement of each atom; [AA]
+
         """
         old_positions = deepcopy(self.atoms.positions)
 

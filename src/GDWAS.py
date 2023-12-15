@@ -31,6 +31,7 @@ class GDWAS(Optimizer):
     The user never needs to interact directly with the stepsize. Instead, via max_step_0, the user 
     specifies how much the atoms (at most) shall move in the first optimization step. The stepsize 
     is then initialized accordingly and from there on adapted automatically, as described above.
+    
     """
 
     def __init__(self, stepsize_factor_up=1.2, stepsize_factor_dn=0.2, max_step=0.1, max_step_0=0.01, *args, **kwargs):
@@ -40,16 +41,14 @@ class GDWAS(Optimizer):
         ----------
         stepsize_factor_up: number > 1, default: 1.2
             Increase stepsize by this factor, if last optimization step lowered the total energy
-
         stepsize_factor_dn: number < 1, default: 0.2
             Decrease stepsize by this factor, if last optimization step increased the total energy
-
         max_step: number, default: 0.1
             The maximum distance atoms are allowed to move per optimization step; [AA]
-
         max_step_0: number, default: 0.01
             In the first optimization step, the stepsize is chosen such that the atom(s) moving 
             the farthest change their position by this value; [AA]
+
         """
         super().__init__()
         self.stepsize = 100 # initial stepsize, value doesn't matter
@@ -65,12 +64,11 @@ class GDWAS(Optimizer):
         ----------
         start_structure: structure.Structure
             The structure to be optimized
-
         calculator : ase.calculators.calculator.Calculator
             The used ASE calculator object
-            
         convergence_criterion : convergence_criterion.Convergence_Criterion
             The used convergence criterion object
+
         """
         self.start_structure = start_structure
         self.calculator = calculator
@@ -121,6 +119,7 @@ class GDWAS(Optimizer):
         negative number), the stepsize is increased by multiplying with stepsize_factor_up. 
         On the other hand, if the energy increased, the stepsize is lowered by multiplying with 
         stepsize_factor_dn.
+
         """
         if self.iteration != 0:
             prev_energy    = self.optimization_history[-1].energy

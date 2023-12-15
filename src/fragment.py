@@ -15,6 +15,7 @@ class Fragment():
 
     The orientation of a fragment can be defined using Euler angles and its position can be defined 
     by its center of mass.
+    
     """
     def __init__(self, atoms:Atoms, allowed_translation, allowed_rotation):
         """Define a new fragment using an ASE Atoms object
@@ -23,13 +24,11 @@ class Fragment():
         ----------
         atoms: ase.atoms.Atoms
             The atoms forming the fragment.
-
         allowed_translation: str
             How shall the fragment be allowed to translate? 
             If the string contains an "x", translation in x-direction is allowed, etc. 
             E.g., to allow only translation in x- and y-direction, set allowed_translation="xy"
             To completely forbid any translation, use an empty string.
-
         allowed_rotation: str
             Allows the user to set constraints on the rotation axis of a fragment. 
             Generally, the rotation axis (for a rigid body) is given my the matrix-vector product 
@@ -41,6 +40,7 @@ class Fragment():
             '' forbids any rotation
             'z' allows only rotation of the fragment around the (space-fixed) z-axis
             'xyz' allows for unrestricted rotation of the fragment
+
         """
 
         # Initialize using an already existing Atoms object
@@ -69,6 +69,7 @@ class Fragment():
             The rotation axis
         angle: number 
             The rotation angle
+
         """
         mat = rotmat(axis=axis,angle=angle)
         self.body_fixed_axis_x = mat@self.body_fixed_axis_x
@@ -96,6 +97,7 @@ class Fragment():
         -------
         list of length 3:
             The three Euler angles
+
         """
         space_fixed_axis_x = np.array(space_fixed_axis_x)
         space_fixed_axis_y = np.array(space_fixed_axis_y)
@@ -128,6 +130,7 @@ class Fragment():
             The inertia matrix of the fragment; [Dalton*AA**2]
         np.ndarray of shape (3,3)
             The inverse inertia matrix of the fragment; [1/(Dalton*AA**2)]
+
         """
         fragment_com = self.atoms.get_center_of_mass()
         inertia_matrix = np.zeros([3,3])
@@ -156,6 +159,7 @@ class Fragment():
             The rotation axis
         angle: number 
             The rotation angle
+
         """
         self.update_body_fixed_axes(angle=angle, axis=axis)
         self.update_euler_angles()
@@ -173,6 +177,7 @@ class Fragment():
         -------
         np.ndarray of shape (3,)
             Net force acting on the fragment; [eV/AA]
+
         """
         net_force_on_fragment = np.sum(forces, axis=0)
         return net_force_on_fragment
@@ -189,6 +194,7 @@ class Fragment():
         -------
         np.ndarray of shape (3,)
             Torque acting on the fragment (relative to center of mass of fragment); [eV]
+
         """
         fragment_com = self.atoms.get_center_of_mass()
         for i,atom in enumerate(self.atoms):
@@ -212,6 +218,7 @@ class Fragment():
             Torque acting on the fragment (relative to center of mass of fragment); [eV]
         stepsize: number
             Timestep; [Dalton*AA**2/eV]
+
         """
         self.rotate_by_torque(torque_on_center=torque_on_fragment, stepsize=stepsize)
         self.translate_by_force(force_on_center=force_on_fragment, stepsize=stepsize)
@@ -233,6 +240,7 @@ class Fragment():
         -------
         np.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
+
         """
         tmp = self.inertia_matrix_inv@torque_on_center
         if 'x' not in self.allowed_rotation:
@@ -264,6 +272,7 @@ class Fragment():
         -------
         np.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
+
         """
         fragment_mass = np.sum(self.atoms.get_masses())
         for atom in self.atoms:
@@ -293,6 +302,7 @@ class Fragment():
         -------
         np.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
+
         """   
         self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
         self.update_rotation_properties(angle=angle, axis=axis)
@@ -320,6 +330,7 @@ class Fragment():
         -------
         np.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
+
         """
         backup_allowed_translation = copy(self.allowed_translation)
         backup_allowed_rotation = copy(self.allowed_rotation)
@@ -356,8 +367,8 @@ class Fragment():
 #########################################################################################################
     
     def apply_boundaries(self, xmin, xmax, ymin, ymax):
-        """
-        Needs to be fixed/redone from scratch
+        """Needs to be fixed/redone from scratch
+
         """
         com = self.atoms.get_center_of_mass()
         x = com[0]

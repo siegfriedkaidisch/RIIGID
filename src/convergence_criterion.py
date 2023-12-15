@@ -1,8 +1,8 @@
 import numpy as np
 
 class Convergence_Criterion():
-    """
-    Base class for RIGID convergence criteria
+    """Base class for RIGID convergence criteria
+
     """
     def __init__(self, *args, **kwargs):
         """Initialize the RIGID convergence criterion.
@@ -20,5 +20,6 @@ class Convergence_Criterion():
         optimization_history: list of optimization_step.Optimization_Step
             The history of the optimization, which shall be checked for convergence. 
             (The optimization history is an attribute of the optimizer.)
+
         """
         pass
