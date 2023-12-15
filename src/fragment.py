@@ -161,23 +161,19 @@ class Fragment():
         self.update_euler_angles()
         self.update_inertia_matrix()
 
-
-
-
-    
     def calculate_net_force_on_fragment(self, forces):
         """
         Get the net force acting on the fragment.
 
-        Inputs:
-            fragment_indices: list of length n_atoms_in_fragment
-                List containing indices of the fragment's atoms in "full"
-            f: np.ndarray of shape (n_atoms_in_full_system, 3)
-                Forces acting on the atoms in "full" (in eV/Angstroem)
+        Parameters
+        ----------
+        forces: np.ndarray of shape (n_atoms_in_fragment, 3)
+            Forces acting on the atoms in the fragment; [eV/AA]
 
-        Returns:
-            np.ndarray of shape (3,)
-                Net force acting on the fragment (in eV/Angstroem)
+        Returns
+        -------
+        np.ndarray of shape (3,)
+            Net force acting on the fragment; [eV/AA]
         """
         net_force_on_fragment = np.sum(forces, axis=0)
         return net_force_on_fragment
@@ -186,17 +182,15 @@ class Fragment():
         """
         Get the net torque acting on the fragment (relative to its center of mass).
 
-        Inputs:
-            full: ase.atoms.Atoms
-                The full system (surface+fragment) under study
-            fragment_indices: list of length n_atoms_in_fragment
-                List containing indices of the fragment's atoms in "full"
-            f: np.ndarray of shape (n_atoms_in_full_system, 3)
-                Forces acting on the atoms in "full" (in eV/Angstroem)
+        Parameters
+        ----------
+        forces: np.ndarray of shape (n_atoms_in_fragment, 3)
+            Forces acting on the atoms in the fragment; [eV/AA]
 
-        Returns:
-            np.ndarray of shape (3,)
-                Net torque acting on the fragment (relative to center of mass of fragment) (in eV)
+        Returns
+        -------
+        np.ndarray of shape (3,)
+            Torque acting on the fragment (relative to center of mass of fragment); [eV]
         """
         fragment_com = self.atoms.get_center_of_mass()
         for i,atom in enumerate(self.atoms):
@@ -207,28 +201,40 @@ class Fragment():
         return torque_on_center
 
     def move(self, force_on_fragment, torque_on_fragment, stepsize):
-        self.rotate(torque_on_center=torque_on_fragment, stepsize=stepsize)
-        self.translate(force_on_center=force_on_fragment, stepsize=stepsize)
+        """Rotate and translate the fragment.
 
-    def rotate(self, torque_on_center, stepsize):
+        Rotates and translates the fragment and updates the rotation properties (Euler angles, 
+        body-fixed axes, inertia matrix) automatically
+
+        Parameters
+        ----------
+        force_on_fragment: np.ndarray of shape (3,)
+            The net force acting on the fragment; [eV/AA]
+        torque_on_fragment: np.ndarray of shape (3,)
+            Torque acting on the fragment (relative to center of mass of fragment); [eV]
+        stepsize: number
+            Timestep; [Dalton*AA**2/eV]
         """
-        Rotate fragment around its center of mass following the applied torque
+        self.rotate_by_torque(torque_on_center=torque_on_fragment, stepsize=stepsize)
+        self.translate_by_force(force_on_center=force_on_fragment, stepsize=stepsize)
 
-        Inputs:
-            fragment: ase.atoms.Atoms
-                The fragment to be rotated
-            fragment_inertia_inv: np.ndarray of shape (3,3)
-                The inverse inertia matrix of the fragment (in 1/(Dalton*Angstroem**2))
-            t_center: np.ndarray of shape (3,) or list of length 3
-                Net torque acting on the fragment (relative to center of mass of fragment) (in eV)
-            stepsize_rot: number
-                Timestep (in Dalton*Angstroem**2/eV)
-            z_only_rot: Bool
-                Rotate only around the z-axis?
+    def rotate_by_torque(self, torque_on_center, stepsize):
+        """Rotate fragment around its center of mass following the applied torque
 
-        Returns:
-            np.ndarray of shape (n_atoms_in_fragment,3)
-                The positions (in Angstroem) of the fragment's atoms after the transformation
+        Rotates the fragment and updates the rotation properties (Euler angles, 
+        body-fixed axes, inertia matrix) automatically.
+
+        Parameters
+        ----------
+        torque_on_fragment: np.ndarray of shape (3,)
+            Torque acting on the fragment (relative to center of mass of fragment); [eV]
+        stepsize: number
+            Timestep; [Dalton*AA**2/eV]
+
+        Returns
+        -------
+        np.ndarray of shape (n_atoms_in_fragment,3)
+            The positions (in Angstroem) of the fragment's atoms after the transformation
         """
         tmp = self.inertia_matrix_inv@torque_on_center
         if 'x' not in self.allowed_rotation:
@@ -246,21 +252,20 @@ class Fragment():
 
         return copy(self.atoms.positions)
 
-    def translate(self, force_on_center, stepsize):
-        """
-        Translate fragment in direction of the applied force
+    def translate_by_force(self, force_on_center, stepsize):
+        """Translate fragment following the applied net force
 
-        Inputs:
-            fragment: ase.atoms.Atoms
-                The fragment to be translated
-            f_center: np.ndarray of shape (3,) or list of length 3
-                Net force acting on the fragment (in eV/Angstroem)
-            stepsize_trans_x/y/z: number
-                Timesteps; usually all three should have the same value; (in Dalton*Angstroem**2/eV)
+        Parameters
+        ----------
+        force_on_fragment: np.ndarray of shape (3,)
+            The net force acting on the fragment; [eV/AA]
+        stepsize: number
+            Timestep; [Dalton*AA**2/eV]
 
-        Returns:
-            np.ndarray of shape (n_atoms_in_fragment,3)
-                The positions (in Angstroem) of the fragment's atoms after the transformation
+        Returns
+        -------
+        np.ndarray of shape (n_atoms_in_fragment,3)
+            The positions (in Angstroem) of the fragment's atoms after the transformation
         """
         fragment_mass = np.sum(self.atoms.get_masses())
         for atom in self.atoms:
@@ -273,68 +278,86 @@ class Fragment():
         #self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
 
         return copy(self.atoms.positions)
-    
 
+    def rotate_by_angle_and_axis(self, angle, axis):
+        """Rotate fragment around its center of mass with given axis and angle
 
+        WARNING: this functions currently ignores self.allowed_rotations!
 
+        Parameters
+        ----------
+        axis: list of length 3 or numpy.ndarray of shape (3,)
+            The rotation axis
+        angle: number 
+            The rotation angle
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #########################################################################################
-    
-
-    def rotate2(self, angle, axis):
-        """
-        Rotate fragment around com and rotate its axis system and update euler angle
-        Currently ignores self.allowed_rotations! Change?
+        Returns
+        -------
+        np.ndarray of shape (n_atoms_in_fragment,3)
+            The positions (in Angstroem) of the fragment's atoms after the transformation
         """   
         self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
         self.update_rotation_properties(angle=angle, axis=axis)
         return copy(self.atoms.positions)
 
-    def move_random_step(self, displacement, angle, seed):
+    def move_random_step(self, displacement, angle, respect_restrictions, seed=1234):
+        """Randomly rotate and translate the fragment
+
+        Useful to escape saddle points, especially when starting a new optimization.
+
+        Parameters
+        ----------
+        displacement: number
+            How far shall the fragment be translates; [AA]
+        angle: number
+            How much shall the fragment be rotated; [degree]
+        respect_restrictions: bool
+            If True, self.allowed_translation/rotation is respected. 
+            If False, rotation and translation in arbitrary directions is allowed temporarily.
+            (After the random step, the restrictions are respected again.)
+        seed: int, default:1234
+            The random seed used to generate the translation direction and rotation axis
+
+        Returns
+        -------
+        np.ndarray of shape (n_atoms_in_fragment,3)
+            The positions (in Angstroem) of the fragment's atoms after the transformation
         """
-        Needs to be fixed
-        """
+        backup_allowed_translation = copy(self.allowed_translation)
+        backup_allowed_rotation = copy(self.allowed_rotation)
+        if not respect_restrictions:
+            self.allowed_translation = "xyz"
+            self.allowed_rotation = "xyz"
+
+        # Set like this, s.t. rotation angle and displacement is as requested
         stepsize = 1.0
         inertia_matrix_inv  = np.eye(3)
-        fragment_mass = np.sum(self.atoms.get_masses())
         
         backup_seed = np.random.randint(2**32 - 1)
         np.random.seed(seed)
         force  = np.random.rand(3)
         torque = np.random.rand(3) 
         np.random.seed(backup_seed)
-        
+
+        # Set like this, s.t. rotation angle and displacement is as requested
         force  /= np.linalg.norm(force)
         torque /= np.linalg.norm(torque)
         force  *= displacement * fragment_mass
         torque *= angle * (np.pi/180)
         
         # Translate fragment
-        self.translate(force_on_center=force, stepsize=stepsize)
+        self.translate_by_force(force_on_center=force, stepsize=stepsize)
         # Rotate fragment 
         self.inertia_matrix_inv = inertia_matrix_inv #temporarily set to diag, such that fragment is rotated arbitrarily
-        self.rotate(torque_on_center=torque, stepsize=stepsize)
+        self.rotate_by_torque(torque_on_center=torque, stepsize=stepsize)
+
+        self.allowed_translation = copy(backup_allowed_translation)
+        self.allowed_rotation = copy(backup_allowed_rotation)
         return copy(self.atoms.positions)
     
     def apply_boundaries(self, xmin, xmax, ymin, ymax):
         """
-        Needs to be fixed
+        Needs to be fixed/redone from scratch
         """
         com = self.atoms.get_center_of_mass()
         x = com[0]
