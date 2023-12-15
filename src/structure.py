@@ -5,7 +5,8 @@ from fragment import Fragment
 from misc_functions import get_indices_of_atoms1_in_atoms2
 
 class Structure():
-    """
+    """Structure containing all the atoms and defined fragments.
+
     In RIGID a structure is a set of atoms separated into disjunctive subsets called fragments. 
     The fragments are treated as rigid bodies, that is, the bonds between all atoms belonging to 
     the same fragment are frozen. 
@@ -89,6 +90,23 @@ class Structure():
         print("Not yet implemented")
 
     def calculate_energy_and_forces(self, calculator):
+        """
+        Calculate forces on all atoms and total energy.
+
+        Parameters
+        ----------
+        calculator : ase.calculators.calculator.Calculator
+            The used ASE calculator object
+
+        Returns
+        -------
+        number:
+            The total energy; [eV]
+
+        np.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/AA]
+        """
+
         atoms = deepcopy(self.atoms)
         atoms.set_calculator(calculator)
         energy = atoms.get_potential_energy()
@@ -96,6 +114,15 @@ class Structure():
         return energy, forces
     
     def get_indices_of_fragments(self):
+        """
+        Get the indices (relative to Structure.atoms) of the atoms in each fragment.
+
+        Returns
+        -------
+        list of lists of int
+            A list containing one list per fragment (excluding the rest_fragment) containing 
+            the indices of the fragment
+        """
         fragments_indices = []
         for fragment in self.fragments:
             fragment_indices, found = get_indices_of_atoms1_in_atoms2(atoms1=fragment.atoms, atoms2=self.atoms, cutoff=1e-4)
@@ -105,11 +132,38 @@ class Structure():
         return fragments_indices
     
     def get_forces_on_fragments(self, forces):
+        """
+        Given the forces on all individual atoms, get one numpy array per fragment, containing 
+        the forces on all the atoms inside the fragment.
+
+        Parameters
+        ----------
+        forces: np.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/AA]
+
+        Returns
+        -------
+        list of np.ndarrays of shape (depends_on_fragment, 3)
+            One numpy array per fragment with the forces on atoms belonging to the fragment
+        """
         fragments_indices = self.get_indices_of_fragments()
         forces_on_fragments = [forces[indices_i] for indices_i in fragments_indices]
         return forces_on_fragments
 
     def calculate_net_force_on_fragments(self, forces):
+        """
+        Given the forces on all individual atoms, get the net force acting on each fragment.
+
+        Parameters
+        ----------
+        forces: np.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/AA]
+
+        Returns
+        -------
+        list of np.ndarrays of shape (3,)
+            Net force on each fragment; [eV/AA]
+        """
         forces_on_fragments = self.get_forces_on_fragments(forces=forces)
         net_force_on_fragments = []
         for i, fragment in enumerate(self.fragments):
@@ -118,6 +172,20 @@ class Structure():
         return net_force_on_fragments
     
     def calculate_torque_on_fragments(self, forces):
+        """
+        Given the forces on all individual atoms, get the net torque acting on each fragment.
+        (The torque is calculated relative to the center of mass of the fragment.)
+
+        Parameters
+        ----------
+        forces: np.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/AA]
+
+        Returns
+        -------
+        list of np.ndarrays of shape (3,)
+            Torque on each fragment; [eV]
+        """
         forces_on_fragments = self.get_forces_on_fragments(forces=forces)
         torque_on_fragments = []
         for i, fragment in enumerate(self.fragments):
@@ -126,9 +194,35 @@ class Structure():
         return torque_on_fragments
     
     def update_atoms_attribute_from_fragments(self):
+        """
+        Update Structure.atoms after movement of fragments.
+
+        When individual fragments are moved, the atoms object of the structure must also be updated 
+        accordingly.
+        """
         self.atoms = self.rest_fragment.atoms + sum([fragment.atoms for fragment in self.fragments])
 
     def move(self, forces, stepsize):
+        """
+        Given the forces on all individual atoms and a stepsize, move the fragments.
+
+        The functions first calculates the net force and the torque acting on each fragment. 
+        Then, the fragments are moved.
+
+        Parameters
+        ----------
+        forces: np.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/AA]
+        stepsize: number
+            Timestep; [Dalton*AA**2/eV]
+
+        Returns
+        -------
+        number:
+            The farthest distance an atom was moved in this update step; [AA]
+        np.ndarray of shape (n_atoms, 3)
+            xyz displacement of each atom; [AA]
+        """
         old_positions = deepcopy(self.atoms.positions)
 
         force_on_fragments = self.calculate_force_on_fragments(forces=forces)

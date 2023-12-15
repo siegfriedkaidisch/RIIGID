@@ -69,7 +69,7 @@ def copy_docstring(take_from_fct):
     -------
         The decorator
 
-    Example
+    Examples
     --------
     >>> def fun1():
     >>>     '''
@@ -82,6 +82,10 @@ def copy_docstring(take_from_fct):
     >>>     return 2
     >>>
     >>> help(fun2)
+    Help on function fun2 in module __main__:
+
+    fun2()
+    This function has a docstring!
     """
     docstring = take_from_fct.__doc__
     def decorator(give_to_fct):                                                                                                                                                                                                           
