@@ -6,9 +6,9 @@ inside the Fragment class.
 """
 import numpy as np
 
-from ase import Atom, Atoms
-
 ######################################################################################################################
+# The following functions are currently used by RIGID.
+
 def angle_between_vectors(v1,v2): 
     """
     Calculates the angle (in degrees) between two vectors in 3D
@@ -117,12 +117,17 @@ def get_normal_vector_fragment(fragment):
     Otherwise, if it has a nonzero y-component, then choose this y-component to be positive. 
     Otherwise choose the x-component to be positive.
 
-    Note: DO NOT USE this function with a non-planar or linear fragment! The result has no meaning.
+    Note: DO NOT USE THIS FUNCTION WITH A NON-PLANAR OR A LINEAR FRAGMENT!
 
     Parameters
     ----------
     fragment: fragment.Fragment
         The planar, non-linear fragment whose normal vector shall be calculated
+
+    Returns
+    -------
+    np.ndarray of shape (3,)
+        The normal vector
     """
     center = fragment.atoms.get_center_of_mass()
     normal_vector = np.zeros(3)

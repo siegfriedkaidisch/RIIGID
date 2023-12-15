@@ -3,7 +3,7 @@ from copy import deepcopy, copy
 
 from ase import Atoms
 
-from rotation_functions import angle_between_vectors, angle_between_vectors2, rotmat
+from rotation_functions import angle_between_vectors, signed_angle_between_vectors, rotmat
 from misc_functions import get_indices_of_atoms1_in_atoms2
 
 class Fragment():
@@ -51,11 +51,11 @@ class Fragment():
         
         if beta == 0 or beta==180:
             alpha = 0.0
-            gamma = angle_between_vectors2(v1=space_fixed_axis_x,v2=self.body_fixed_axis_x, axis=self.body_fixed_axis_z)
+            gamma = signed_angle_between_vectors(v1=space_fixed_axis_x,v2=self.body_fixed_axis_x, axis=self.body_fixed_axis_z)
         else:
             N = np.cross(space_fixed_axis_z, self.body_fixed_axis_z)
-            alpha = angle_between_vectors2(v1=space_fixed_axis_x,v2=N, axis=space_fixed_axis_z)
-            gamma = angle_between_vectors2(v1=N,v2=self.body_fixed_axis_x, axis=self.body_fixed_axis_z)
+            alpha = signed_angle_between_vectors(v1=space_fixed_axis_x,v2=N, axis=space_fixed_axis_z)
+            gamma = signed_angle_between_vectors(v1=N,v2=self.body_fixed_axis_x, axis=self.body_fixed_axis_z)
         
         self.euler_angles = [alpha, beta, gamma]
 

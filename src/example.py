@@ -24,7 +24,7 @@ rigid.set_calculator(calculator)
 
 # User sets the Rigid optimizer and its settings
 rigid_settings = {}
-optimizer = Optimizer(**rigid_settings) #gradient descent with adaptive learning rate
+optimizer = Optimizer(**rigid_settings) #gradient descent with adaptive stepsize
 rigid.set_optimizer(optimizer)
 
 # User sets the convergence criterion

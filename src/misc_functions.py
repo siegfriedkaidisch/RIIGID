@@ -1,18 +1,52 @@
+"""
+A collection of miscellaneous functions.
+"""
 import numpy as np
 
-from ase import Atom, Atoms
+######################################################################################################################
+# The following functions are currently used by RIGID.
 
 def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
-        '''
-        Find the indices of the (the atoms of) atoms1 inside the atoms2 object
-        #additionally returns a bool, specifying if all atoms have been found
+        """
+        Find the indices of the (the atoms of) atoms1 inside the atoms2 object.
 
-        # maybe not here but as misc function in separate file?
-        '''
+        In the typical use of this function, atoms1 are the atoms of a fragment, while 
+        atoms2 are the atoms of the full structure.
+
+        To determine the indices, atoms are considered identical, if they are of the same species 
+        and the distance between them is less than cutoff.
+
+        Parameters
+        ----------
+        atoms1: ase.atoms.Atoms
+            The atoms, whose indices are searched
+
+        atoms2: ase.atoms.Atoms
+            The atoms, where atoms1 is searched in
+
+        cutoff: number, default: 1e-4
+            Atoms closer than cutoff, which are of the same species, are considered identical
+
+        Returns
+        -------
+        list of ints:
+            The list of indices; Normally this should be of the same length as atoms1
+
+        bool:
+            Was the search successful? 
+            If not all atoms were found (the returned list is shorter than len(atoms1)), this 
+            is set to False (In this case, the returned list is useless, but still returned for 
+            compatibility reasons).
+            If all atoms have been found once (the returned list is of length len(atoms1)), this is 
+            set to True. 
+        
+        Note: If some atoms have been found more than once, an exception is raised. This indicates an 
+        ill-defined Atoms object.
+        """
         atomic_indices = []
         for a1 in atoms1:
             for a2 in atoms2:
-                if np.linalg.norm(a1.position - a2.position) < cutoff:
+                if np.linalg.norm(a1.position - a2.position) < cutoff and a1.symbol==a2.symbol:
                     atomic_indices.append(a2.index)
 
         if len(atomic_indices) == len(atoms1):
@@ -21,39 +55,84 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
             return atomic_indices, False
         else:
             raise Exception('More atoms found than looked for... Are there atoms unphysically close to each other, or duplicate atoms?')
-        
-
-def get_mol_indices_old(full, middle_height, above=True):
-    '''
-    Given the full system ("full"=surface+molecule), find the indices of the molecule's atoms. 
-    To do so, specifiy a height ("middle_height") separating the surface from the molecule. 
-
-    above=True: Atoms below middle_height are considered to belong to the surface and atoms above middle_height 
-    are considered to belong to the molecule.
-
-    above=False: Atoms above middle_height are considered to belong to the surface and atoms below middle_height 
-    are considered to belong to the molecule.
-
-    Inputs:
-        full: ase.atoms.Atoms
-            The full system (surface+molecule) under study
-        middle_height: number
-            Height (in Angstroem) used to separate molecule from surface (see description above)
-        above: Bool
-            See explanation given above
-
-    Returns:
-        list of length n_atoms_in_molecule
-            List containing indices of the molecule's atoms in "full"
-    '''
-    if above:
-        return [ atom.index for atom in full if atom.position[2] >= middle_height ]
-    else:
-        return [ atom.index for atom in full if atom.position[2] < middle_height ]
     
 def copy_docstring(take_from_fct): 
+    """
+    A decorator to copy the docstring of one function to a different function.
+
+    Parameters
+    ----------
+    take_from_fct:
+        The function, whose docstring shall be copied
+
+    Returns
+    -------
+        The decorator
+
+    Example
+    --------
+    >>> def fun1():
+    >>>     '''
+    >>>     This function has a docstring!
+    >>>     '''
+    >>>     return 1
+    >>>
+    >>> @copy_docstring(fun1)
+    >>> def fun2():
+    >>>     return 2
+    >>>
+    >>> help(fun2)
+    """
     docstring = take_from_fct.__doc__
     def decorator(give_to_fct):                                                                                                                                                                                                           
         give_to_fct.__doc__ = docstring   
         return give_to_fct                                                                                                                                                                                            
     return decorator
+
+######################################################################################################################
+# The following functions are currently not used by RIGID
+# They are still stored here, for possible future purposes
+
+def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction='z'):
+    """
+    A useful function to find the indices of an fragment or to set up a new fragment. 
+    The indices of atoms above/below middle_height are returned.
+
+    above=True: Atoms above middle_height are considered and their indices in all_atoms are returned.
+
+    above=False: Atoms below middle_height are considered and their indices in all_atoms are returned.
+
+    Parameters
+    ----------
+    all_atoms: ase.atoms.Atoms
+        The full Atoms object
+
+    middle_height: number
+        The height used to separate atoms; [AA]
+
+    above: Bool, default: True
+        See explanation given above
+
+    direction: 'x','y' or 'z', default: 'z'
+        The direction used to separate the atoms
+    
+    Returns
+    -------
+    list:
+        List containing indices of all atoms above/below middle_height
+    """
+    if direction == 'x':
+        direction = 0
+    elif direction == 'y':
+        direction = 1
+    elif direction == 'z':
+        direction = 2
+    else:
+        raise Exception('Direction not known!')
+
+    if above:
+        return [ atom.index for atom in all_atoms if atom.position[direction] >= middle_height ]
+    else:
+        return [ atom.index for atom in all_atoms if atom.position[direction] < middle_height ]
+    
+######################################################################################################################
