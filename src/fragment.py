@@ -163,21 +163,18 @@ class Fragment():
                 The positions (in Angstroem) of the fragment's atoms after the transformation
         """
         tmp = self.inertia_matrix_inv@torque_on_center
+        if 'x' not in self.allowed_rotation:
+            tmp[0] = 0
+        if 'y' not in self.allowed_rotation:
+            tmp[1] = 0
+        if 'z' not in self.allowed_rotation:
+            tmp[2] = 0
 
-        if self.allowed_rotation == "xyz":
-            angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize  # in degrees
-            if angle != 0:
-                axis = tmp/np.linalg.norm(tmp)
-                self.atoms.rotate(angle,axis,self.atoms.get_center_of_mass())
-                self.update_rotation_properties(angle=angle, axis=axis)
-        elif self.allowed_rotation == 'z':
-            angle = tmp[2] * (180/np.pi) * stepsize
-            if angle != 0:
-                axis = np.array([0.0,0.0,1.0])
-                self.atoms.rotate(angle,axis,self.atoms.get_center_of_mass())
-                self.update_rotation_properties(angle=angle, axis=axis)
-        else:
-            raise Exception('Input for allowed rotation of fragment not supported: '+str(self.allowed_rotation))
+        angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize  # in degrees
+        if angle != 0:
+            axis = tmp/np.linalg.norm(tmp)
+            self.atoms.rotate(angle,axis,self.atoms.get_center_of_mass())
+            self.update_rotation_properties(angle=angle, axis=axis)
 
         return copy(self.atoms.positions)
 
@@ -198,14 +195,14 @@ class Fragment():
                 The positions (in Angstroem) of the fragment's atoms after the transformation
         """
         fragment_mass = np.sum(self.atoms.get_masses())
-        if self.allowed_translation == 'xyz':
-            for atom in self.atoms:
+        for atom in self.atoms:
+            if 'x' in self.allowed_translation:
                 atom.position[0] += stepsize * force_on_center[0]/fragment_mass
+            if 'y' in self.allowed_translation:
                 atom.position[1] += stepsize * force_on_center[1]/fragment_mass
+            if 'z' in self.allowed_translation:
                 atom.position[2] += stepsize * force_on_center[2]/fragment_mass
-            #self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
-        else:
-            raise Exception('Input for allowed translation of fragment not supported: '+str(self.allowed_rotation))
+        #self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
 
         return copy(self.atoms.positions)
     

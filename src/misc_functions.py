@@ -29,7 +29,7 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
 
         Returns
         -------
-        list of ints:
+        list of int:
             The list of indices; Normally this should be of the same length as atoms1
 
         bool:

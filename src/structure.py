@@ -5,14 +5,59 @@ from fragment import Fragment
 from misc_functions import get_indices_of_atoms1_in_atoms2
 
 class Structure():
+    """
+    In RIGID a structure is a set of atoms separated into disjunctive subsets called fragments. 
+    The fragments are treated as rigid bodies, that is, the bonds between all atoms belonging to 
+    the same fragment are frozen. 
+    As already said, all these fragments together then form the structure. 
+
+    Via the Structure class, fragments can be defined, forces and torques on all fragments can be 
+    calculated and the fragments can be moved accordingly.
+    """
+
     def __init__(self, atoms):
+        """
+        Parameters
+        ----------
+        atoms: ase.atoms.Atoms
+            To initialize a structure, an atoms object must be given, which can later be separated 
+            into fragments. It will also be possible to define a fragment by adding additional atoms later
+            on (not yet implemented).
+        """
         self.atoms = atoms
         self.fragments = []
         self.rest_fragment = Fragment(atoms=self.atoms, allowed_translation='', allowed_rotation='')
 
     def define_fragment_by_indices(self, indices, allowed_translation, allowed_rotation):
         """
-        Takes atoms from rest_fragment to from new fragment (indices relative to full atoms object)
+        Define a new fragment by telling RIGID the indices of the atoms (indices relative to 
+        Structure.atoms) that shall form the new fragment. 
+
+        Note, that each atom has to belong to exactly one fragment! All atoms that the user never manually
+        assigned to a specific fragment form another fragment together, called the rest_fragment.
+
+        Parameters
+        ----------
+        indices: list of int
+            The indices of the atoms forming the new fragment
+
+        allowed_translation: str
+            How shall the fragment be allowed to translate? 
+            If the string contains an "x", translation in x-direction is allowed, etc. 
+            E.g., to allow only translation in x- and y-direction, set allowed_translation="xy"
+            To completely forbid any translation, use an empty string.
+
+        allowed_rotation: str
+            Allows the user to set constraints on the rotation axis of a fragment. 
+            Generally, the rotation axis (for a rigid body) is given my the matrix-vector product 
+            of the fragment's inverse inertia matrix with the torque acting on (the center of) the 
+            fragment. The rotation angle is then determined by the norm of the resulting vector. 
+            Using allowed_rotation, the user can apply the same logic as above to define, which components 
+            of the rotation axis shall be dropped.
+            Examples:
+            '' forbids any rotation
+            'z' allows only rotation of the fragment around the (space-fixed) z-axis
+            'xyz' allows for unrestricted rotation of the fragment
         """
         fragment_atoms = deepcopy(self.atoms[indices])
         rest_fragment_atoms = deepcopy(self.rest_fragment.atoms)
@@ -28,6 +73,20 @@ class Structure():
         # Update rest-fragment and append new fragment to list of fragments
         self.rest_fragment = Fragment(atoms=rest_fragment_atoms, allowed_translation='', allowed_rotation='')
         self.fragments.append(new_fragment)
+
+    def define_fragment_by_adding_atoms(self, atoms, position, orientation, allowed_translation='', allowed_rotation=''):
+        """
+        Define fragments by adding additional atoms to Structure.atoms
+
+        Not implemented yet!
+
+        Things to consider:
+        How to treat cells?
+        How to position and orient the new fragment?
+        If user wants to first use this fct and then use define_fragment_by_indices, shall user define
+        indices relative to original Structure.atoms?
+        """
+        print("Not yet implemented")
 
     def calculate_energy_and_forces(self, calculator):
         atoms = deepcopy(self.atoms)
