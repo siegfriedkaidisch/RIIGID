@@ -5,7 +5,8 @@ class Optimization_Step():
     Note, that the stored forces and the energy belong to "structure", not to "updated_structure".
     """
     def __init__(self, structure, forces, energy, updated_structure=None):
-        """
+        """Initialize the optimization step.
+
         Parameters
         ----------
         structure: structure.Structure
@@ -26,8 +27,7 @@ class Optimization_Step():
         self.updated_structure = updated_structure
 
     def add_updated_structure(self, updated_structure):
-        """
-        Add/change the updated structure of the optimization step
+        """Add/change the updated structure of the optimization step.
 
         Parameters
         ----------
@@ -37,7 +37,7 @@ class Optimization_Step():
         self.updated_structure = updated_structure
 
     def remove_updated_structure(self):
-        """
-        Remove the updated structure from the optimization step
+        """Remove the updated structure from the optimization step.
+        
         """
         self.updated_structure = None

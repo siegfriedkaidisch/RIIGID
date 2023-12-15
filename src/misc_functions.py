@@ -7,8 +7,7 @@ import numpy as np
 # The following functions are currently used by RIGID.
 
 def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
-        """
-        Find the indices of the (the atoms of) atoms1 inside the atoms2 object.
+        """Find the indices of the (the atoms of) atoms1 inside the atoms2 object.
 
         In the typical use of this function, atoms1 are the atoms of a fragment, while 
         atoms2 are the atoms of the full structure.
@@ -57,8 +56,7 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
             raise Exception('More atoms found than looked for... Are there atoms unphysically close to each other, or duplicate atoms?')
     
 def copy_docstring(take_from_fct): 
-    """
-    A decorator to copy the docstring of one function to a different function.
+    """A decorator to copy the docstring of one function to a different function.
 
     Parameters
     ----------
@@ -98,9 +96,9 @@ def copy_docstring(take_from_fct):
 # They are still stored here, for possible future purposes
 
 def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction='z'):
-    """
+    """The indices of atoms above/below middle_height are returned.
+
     A useful function to find the indices of an fragment or to set up a new fragment. 
-    The indices of atoms above/below middle_height are returned.
 
     above=True: Atoms above middle_height are considered and their indices in all_atoms are returned.
 

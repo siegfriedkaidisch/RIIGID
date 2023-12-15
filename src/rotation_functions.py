@@ -10,8 +10,7 @@ import numpy as np
 # The following functions are currently used by RIGID.
 
 def angle_between_vectors(v1,v2): 
-    """
-    Calculates the angle (in degrees) between two vectors in 3D
+    """Calculates the angle (in degrees) between two vectors in 3D.
 
     Parameters
     ----------
@@ -26,8 +25,8 @@ def angle_between_vectors(v1,v2):
     return np.arccos(np.dot(v1,v2)/( np.linalg.norm(v1)*np.linalg.norm(v2) ))*180/np.pi
 
 def signed_angle_between_vectors(v1,v2, axis): 
-    """
-    Calculates the "signed" angle (in degrees) between two vectors in 3D. 
+    """Calculates the "signed" angle (in degrees) between two vectors in 3D. 
+
     v1 and v2 have to be normal to axis. The angle is right-hand measured around axis, from v1 to v2
     
     Parameters
@@ -52,8 +51,7 @@ def signed_angle_between_vectors(v1,v2, axis):
     return phi * 180/np.pi
 
 def rotmat(axis, angle):
-    """
-    Create 3x3 rotation matrix for the rotation around axis by angle
+    """Create 3x3 rotation matrix for the rotation around axis by angle.
 
     Parameters
     ----------
@@ -82,7 +80,8 @@ def rotmat(axis, angle):
 # They are still stored here, for possible future purposes
 
 def angles_between_principal_axes_and_xyz(mat_inertia):
-    """
+    """Calculate angles between x,y,z-axis and principal axes of inertia.
+
     Takes the inertia matrix of a fragment, calculates the principal axes of inertia (eigenvectors) and then calculates
     the angles (in degrees) between these principal axes and the space-fixed x,y,z- axis. 
     Can be used to identify the current rotation/orientation of the fragment, even in non-rigid (e.g. VASP) geometry optimizations.
@@ -104,8 +103,7 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
     return angles
 
 def get_normal_vector_fragment(fragment):
-    """
-    Find and return the (normalized) vector normal to a planar (non-linear) fragment
+    """Find and return the (normalized) vector normal to a planar (non-linear) fragment.
 
     The normal vector is calculated by looking for two atoms that form a near 90 degree angle 
     (for numeric stability) and then calculating the normalized cross-product of these two vectors. 

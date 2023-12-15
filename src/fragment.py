@@ -76,7 +76,7 @@ class Fragment():
         self.body_fixed_axis_z = mat@self.body_fixed_axis_z
 
     def update_euler_angles(self, space_fixed_axis_x=[1,0,0],space_fixed_axis_y=[0,1,0],space_fixed_axis_z=[0,0,1]):
-        """Updates the Euler angles of the fragment
+        """Updates the Euler angles of the fragment.
 
         Via the orientation of a body-fixed axis system relative to a space-fixed axis system, the Euler 
         angles of a fragment can be defined. After each update step, the body fixed axes change and the 
@@ -162,8 +162,7 @@ class Fragment():
         self.update_inertia_matrix()
 
     def calculate_net_force_on_fragment(self, forces):
-        """
-        Get the net force acting on the fragment.
+        """Get the net force acting on the fragment.
 
         Parameters
         ----------
@@ -179,8 +178,7 @@ class Fragment():
         return net_force_on_fragment
 
     def calculate_torque_on_fragment(self, forces):
-        """
-        Get the net torque acting on the fragment (relative to its center of mass).
+        """Get the net torque acting on the fragment (relative to its center of mass).
 
         Parameters
         ----------
@@ -219,7 +217,7 @@ class Fragment():
         self.translate_by_force(force_on_center=force_on_fragment, stepsize=stepsize)
 
     def rotate_by_torque(self, torque_on_center, stepsize):
-        """Rotate fragment around its center of mass following the applied torque
+        """Rotate fragment around its center of mass following the applied torque.
 
         Rotates the fragment and updates the rotation properties (Euler angles, 
         body-fixed axes, inertia matrix) automatically.
@@ -253,7 +251,7 @@ class Fragment():
         return copy(self.atoms.positions)
 
     def translate_by_force(self, force_on_center, stepsize):
-        """Translate fragment following the applied net force
+        """Translate fragment following the applied net force.
 
         Parameters
         ----------
@@ -280,7 +278,7 @@ class Fragment():
         return copy(self.atoms.positions)
 
     def rotate_by_angle_and_axis(self, angle, axis):
-        """Rotate fragment around its center of mass with given axis and angle
+        """Rotate fragment around its center of mass with given axis and angle.
 
         WARNING: this functions currently ignores self.allowed_rotations!
 
@@ -301,7 +299,7 @@ class Fragment():
         return copy(self.atoms.positions)
 
     def move_random_step(self, displacement, angle, respect_restrictions, seed=1234):
-        """Randomly rotate and translate the fragment
+        """Randomly rotate and translate the fragment.
 
         Useful to escape saddle points, especially when starting a new optimization.
 
@@ -354,6 +352,8 @@ class Fragment():
         self.allowed_translation = copy(backup_allowed_translation)
         self.allowed_rotation = copy(backup_allowed_rotation)
         return copy(self.atoms.positions)
+    
+#########################################################################################################
     
     def apply_boundaries(self, xmin, xmax, ymin, ymax):
         """

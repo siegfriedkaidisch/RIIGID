@@ -34,7 +34,8 @@ class GDWAS(Optimizer):
     """
 
     def __init__(self, stepsize_factor_up=1.2, stepsize_factor_dn=0.2, max_step=0.1, max_step_0=0.01, *args, **kwargs):
-        """
+        """Initialize the GDWAS optimizer. 
+
         Parameters
         ----------
         stepsize_factor_up: number > 1, default: 1.2
@@ -58,8 +59,7 @@ class GDWAS(Optimizer):
         self.max_step_0 = max_step_0
 
     def run(self, start_structure, calculator, convergence_criterion, *args, **kwargs):
-        """
-        Let the optimizer run its optimization on the structure
+        """Let the optimizer run its optimization on the structure.
 
         Parameters
         ----------
@@ -115,8 +115,7 @@ class GDWAS(Optimizer):
             self.convergence_criterion.check(optimization_history=self.optimization_history)
 
     def adapt_stepsize_to_energy_change(self):
-        """
-        Adapt the stepsize according to the last update step.
+        """Adapt the stepsize according to the last update step.
         
         If the last update performed on the atomic positions lowered the total energy (i.e a larger 
         negative number), the stepsize is increased by multiplying with stepsize_factor_up. 
@@ -133,8 +132,8 @@ class GDWAS(Optimizer):
                 self.stepsize *= self.stepsize_factor_dn
 
     def drop_last_step_if_energy_got_larger(self):
-        """
-        Drop last update step if it increased the total energy.
+        """Drop last update step if it increased the total energy.
+
         """
         if self.iteration != 0:
             prev_energy    = self.optimization_history[-1].energy
@@ -146,7 +145,8 @@ class GDWAS(Optimizer):
                 self.optimization_history.pop()
 
     def adapt_stepsize_to_prevent_too_large_steps(self, max_atomic_displacement):
-        """
+        """Prevent too large atomic movement. 
+
         If max_atomic_displacement > self.max_step, the stepsize is lowered, such that
         max_atomic_displacement = self.max_step.
 

@@ -5,11 +5,15 @@ class Convergence_Criterion():
     Base class for RIGID convergence criteria
     """
     def __init__(self, *args, **kwargs):
+        """Initialize the RIGID convergence criterion.
+        
+        """
         self.is_converged = False # is the convergence criterion fulfilled?
 
     def check(self, optimization_history, *args, **kwargs):
-        """
-        Check if the convergence criterion is fulfilled
+        """Check if the convergence criterion is fulfilled
+
+        If yes, self.is_converged is set to True.
 
         Parameters
         ----------

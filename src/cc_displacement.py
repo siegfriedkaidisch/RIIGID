@@ -17,7 +17,8 @@ class CC_Displacement(Convergence_Criterion):
     """
 
     def __init__(self, cutoff, *args, **kwargs):
-        """
+        """Initialize the Displacement convergence criterion.
+
         Parameters
         ----------
         cutoff: number
@@ -27,8 +28,9 @@ class CC_Displacement(Convergence_Criterion):
         self.cutoff = cutoff
 
     def check(self, optimization_history, *args, **kwargs):
-        """
-        Check if the convergence criterion is fulfilled
+        """Check if the convergence criterion is fulfilled.
+
+        If yes, self.is_converged is set to True.
 
         Parameters
         ----------

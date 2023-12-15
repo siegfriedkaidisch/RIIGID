@@ -17,7 +17,8 @@ class Structure():
     """
 
     def __init__(self, atoms):
-        """
+        """Initialize RIGID structure object.
+
         Parameters
         ----------
         atoms: ase.atoms.Atoms
@@ -30,7 +31,8 @@ class Structure():
         self.rest_fragment = Fragment(atoms=self.atoms, allowed_translation='', allowed_rotation='')
 
     def define_fragment_by_indices(self, indices, allowed_translation, allowed_rotation):
-        """
+        """Define a RIGID fragment by its indices.
+
         Define a new fragment by telling RIGID the indices of the atoms (indices relative to 
         Structure.atoms) that shall form the new fragment. 
 
@@ -76,8 +78,7 @@ class Structure():
         self.fragments.append(new_fragment)
 
     def define_fragment_by_adding_atoms(self, atoms, position, orientation, allowed_translation='', allowed_rotation=''):
-        """
-        Define fragments by adding additional atoms to Structure.atoms
+        """Define fragments by adding additional atoms to Structure.atoms.
 
         Not implemented yet!
 
@@ -90,8 +91,7 @@ class Structure():
         print("Not yet implemented")
 
     def calculate_energy_and_forces(self, calculator):
-        """
-        Calculate forces on all atoms and total energy.
+        """Calculate forces on all atoms and total energy.
 
         Parameters
         ----------
@@ -114,8 +114,7 @@ class Structure():
         return energy, forces
     
     def get_indices_of_fragments(self):
-        """
-        Get the indices (relative to Structure.atoms) of the atoms in each fragment.
+        """Get the indices (relative to Structure.atoms) of the atoms in each fragment.
 
         Returns
         -------
@@ -132,7 +131,8 @@ class Structure():
         return fragments_indices
     
     def get_forces_on_fragments(self, forces):
-        """
+        """Assign forces to fragments.
+
         Given the forces on all individual atoms, get one numpy array per fragment, containing 
         the forces on all the atoms inside the fragment.
 
@@ -151,7 +151,8 @@ class Structure():
         return forces_on_fragments
 
     def calculate_net_force_on_fragments(self, forces):
-        """
+        """Get net force on each fragment.
+
         Given the forces on all individual atoms, get the net force acting on each fragment.
 
         Parameters
@@ -172,7 +173,8 @@ class Structure():
         return net_force_on_fragments
     
     def calculate_torque_on_fragments(self, forces):
-        """
+        """Get torque on each fragment, relative to the fragment's center of mass.
+
         Given the forces on all individual atoms, get the net torque acting on each fragment.
         (The torque is calculated relative to the center of mass of the fragment.)
 
@@ -194,8 +196,7 @@ class Structure():
         return torque_on_fragments
     
     def update_atoms_attribute_from_fragments(self):
-        """
-        Update Structure.atoms after movement of fragments.
+        """Update Structure.atoms after movement of fragments.
 
         When individual fragments are moved, the atoms object of the structure must also be updated 
         accordingly.
@@ -203,7 +204,8 @@ class Structure():
         self.atoms = self.rest_fragment.atoms + sum([fragment.atoms for fragment in self.fragments])
 
     def move(self, forces, stepsize):
-        """
+        """Move the fragments according to the forces.
+
         Given the forces on all individual atoms and a stepsize, move the fragments.
 
         The functions first calculates the net force and the torque acting on each fragment. 

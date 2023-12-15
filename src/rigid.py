@@ -4,8 +4,7 @@ from structure import Structure
 from misc_functions import copy_docstring
 
 class RIGID():
-    """
-    RIGID Geometry Optimization
+    """RIGID Geometry Optimization
 
     The structure under investigation is separated into so-called fragments, which are a 
     set of atoms with fixed bonds between them, thus forming a rigid body. Using an ASE 
@@ -18,7 +17,8 @@ class RIGID():
     optimizer and convergence criterion.
     """
     def __init__(self, atoms):
-        """
+        """Initialize a RIGID geometry optimization.
+
         Parameters
         ----------
         atoms : ase.atoms.Atoms
@@ -33,8 +33,7 @@ class RIGID():
         self.start_structure.define_fragment_by_indices(*args, **kwargs)
 
     def set_calculator(self, calculator):
-        """
-        Set the ASE Calculator to be used for optimizing the structure
+        """Set the ASE Calculator to be used for optimizing the structure.
 
         Parameters
         ----------
@@ -44,8 +43,7 @@ class RIGID():
         self.calculator = calculator
 
     def set_optimizer(self, optimizer):
-        """
-        Set the optimizer to be used for optimizing the structure
+        """Set the optimizer to be used for optimizing the structure.
 
         Parameters
         ----------
@@ -55,8 +53,7 @@ class RIGID():
         self.optimizer = optimizer
 
     def set_convergence_criterion(self, convergence_criterion):
-        """
-        Set the convergence criterion for optimizing the structure
+        """Set the convergence criterion for optimizing the structure.
 
         Parameters
         ----------
