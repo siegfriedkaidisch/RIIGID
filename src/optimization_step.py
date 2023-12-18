@@ -1,4 +1,4 @@
-class Optimization_Step():
+class Optimization_Step:
     """Each instantiation of this class corresponds to a step in the optimization process.
 
     Attributes
@@ -17,6 +17,7 @@ class Optimization_Step():
     The stored forces and the energy belong to "structure", not to "updated_structure".
 
     """
+
     def __init__(self, structure, forces, energy, updated_structure=None):
         """Initialize the optimization step.
 
@@ -49,7 +50,5 @@ class Optimization_Step():
         self.updated_structure = updated_structure
 
     def remove_updated_structure(self):
-        """Remove the updated structure from the optimization step.
-
-        """
+        """Remove the updated structure from the optimization step."""
         self.updated_structure = None
