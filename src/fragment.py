@@ -223,6 +223,7 @@ class Fragment:
 
         """
         fragment_com = self.atoms.get_center_of_mass()
+        torque_on_center = np.zeros(3)
         for i, atom in enumerate(self.atoms):
             r_i = atom.position
             r = fragment_com
@@ -367,6 +368,7 @@ class Fragment:
         # Set like this, s.t. rotation angle and displacement is as requested
         stepsize = 1.0
         inertia_matrix_inv = np.eye(3)
+        fragment_mass = np.sum(self.atoms.get_masses())
 
         backup_seed = np.random.randint(2**32 - 1)
         np.random.seed(seed)
