@@ -18,11 +18,11 @@ def get_force_mol(mol_indices, f):
     Inputs:
         mol_indices: list of length n_atoms_in_molecule
             List containing indices of the molecule's atoms in "full"
-        f: np.ndarray of shape (n_atoms_in_full_system, 3)
+        f: numpy.ndarray of shape (n_atoms_in_full_system, 3)
             Forces acting on the atoms in "full" (in eV/Angstroem)
 
     Returns:
-        np.ndarray of shape (3,)
+        numpy.ndarray of shape (3,)
             Net force acting on the molecule (in eV/Angstroem)
     '''
     mol_f = f[mol_indices]
@@ -38,13 +38,13 @@ def translate_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_tr
     Inputs:
         mol: ase.atoms.Atoms
             The molecule to be translated
-        f_center: np.ndarray of shape (3,) or list of length 3
+        f_center: numpy.ndarray of shape (3,) or list of length 3
             Net force acting on the molecule (in eV/Angstroem)
         stepsize_trans_x/y/z: number
             Timesteps; usually all three should have the same value; (in Dalton*Angstroem**2/eV)
 
     Returns:
-        np.ndarray of shape (n_atoms_in_molecule,3)
+        numpy.ndarray of shape (n_atoms_in_molecule,3)
             The positions (in Angstroem) of the molecule's atoms after the transformation
     '''
     mol_mass = np.sum(mol.get_masses())

@@ -1,5 +1,4 @@
-"""
-A collection of miscellaneous functions.
+"""A collection of miscellaneous functions.
 
 """
 import numpy as np
@@ -39,7 +38,7 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
         
         Raises
         ----
-        Exception
+        RuntimeError
             If some atoms have been found more than once, an exception is raised. This indicates an 
             ill-defined Atoms object.
 
@@ -55,7 +54,7 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
         elif len(atomic_indices) < len(atoms1):
             return atomic_indices, False
         else:
-            raise Exception('More atoms found than looked for... Are there atoms unphysically close to each other, or duplicate atoms?')
+            raise RuntimeError('More atoms found than looked for... Are there atoms unphysically close to each other, or duplicate atoms?')
     
 def copy_docstring(take_from_fct): 
     """A decorator to copy the docstring of one function to a different function.
@@ -125,7 +124,7 @@ def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction=
 
     Raises
     ------
-    Exception
+    ValueError
         If the given input value for the 'direction' parameter is not known.
 
     """
@@ -136,7 +135,7 @@ def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction=
     elif direction == 'z':
         direction = 2
     else:
-        raise Exception('Direction not known!')
+        raise ValueError('Direction not known!')
 
     if above:
         return [ atom.index for atom in all_atoms if atom.position[direction] >= middle_height ]

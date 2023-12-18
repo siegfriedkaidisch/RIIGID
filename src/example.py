@@ -1,3 +1,7 @@
+"""Example of a RIGID geometry optimization
+
+"""
+
 from ase import Atoms
 from ase.calculators.vasp.vasp import Vasp
 
@@ -22,7 +26,7 @@ vasp_settings = {}
 calculator = Vasp(**vasp_settings)
 rigid.set_calculator(calculator)
 
-# User sets the Rigid optimizer and its settings
+# User sets the RIGID optimizer and its settings
 rigid_settings = {}
 optimizer = Optimizer(**rigid_settings) #gradient descent with adaptive stepsize
 rigid.set_optimizer(optimizer)

@@ -128,9 +128,9 @@ class Fragment():
 
         Returns
         -------
-        np.ndarray of shape (3,3)
+        numpy.ndarray of shape (3,3)
             The inertia matrix of the fragment; [Dalton*AA**2]
-        np.ndarray of shape (3,3)
+        numpy.ndarray of shape (3,3)
             The inverse inertia matrix of the fragment; [1/(Dalton*AA**2)]
 
         """
@@ -172,12 +172,12 @@ class Fragment():
 
         Parameters
         ----------
-        forces: np.ndarray of shape (n_atoms_in_fragment, 3)
+        forces: numpy.ndarray of shape (n_atoms_in_fragment, 3)
             Forces acting on the atoms in the fragment; [eV/AA]
 
         Returns
         -------
-        np.ndarray of shape (3,)
+        numpy.ndarray of shape (3,)
             Net force acting on the fragment; [eV/AA]
 
         """
@@ -189,12 +189,12 @@ class Fragment():
 
         Parameters
         ----------
-        forces: np.ndarray of shape (n_atoms_in_fragment, 3)
+        forces: numpy.ndarray of shape (n_atoms_in_fragment, 3)
             Forces acting on the atoms in the fragment; [eV/AA]
 
         Returns
         -------
-        np.ndarray of shape (3,)
+        numpy.ndarray of shape (3,)
             Torque acting on the fragment (relative to center of mass of fragment); [eV]
 
         """
@@ -214,9 +214,9 @@ class Fragment():
 
         Parameters
         ----------
-        force_on_fragment: np.ndarray of shape (3,)
+        force_on_fragment: numpy.ndarray of shape (3,)
             The net force acting on the fragment; [eV/AA]
-        torque_on_fragment: np.ndarray of shape (3,)
+        torque_on_fragment: numpy.ndarray of shape (3,)
             Torque acting on the fragment (relative to center of mass of fragment); [eV]
         stepsize: number
             Timestep; [Dalton*AA**2/eV]
@@ -233,14 +233,14 @@ class Fragment():
 
         Parameters
         ----------
-        torque_on_fragment: np.ndarray of shape (3,)
+        torque_on_fragment: numpy.ndarray of shape (3,)
             Torque acting on the fragment (relative to center of mass of fragment); [eV]
         stepsize: number
             Timestep; [Dalton*AA**2/eV]
 
         Returns
         -------
-        np.ndarray of shape (n_atoms_in_fragment,3)
+        numpy.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
 
         """
@@ -265,14 +265,14 @@ class Fragment():
 
         Parameters
         ----------
-        force_on_fragment: np.ndarray of shape (3,)
+        force_on_fragment: numpy.ndarray of shape (3,)
             The net force acting on the fragment; [eV/AA]
         stepsize: number
             Timestep; [Dalton*AA**2/eV]
 
         Returns
         -------
-        np.ndarray of shape (n_atoms_in_fragment,3)
+        numpy.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
 
         """
@@ -302,7 +302,7 @@ class Fragment():
 
         Returns
         -------
-        np.ndarray of shape (n_atoms_in_fragment,3)
+        numpy.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
 
         """   
@@ -330,7 +330,7 @@ class Fragment():
 
         Returns
         -------
-        np.ndarray of shape (n_atoms_in_fragment,3)
+        numpy.ndarray of shape (n_atoms_in_fragment,3)
             The positions (in Angstroem) of the fragment's atoms after the transformation
 
         """

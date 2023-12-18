@@ -13,7 +13,7 @@ class Optimization_Step():
         ----------
         structure: structure.Structure
             The initial structure of the optimization step
-        forces: np.ndarray of shape (n_atoms_in_structure, 3)
+        forces: numpy.ndarray of shape (n_atoms_in_structure, 3)
             Forces acting on structure.atoms; [eV/AA]
         energy: number
             The energy of structure

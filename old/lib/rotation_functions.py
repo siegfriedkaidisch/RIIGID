@@ -79,11 +79,11 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
     Can be used to identify the current rotation/orientation of the molecule, even in (non-rigid) VASP geometry optimizations.
 
     Inputs:
-        mat_inertia: np.ndarray of shape (3,3)
+        mat_inertia: numpy.ndarray of shape (3,3)
             The inertia tensor of the molecule
 
     Returns:
-        np.ndarray of shape (3,3)
+        numpy.ndarray of shape (3,3)
             Matrix containing angels (in degrees) between principal axes and the x,y,z- axis; 
             The element [i,j] of this matrix is the angle between principle axis j and axis i (i=0 means x, 1=y, 2=z)
     '''

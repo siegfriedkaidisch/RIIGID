@@ -80,9 +80,9 @@ class Rigid_Atoms():
                 The molecule whose inertia matrix (and inverse) will be calculated
 
         Returns:
-            np.ndarray of shape (3,3)
+            numpy.ndarray of shape (3,3)
                 The inertia matrix of the molecule (in Dalton*Angstroem**2)
-            np.ndarray of shape (3,3)
+            numpy.ndarray of shape (3,3)
                 The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
         '''
         mol_com = self.atoms.get_center_of_mass()
@@ -118,11 +118,11 @@ class Rigid_Atoms():
                 The full system (surface+molecule) under study
             mol_indices: list of length n_atoms_in_molecule
                 List containing indices of the molecule's atoms in "full"
-            f: np.ndarray of shape (n_atoms_in_full_system, 3)
+            f: numpy.ndarray of shape (n_atoms_in_full_system, 3)
                 Forces acting on the atoms in "full" (in eV/Angstroem)
 
         Returns:
-            np.ndarray of shape (3,)
+            numpy.ndarray of shape (3,)
                 Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
         '''
         mol_indices = self.get_mol_indices2(full=full)
@@ -143,9 +143,9 @@ class Rigid_Atoms():
         Inputs:
             mol: ase.atoms.Atoms
                 The molecule to be rotated
-            mol_inertia_inv: np.ndarray of shape (3,3)
+            mol_inertia_inv: numpy.ndarray of shape (3,3)
                 The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
-            t_center: np.ndarray of shape (3,) or list of length 3
+            t_center: numpy.ndarray of shape (3,) or list of length 3
                 Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
             stepsize_rot: number
                 Timestep (in Dalton*Angstroem**2/eV)
@@ -153,7 +153,7 @@ class Rigid_Atoms():
                 Rotate only around the z-axis?
 
         Returns:
-            np.ndarray of shape (n_atoms_in_molecule,3)
+            numpy.ndarray of shape (n_atoms_in_molecule,3)
                 The positions (in Angstroem) of the molecule's atoms after the transformation
         '''
         t_center = np.array(self.t_center)

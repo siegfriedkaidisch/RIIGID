@@ -66,7 +66,7 @@ class Structure():
 
         Raises
         ------
-        Exception
+        RuntimeError
             If an atom couldn't be found in the rest_fragment. 
 
         """
@@ -78,7 +78,7 @@ class Structure():
         # Remove atoms of this new fragment from the rest-fragment
         indices_of_new_fragment_in_rest_fragment, found = get_indices_of_atoms1_in_atoms2(atoms1=fragment_atoms, atoms2=fragment_atoms)
         if not found:
-            raise Exception('Atoms not found in rest-fragment. Did you already include some of the atoms in another fragment? Every atom has to belong to exactly one fragment. (All atoms not assigned to any fragment form the rest-fragment.)')
+            raise RuntimeError('Atoms not found in rest-fragment. Did you already include some of the atoms in another fragment? Every atom has to belong to exactly one fragment. (All atoms not assigned to any fragment form the rest-fragment.)')
         del rest_fragment_atoms[indices_of_new_fragment_in_rest_fragment]
 
         # Update rest-fragment and append new fragment to list of fragments
@@ -111,7 +111,7 @@ class Structure():
         -------
         number
             The total energy; [eV]
-        np.ndarray of shape (n_atoms, 3)
+        numpy.ndarray of shape (n_atoms, 3)
             Forces acting on the atoms in Structure.atoms; [eV/AA]
 
         """
@@ -133,7 +133,7 @@ class Structure():
 
         Raises
         ------
-        Exception
+        RuntimeError
             Raises an exception if not all indices of the fragment's atoms could be found.
 
         """
@@ -141,7 +141,7 @@ class Structure():
         for fragment in self.fragments:
             fragment_indices, found = get_indices_of_atoms1_in_atoms2(atoms1=fragment.atoms, atoms2=self.atoms, cutoff=1e-4)
             if not found:
-                raise Exception('Error while looking for indices of fragment...')
+                raise RuntimeError('Error while looking for indices of fragment...')
             fragments_indices.append(fragment_indices)
         return fragments_indices
     
@@ -153,12 +153,12 @@ class Structure():
 
         Parameters
         ----------
-        forces: np.ndarray of shape (n_atoms, 3)
+        forces: numpy.ndarray of shape (n_atoms, 3)
             Forces acting on the atoms in Structure.atoms; [eV/AA]
 
         Returns
         -------
-        list of np.ndarrays of shape (depends_on_fragment, 3)
+        list of numpy.ndarrays of shape (depends_on_fragment, 3)
             One numpy array per fragment with the forces on atoms belonging to the fragment
 
         """
@@ -173,12 +173,12 @@ class Structure():
 
         Parameters
         ----------
-        forces: np.ndarray of shape (n_atoms, 3)
+        forces: numpy.ndarray of shape (n_atoms, 3)
             Forces acting on the atoms in Structure.atoms; [eV/AA]
 
         Returns
         -------
-        list of np.ndarrays of shape (3,)
+        list of numpy.ndarrays of shape (3,)
             Net force on each fragment; [eV/AA]
 
         """
@@ -197,12 +197,12 @@ class Structure():
 
         Parameters
         ----------
-        forces: np.ndarray of shape (n_atoms, 3)
+        forces: numpy.ndarray of shape (n_atoms, 3)
             Forces acting on the atoms in Structure.atoms; [eV/AA]
 
         Returns
         -------
-        list of np.ndarrays of shape (3,)
+        list of numpy.ndarrays of shape (3,)
             Torque on each fragment; [eV]
 
         """
@@ -232,7 +232,7 @@ class Structure():
 
         Parameters
         ----------
-        forces: np.ndarray of shape (n_atoms, 3)
+        forces: numpy.ndarray of shape (n_atoms, 3)
             Forces acting on the atoms in Structure.atoms; [eV/AA]
         stepsize: number
             Timestep; [Dalton*AA**2/eV]
@@ -241,7 +241,7 @@ class Structure():
         -------
         number
             The farthest distance an atom was moved in this update step; [AA]
-        np.ndarray of shape (n_atoms, 3)
+        numpy.ndarray of shape (n_atoms, 3)
             xyz displacement of each atom; [AA]
 
         """

@@ -1,5 +1,4 @@
-"""
-A collection of functions related to the rotation of fragments.
+"""A collection of functions related to the rotation of fragments.
 
 They are stored here, in a separate file, because they may also be useful somewhere else than just 
 inside the Fragment class.
@@ -65,7 +64,7 @@ def rotmat(axis, angle):
     
     Returns
     -------
-    np.ndarray of shape (3,3)
+    numpy.ndarray of shape (3,3)
         The rotation matrix
 
     """
@@ -92,12 +91,12 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
 
     Parameters
     ----------
-    mat_inertia: np.ndarray of shape (3,3)
+    mat_inertia: numpy.ndarray of shape (3,3)
         The inertia matrix of the fragment
 
     Returns
     -------
-    np.ndarray of shape (3,3)
+    numpy.ndarray of shape (3,3)
         Matrix containing angels (in degrees) between principal axes and the x,y,z- axis; 
         The element [i,j] of this matrix is the angle between principle axis j and axis i (i=0 means x, 1=y, 2=z)
     
@@ -131,12 +130,12 @@ def get_normal_vector_fragment(fragment):
 
     Returns
     -------
-    np.ndarray of shape (3,)
+    numpy.ndarray of shape (3,)
         The normal vector
 
     Raises
     ------
-    Exception
+    ValueError
         If the normal vector search resulted in a zero-vector.
 
     """
@@ -154,7 +153,7 @@ def get_normal_vector_fragment(fragment):
                     normal_vector = np.cross(r1,r2)
 
     if normal_vector == np.zeros(3):
-        raise Exception("Something went wrong... normal vector could not be determined.")
+        raise ValueError("Something went wrong... normal vector could not be determined.")
     else: # Apply convention for direction
         if normal_vector[2] == 0:
             if normal_vector[1] == 0:
