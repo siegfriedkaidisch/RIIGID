@@ -8,11 +8,11 @@ class Convergence_Criterion:
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """Initialize the RIGID convergence criterion."""
         self.is_converged = False  # is the convergence criterion fulfilled?
 
-    def check(self, optimization_history, *args, **kwargs):
+    def check(self, optimization_history):
         """Check if the convergence criterion is fulfilled
 
         If yes, self.is_converged is set to True.

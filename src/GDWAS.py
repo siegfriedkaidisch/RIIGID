@@ -71,9 +71,7 @@ class GDWAS(Optimizer):
         stepsize_factor_up=1.2,
         stepsize_factor_dn=0.2,
         max_step=0.1,
-        max_step_0=0.01,
-        *args,
-        **kwargs,
+        max_step_0=0.01
     ):
         """Initialize the GDWAS optimizer.
 
@@ -97,7 +95,7 @@ class GDWAS(Optimizer):
         self.max_step = max_step
         self.max_step_0 = max_step_0
 
-    def run(self, start_structure, calculator, convergence_criterion, *args, **kwargs):
+    def run(self, start_structure, calculator, convergence_criterion):
         """Let the optimizer run its optimization on the structure.
 
         Parameters

@@ -15,12 +15,12 @@ class Optimizer:
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         """Initialize a RIGID optimizer."""
         self.optimization_history = []  # list of optimization steps
         self.iteration = 0  # number of finished optimization steps
 
-    def run(self, start_structure, calculator, convergence_criterion, *args, **kwargs):
+    def run(self, start_structure, calculator, convergence_criterion):
         """Let the optimizer run its optimization on the structure.
 
         Parameters
