@@ -72,9 +72,9 @@ class Rigid_Atoms():
 
         Returns:
             numpy.ndarray of shape (3,3)
-                The inertia matrix of the molecule (in Dalton*Angstroem**2)
+                The inertia matrix of the molecule (in Da*Å**2)
             numpy.ndarray of shape (3,3)
-                The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+                The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
         '''
         mol_com = self.atoms.get_center_of_mass()
         mol_inertia = np.zeros([3,3])
@@ -111,7 +111,7 @@ class Rigid_Atoms():
             mol_indices: list of length n_atoms_in_molecule
                 List containing indices of the molecule's atoms in "full"
             f: numpy.ndarray of shape (n_atoms_in_full_system, 3)
-                Forces acting on the atoms in "full" (in eV/Angstroem)
+                Forces acting on the atoms in "full" (in eV/Å)
 
         Returns:
             numpy.ndarray of shape (3,)
@@ -135,17 +135,17 @@ class Rigid_Atoms():
             mol: ase.atoms.Atoms
                 The molecule to be rotated
             mol_inertia_inv: numpy.ndarray of shape (3,3)
-                The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+                The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
             t_center: numpy.ndarray of shape (3,) or list of length 3
                 Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
             stepsize_rot: number
-                Timestep (in Dalton*Angstroem**2/eV)
+                Timestep (in Da*Å**2/eV)
             z_only_rot: Bool
                 Rotate only around the z-axis?
 
         Returns:
             numpy.ndarray of shape (n_atoms_in_molecule,3)
-                The positions (in Angstroem) of the molecule's atoms after the transformation
+                The positions (in Å) of the molecule's atoms after the transformation
         '''
         self.update_inertia_mat_and_inv()
 
@@ -153,7 +153,7 @@ class Rigid_Atoms():
         if z_only_rot:
             angle = tmp[2] * (180/np.pi) * stepsize_rot 
         else:
-            angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in degrees
+            angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in °
         if angle != 0:
             if z_only_rot:
                 axis = np.array([0.0,0.0,1.0])
@@ -180,11 +180,11 @@ class Rigid_Atoms():
             mol_indices: list of length n_atoms_in_molecule
                 List containing indices of the molecule's atoms in "full"
             f: numpy.ndarray of shape (n_atoms_in_full_system, 3)
-                Forces acting on the atoms in "full" (in eV/Angstroem)
+                Forces acting on the atoms in "full" (in eV/Å)
 
         Returns:
             numpy.ndarray of shape (3,)
-                Net force acting on the molecule (in eV/Angstroem)
+                Net force acting on the molecule (in eV/Å)
         '''
         mol_f = f[self.mol_indices]
         f_center = np.sum(mol_f, axis=0)
@@ -199,13 +199,13 @@ class Rigid_Atoms():
             mol: ase.atoms.Atoms
                 The molecule to be translated
             f_center: numpy.ndarray of shape (3,) or list of length 3
-                Net force acting on the molecule (in eV/Angstroem)
+                Net force acting on the molecule (in eV/Å)
             stepsize_trans_x/y/z: number
-                Timesteps; usually all three should have the same value; (in Dalton*Angstroem**2/eV)
+                Timesteps; usually all three should have the same value; (in Da*Å**2/eV)
 
         Returns:
             numpy.ndarray of shape (n_atoms_in_molecule,3)
-                The positions (in Angstroem) of the molecule's atoms after the transformation
+                The positions (in Å) of the molecule's atoms after the transformation
         '''
         mol_mass = np.sum(self.atoms.get_masses())
         for atom in self.atoms:
@@ -225,11 +225,11 @@ class Rigid_Atoms():
             mol: ase.atoms.Atoms
                 The molecule to be translated
             f_center: numpy.ndarray of shape (3,) or list of length 3
-                Net force acting on the molecule (in eV/Angstroem)
+                Net force acting on the molecule (in eV/Å)
             stepsize_trans_x/y/z/rot: number
-                Timesteps; usually all four should have the same value; (in Dalton*Angstroem**2/eV)
+                Timesteps; usually all four should have the same value; (in Da*Å**2/eV)
             mol_inertia_inv: numpy.ndarray of shape (3,3)
-                The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+                The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
             t_center: numpy.ndarray of shape (3,) or list of length 3
                 Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
             z_only_rot: Bool
@@ -237,7 +237,7 @@ class Rigid_Atoms():
 
         Returns:
             numpy.ndarray of shape (n_atoms_in_molecule,3)
-                The positions (in Angstroem) of the molecule's atoms after the transformation
+                The positions (in Å) of the molecule's atoms after the transformation
         '''
         # Translate molecule
         self.translate_mol(full=full, f=f, stepsize_trans_x=stepsize_trans_x, stepsize_trans_y=stepsize_trans_y, stepsize_trans_z=stepsize_trans_z)

@@ -118,8 +118,8 @@ for rot in [0,20,40]:
 fig.colorbar(line, ax=ax)
 plt.xlim([-0.1,2.6])
 plt.ylim([-0.1,1.1])
-plt.xlabel("x / AA")
-plt.ylabel("y / AA")
+plt.xlabel("x / Å")
+plt.ylabel("y / Å")
 plt.show()
             
             

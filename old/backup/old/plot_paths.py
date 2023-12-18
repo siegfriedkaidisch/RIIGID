@@ -43,8 +43,8 @@ for rot in [40]:
             plt.scatter(pos_x[-1],pos_y[-1],s=100.0, c=cm(color), marker='X')
             
 
-plt.xlabel("x / AA")
-plt.ylabel("y / AA")
+plt.xlabel("x / Å")
+plt.ylabel("y / Å")
 plt.show()
             
 

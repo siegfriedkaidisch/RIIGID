@@ -36,12 +36,12 @@ t1 = time.time()
 ######################################################################################################################
 
 # General settings
-middle_height = 8.5 #in Angstroem, used to separate molecule and surface
-vacuum = 10 # in Angstroem, total height of vacuum
+middle_height = 8.5 #in Å, used to separate molecule and surface
+vacuum = 10 # in Å, total height of vacuum
 
 # Settings for rigid geometry optimization
 max_rigid_steps = 3 # maximal number of rigid optimization steps
-pos_conv = 0.00000000001 # in Angstroem, stop rigid optimization if all atoms of the molecule move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
+pos_conv = 0.00000000001 # in Å, stop rigid optimization if all atoms of the molecule move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
 max_step_0 = 0.1 #max allowed change of position of an atom (translation+rotation) in iteration 0
 max_step = 0.1 #max allowed change of position of an atom (translation+rotation) in iterations 1+
 stepsize_factor_up = 1.2 # increase stepsize by this factor, if last iteration successfully lowered energy

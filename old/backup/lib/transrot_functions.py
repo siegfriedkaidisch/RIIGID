@@ -23,11 +23,11 @@ def transrot_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_tra
         mol: ase.atoms.Atoms
             The molecule to be translated
         f_center: numpy.ndarray of shape (3,) or list of length 3
-            Net force acting on the molecule (in eV/Angstroem)
+            Net force acting on the molecule (in eV/Å)
         stepsize_trans_x/y/z/rot: number
-            Timesteps; usually all four should have the same value; (in Dalton*Angstroem**2/eV)
+            Timesteps; usually all four should have the same value; (in Da*Å**2/eV)
         mol_inertia_inv: numpy.ndarray of shape (3,3)
-            The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+            The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
         t_center: numpy.ndarray of shape (3,) or list of length 3
             Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
         z_only_rot: Bool
@@ -35,7 +35,7 @@ def transrot_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_tra
 
     Returns:
         numpy.ndarray of shape (n_atoms_in_molecule,3)
-            The positions (in Angstroem) of the molecule's atoms after the transformation
+            The positions (in Å) of the molecule's atoms after the transformation
     '''
     # Translate molecule
     translate_mol(mol=mol, f_center=f_center, stepsize_trans_x=stepsize_trans_x, stepsize_trans_y=stepsize_trans_y, stepsize_trans_z=stepsize_trans_z)

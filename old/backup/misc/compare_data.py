@@ -22,7 +22,7 @@ from ase.optimize import BFGS, MDMin
 from ase.optimize.sciopt import SciPyFminBFGS, SciPyFminCG
 
 ###############################################################################
-max_dist_between_atoms = 0.05 #Angstroem
+max_dist_between_atoms = 0.05 #Å
 path_1  = '/home/kaidisch_siegfried/Documents/VASP/rigid_optim/compare_e_surf/surf_rigid/rot_20/1-0/test_speedup1/optim_data.pk'
 path_2 = '/home/kaidisch_siegfried/Documents/VASP/rigid_optim/compare_e_surf/surf_rigid/rot_40/1-0/test_speedup1/optim_data.pk'
 

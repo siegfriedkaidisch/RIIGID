@@ -141,7 +141,7 @@ class Structure:
         number
             The total energy; [eV]
         numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/AA]
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
 
         """
 
@@ -185,12 +185,12 @@ class Structure:
         Parameters
         ----------
         forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/AA]
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
 
         Returns
         -------
         list of numpy.ndarrays of shape (depends_on_fragment, 3)
-            One numpy array per fragment with the forces on atoms belonging to the fragment
+            One numpy array per fragment with the forces on atoms belonging to the fragment; [eV/Å]
 
         """
         fragments_indices = self.get_indices_of_fragments()
@@ -205,12 +205,12 @@ class Structure:
         Parameters
         ----------
         forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/AA]
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
 
         Returns
         -------
         list of numpy.ndarrays of shape (3,)
-            Net force on each fragment; [eV/AA]
+            Net force on each fragment; [eV/Å]
 
         """
         forces_on_fragments = self.get_forces_on_fragments(forces=forces)
@@ -231,7 +231,7 @@ class Structure:
         Parameters
         ----------
         forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/AA]
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
 
         Returns
         -------
@@ -270,16 +270,16 @@ class Structure:
         Parameters
         ----------
         forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/AA]
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
         stepsize: number
-            Timestep; [Dalton*AA**2/eV]
+            Timestep; [Da*Å**2/eV]
 
         Returns
         -------
         number
-            The farthest distance an atom was moved in this update step; [AA]
+            The farthest distance an atom was moved in this update step; [Å]
         numpy.ndarray of shape (n_atoms, 3)
-            xyz displacement of each atom; [AA]
+            xyz displacement of each atom; [Å]
 
         """
         old_positions = deepcopy(self.atoms.positions)

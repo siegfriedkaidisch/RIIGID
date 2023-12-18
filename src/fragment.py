@@ -33,9 +33,9 @@ class Fragment:
     body_fixed_axis_x/y/z: numpy.ndarray of shape (3,)
         The body-fixed axis system's xyz vectors (given in space-fixed coordinates)
     euler_angles: list of length 3
-        The Euler angles of the fragment (alpha, beta, gamma).
+        The Euler angles of the fragment (alpha, beta, gamma); [°]
     inertia_matrix/_inv: numpy.ndarray of shape (3,3)
-            The (inverse) inertia matrix of the fragment; [(Dalton*AA**2)]; [1/(Dalton*AA**2)]
+            The (inverse) inertia matrix of the fragment; [(Da*Å**2)]; (inverse:[1/(Da*Å**2)])
 
     """
 
@@ -90,7 +90,7 @@ class Fragment:
         axis: list of length 3 or numpy.ndarray of shape (3,)
             The rotation axis
         angle: number
-            The rotation angle
+            The rotation angle; [°]
 
         """
         mat = rotmat(axis=axis, angle=angle)
@@ -123,7 +123,7 @@ class Fragment:
         Returns
         -------
         list of length 3
-            The three Euler angles
+            The three Euler angles; [°]
 
         """
         space_fixed_axis_x = np.array(space_fixed_axis_x)
@@ -164,9 +164,9 @@ class Fragment:
         Returns
         -------
         numpy.ndarray of shape (3,3)
-            The inertia matrix of the fragment; [Dalton*AA**2]
+            The inertia matrix of the fragment; [Da*Å**2]
         numpy.ndarray of shape (3,3)
-            The inverse inertia matrix of the fragment; [1/(Dalton*AA**2)]
+            The inverse inertia matrix of the fragment; [1/(Da*Å**2)]
 
         """
         fragment_com = self.atoms.get_center_of_mass()
@@ -197,7 +197,7 @@ class Fragment:
         axis: list of length 3 or numpy.ndarray of shape (3,)
             The rotation axis
         angle: number
-            The rotation angle
+            The rotation angle; [°]
 
         """
         self.update_body_fixed_axes(angle=angle, axis=axis)
@@ -210,12 +210,12 @@ class Fragment:
         Parameters
         ----------
         forces: numpy.ndarray of shape (n_atoms_in_fragment, 3)
-            Forces acting on the atoms in the fragment; [eV/AA]
+            Forces acting on the atoms in the fragment; [eV/Å]
 
         Returns
         -------
         numpy.ndarray of shape (3,)
-            Net force acting on the fragment; [eV/AA]
+            Net force acting on the fragment; [eV/Å]
 
         """
         net_force_on_fragment = np.sum(forces, axis=0)
@@ -227,7 +227,7 @@ class Fragment:
         Parameters
         ----------
         forces: numpy.ndarray of shape (n_atoms_in_fragment, 3)
-            Forces acting on the atoms in the fragment; [eV/AA]
+            Forces acting on the atoms in the fragment; [eV/Å]
 
         Returns
         -------
@@ -253,11 +253,11 @@ class Fragment:
         Parameters
         ----------
         force_on_fragment: numpy.ndarray of shape (3,)
-            The net force acting on the fragment; [eV/AA]
+            The net force acting on the fragment; [eV/Å]
         torque_on_fragment: numpy.ndarray of shape (3,)
             Torque acting on the fragment (relative to center of mass of fragment); [eV]
         stepsize: number
-            Timestep; [Dalton*AA**2/eV]
+            Timestep; [Da*Å**2/eV]
 
         """
         self.rotate_by_torque(torque_on_center=torque_on_fragment, stepsize=stepsize)
@@ -274,12 +274,12 @@ class Fragment:
         torque_on_fragment: numpy.ndarray of shape (3,)
             Torque acting on the fragment (relative to center of mass of fragment); [eV]
         stepsize: number
-            Timestep; [Dalton*AA**2/eV]
+            Timestep; [Da*Å**2/eV]
 
         Returns
         -------
         numpy.ndarray of shape (n_atoms_in_fragment,3)
-            The positions (in Angstroem) of the fragment's atoms after the transformation
+            The positions of the fragment's atoms after the transformation; [Å]
 
         """
         tmp = self.inertia_matrix_inv @ torque_on_center
@@ -290,7 +290,7 @@ class Fragment:
         if "z" not in self.allowed_rotation:
             tmp[2] = 0
 
-        angle = np.linalg.norm(tmp) * (180 / np.pi) * stepsize  # in degrees
+        angle = np.linalg.norm(tmp) * (180 / np.pi) * stepsize  # in °
         if angle != 0:
             axis = tmp / np.linalg.norm(tmp)
             self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
@@ -304,14 +304,14 @@ class Fragment:
         Parameters
         ----------
         force_on_fragment: numpy.ndarray of shape (3,)
-            The net force acting on the fragment; [eV/AA]
+            The net force acting on the fragment; [eV/Å]
         stepsize: number
-            Timestep; [Dalton*AA**2/eV]
+            Timestep; [Da*Å**2/eV]
 
         Returns
         -------
         numpy.ndarray of shape (n_atoms_in_fragment,3)
-            The positions (in Angstroem) of the fragment's atoms after the transformation
+            The positions of the fragment's atoms after the transformation; [Å]
 
         """
         fragment_mass = np.sum(self.atoms.get_masses())
@@ -336,12 +336,12 @@ class Fragment:
         axis: list of length 3 or numpy.ndarray of shape (3,)
             The rotation axis
         angle: number
-            The rotation angle
+            The rotation angle; [°]
 
         Returns
         -------
         numpy.ndarray of shape (n_atoms_in_fragment,3)
-            The positions (in Angstroem) of the fragment's atoms after the transformation
+            The positions of the fragment's atoms after the transformation; [Å]
 
         """
         self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
@@ -356,9 +356,9 @@ class Fragment:
         Parameters
         ----------
         displacement: number
-            How far shall the fragment be translates; [AA]
+            How far shall the fragment be translates; [Å]
         angle: number
-            How much shall the fragment be rotated; [degree]
+            How much shall the fragment be rotated; [°]
         respect_restrictions: bool
             If True, self.allowed_translation/rotation is respected.
             If False, rotation and translation in arbitrary directions is allowed temporarily.
@@ -369,7 +369,7 @@ class Fragment:
         Returns
         -------
         numpy.ndarray of shape (n_atoms_in_fragment,3)
-            The positions (in Angstroem) of the fragment's atoms after the transformation
+            The positions of the fragment's atoms after the transformation; [Å]
 
         """
         backup_allowed_translation = copy(self.allowed_translation)

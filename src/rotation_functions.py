@@ -11,7 +11,7 @@ import numpy as np
 
 
 def angle_between_vectors(v1, v2):
-    """Calculates the angle (in degrees) between two vectors in 3D.
+    """Calculates the angle (in °) between two vectors in 3D.
 
     Parameters
     ----------
@@ -21,7 +21,7 @@ def angle_between_vectors(v1, v2):
     Returns
     -------
     number between 0 and 180
-        The angle (in degrees) between the two vectors
+        The angle between the two vectors; [°]
 
     """
     return (
@@ -32,7 +32,7 @@ def angle_between_vectors(v1, v2):
 
 
 def signed_angle_between_vectors(v1, v2, axis):
-    """Calculates the "signed" angle (in degrees) between two vectors in 3D.
+    """Calculates the "signed" angle (in °) between two vectors in 3D.
 
     v1 and v2 have to be normal to axis. The angle is right-hand measured around axis, from v1 to v2
 
@@ -44,7 +44,7 @@ def signed_angle_between_vectors(v1, v2, axis):
     Returns
     -------
     number between 0 and 360
-        The angle (in degrees) between the two vectors
+        The angle between the two vectors; [°]
 
     """
     phi = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
@@ -67,7 +67,7 @@ def rotmat(axis, angle):
     axis: list of length 3 or numpy.ndarray of shape (3,)
         The rotation axis
     angle: number
-        The rotation angle
+        The rotation angle; [°]
 
     Returns
     -------
@@ -101,7 +101,7 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
     """Calculate angles between x,y,z-axis and principal axes of inertia.
 
     Takes the inertia matrix of a fragment, calculates the principal axes of inertia (eigenvectors) and then calculates
-    the angles (in degrees) between these principal axes and the space-fixed x,y,z- axis.
+    the angles (in °) between these principal axes and the space-fixed x,y,z- axis.
     Can be used to identify the current rotation/orientation of the fragment, even in non-rigid (e.g. VASP) geometry optimizations.
 
     Parameters
@@ -112,8 +112,8 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
     Returns
     -------
     numpy.ndarray of shape (3,3)
-        Matrix containing angels (in degrees) between principal axes and the x,y,z- axis;
-        The element [i,j] of this matrix is the angle between principle axis j and axis i (i=0 means x, 1=y, 2=z)
+        Matrix containing angels (in °) between principal axes and the x,y,z- axis;
+        The element [i,j] of this matrix is the angle between principle axis j and axis i (i=0 means x, 1=y, 2=z); [°]
 
     """
     eigvals, eigvecs = np.linalg.eig(mat_inertia)
@@ -133,7 +133,7 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
 def get_normal_vector_fragment(fragment):
     """Find and return the (normalized) vector normal to a planar (non-linear) fragment.
 
-    The normal vector is calculated by looking for two atoms that form a near 90 degree angle
+    The normal vector is calculated by looking for two atoms that form a near 90 ° angle
     (for numeric stability) and then calculating the normalized cross-product of these two vectors.
     The resulting vector is normal to the planar molecule.
 
@@ -165,7 +165,7 @@ def get_normal_vector_fragment(fragment):
     """
     center = fragment.atoms.get_center_of_mass()
     normal_vector = np.zeros(3)
-    best_found_angle = 0  # the closer to 90 degrees, the better
+    best_found_angle = 0  # the closer to 90 °, the better
     for atom1 in fragment.atoms:
         for atom2 in fragment.atoms:
             if atom1 != atom2:

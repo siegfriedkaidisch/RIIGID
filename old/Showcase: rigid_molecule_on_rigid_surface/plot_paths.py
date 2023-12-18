@@ -160,8 +160,8 @@ for i in [0,1]:
     for j in [0,1]:
         axs[i,j].set_xlim([-a,a])
         axs[i,j].set_ylim([-a,a])
-        axs[i,j].set_xlabel("x / AA")
-        axs[i,j].set_ylabel("y / AA")
+        axs[i,j].set_xlabel("x / Å")
+        axs[i,j].set_ylabel("y / Å")
 
 
 plt.show()

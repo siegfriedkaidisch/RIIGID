@@ -24,13 +24,13 @@ from ase.optimize.sciopt import SciPyFminBFGS, SciPyFminCG
 # Randomness used to escape saddle points
 do_random_step      = True
 random_seed         = 12345
-random_displacement = 0.02 #Angstroem
+random_displacement = 0.02 #Å
 random_angle        = 0.5 #Degrees
 
 # General settings
-middle_height = 9.0 #in Angstroem, used to separate molecule and surface
-vacuum = 20 # in Angstroem, total height of vacuum
-a = 3.568 # in Angstroem, lattice parameter
+middle_height = 9.0 #in Å, used to separate molecule and surface
+vacuum = 20 # in Å, total height of vacuum
+a = 3.568 # in Å, lattice parameter
 
 # Boundary conditions
 xmin = 0
@@ -39,13 +39,13 @@ ymin = 0
 ymax = a/2
 
 # Control initial geometry of molecule relative to surface
-pos_x = 0 * a/5 # Angstroem
-pos_y = 0 * a/5 # Angstroem
-rot_z = 2 * 20  # degrees
+pos_x = 0 * a/5 # Å
+pos_y = 0 * a/5 # Å
+rot_z = 2 * 20  # °
 
 # Settings for rigid geometry optimization
 max_rigid_steps = 500 # maximal number of rigid optimization steps
-pos_conv = 0.00000000001 # in Angstroem, stop rigid optimization if all atoms of the molecule move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
+pos_conv = 0.00000000001 # in Å, stop rigid optimization if all atoms of the molecule move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
 max_step_0 = 0.01 #max allowed change of position of an atom (translation+rotation) in iteration 0
 max_step = 0.1 #max allowed change of position of an atom (translation+rotation) in iterations 1+
 stepsize_factor_up = 1.2 # increase stepsize by this factor, if last iteration successfully lowered energy
@@ -53,7 +53,7 @@ stepsize_factor_dn = 0.2 # decrease stepsize by this factor, if last iteration l
 
 # Settings for "normal" VASP geometry optimization following the rigid optimization
 do_vasp_opt = False
-freeze_height = 3 # in Angstroem, freeze atoms below this height
+freeze_height = 3 # in Å, freeze atoms below this height
 
 # Calculator settings for rigid optimization
 rigid_opt_vasp_settings = {
@@ -115,7 +115,7 @@ normal_opt_vasp_settings['nsw'] = 1000
 ######################################################################################################################
 def angle_between_vectors(v1,v2): 
     '''
-    Calculates the angle (in degrees) between two vectors in 3D
+    Calculates the angle (in °) between two vectors in 3D
 
     Inputs:
         v1, v2: list of length 3 or numpy.ndarray of shape (3,)
@@ -123,7 +123,7 @@ def angle_between_vectors(v1,v2):
 
     Returns:
         number
-            The angle (in degrees) between the two vectors
+            The angle (in °) between the two vectors
     '''
     return np.arccos(np.dot(v1,v2)/( np.linalg.norm(v1)*np.linalg.norm(v2) ))*180/np.pi
 
@@ -131,7 +131,7 @@ def angle_between_vectors2(v1,v2, axis):
     '''
     v1 and v2 are normal to axis. angle is right-hand measured around axis, from v1 to v2
     
-    Calculates the angle (in degrees) between two vectors in 3D
+    Calculates the angle (in °) between two vectors in 3D
 
     Inputs:
         v1, v2: list of length 3 or numpy.ndarray of shape (3,)
@@ -139,7 +139,7 @@ def angle_between_vectors2(v1,v2, axis):
 
     Returns:
         number
-            The angle (in degrees) between the two vectors
+            The angle (in °) between the two vectors
     '''
     phi = np.arccos(np.dot(v1,v2)/( np.linalg.norm(v1)*np.linalg.norm(v2) ))
     
@@ -178,7 +178,7 @@ def get_euler_angles(xb,yb,zb, xs=[1,0,0],ys=[0,1,0],zs=[0,0,1]):
 
 def rotmat(axis, angle):
     '''
-    angle in degrees
+    angle in °
     '''
     angle *= np.pi/180 #convert to radians
     axis = np.array(axis)
@@ -238,7 +238,7 @@ stop
 def angles_between_principal_axes_and_xyz(mat_inertia):
     '''
     Takes the inertia tensor of a molecule, calculates the principal axes of inertia (eigenvectors) and then calculates
-    the angles (in degrees) between these principal axes and the space-fixed x,y,z- axis. 
+    the angles (in °) between these principal axes and the space-fixed x,y,z- axis. 
     Can be used to identify the current rotation/orientation of the molecule, even in (non-rigid) VASP geometry optimizations.
 
     Inputs:
@@ -247,7 +247,7 @@ def angles_between_principal_axes_and_xyz(mat_inertia):
 
     Returns:
         numpy.ndarray of shape (3,3)
-            Matrix containing angels (in degrees) between principal axes and the x,y,z- axis; 
+            Matrix containing angels (in °) between principal axes and the x,y,z- axis; 
             The element [i,j] of this matrix is the angle between principle axis j and axis i (i=0 means x, 1=y, 2=z)
     '''
     eigvals, eigvecs = np.linalg.eig(mat_inertia)
@@ -266,7 +266,7 @@ def get_mol_indices(full, middle_height):
         full: ase.atoms.Atoms
             The full system (surface+molecule) under study
         middle_height: number
-            Height (in Angstroem) used to separate molecule from surface (see description above)
+            Height (in Å) used to separate molecule from surface (see description above)
 
     Returns:
         list of length n_atoms_in_molecule
@@ -284,9 +284,9 @@ def get_inertia_mat_and_inv(mol):
 
     Returns:
         numpy.ndarray of shape (3,3)
-            The inertia matrix of the molecule (in Dalton*Angstroem**2)
+            The inertia matrix of the molecule (in Da*Å**2)
         numpy.ndarray of shape (3,3)
-            The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+            The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
     '''
     mol_com = mol.get_center_of_mass()
     mol_inertia = np.zeros([3,3])
@@ -309,11 +309,11 @@ def get_force_mol(mol_indices, f):
         mol_indices: list of length n_atoms_in_molecule
             List containing indices of the molecule's atoms in "full"
         f: numpy.ndarray of shape (n_atoms_in_full_system, 3)
-            Forces acting on the atoms in "full" (in eV/Angstroem)
+            Forces acting on the atoms in "full" (in eV/Å)
 
     Returns:
         numpy.ndarray of shape (3,)
-            Net force acting on the molecule (in eV/Angstroem)
+            Net force acting on the molecule (in eV/Å)
     '''
     mol_f = f[mol_indices]
     f_center = np.sum(mol_f, axis=0)
@@ -329,7 +329,7 @@ def get_torque_mol(full, mol_indices, f):
         mol_indices: list of length n_atoms_in_molecule
             List containing indices of the molecule's atoms in "full"
         f: numpy.ndarray of shape (n_atoms_in_full_system, 3)
-            Forces acting on the atoms in "full" (in eV/Angstroem)
+            Forces acting on the atoms in "full" (in eV/Å)
 
     Returns:
         numpy.ndarray of shape (3,)
@@ -352,13 +352,13 @@ def translate_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_tr
         mol: ase.atoms.Atoms
             The molecule to be translated
         f_center: numpy.ndarray of shape (3,) or list of length 3
-            Net force acting on the molecule (in eV/Angstroem)
+            Net force acting on the molecule (in eV/Å)
         stepsize_trans_x/y/z: number
-            Timesteps; usually all three should have the same value; (in Dalton*Angstroem**2/eV)
+            Timesteps; usually all three should have the same value; (in Da*Å**2/eV)
 
     Returns:
         numpy.ndarray of shape (n_atoms_in_molecule,3)
-            The positions (in Angstroem) of the molecule's atoms after the transformation
+            The positions (in Å) of the molecule's atoms after the transformation
     '''
     mol_mass = np.sum(mol.get_masses())
     for atom in mol:
@@ -375,20 +375,20 @@ def rotate_mol(mol, mol_inertia_inv, t_center, stepsize_rot):
         mol: ase.atoms.Atoms
             The molecule to be rotated
         mol_inertia_inv: numpy.ndarray of shape (3,3)
-            The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+            The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
         t_center: numpy.ndarray of shape (3,) or list of length 3
             Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
         stepsize_rot: number
-            Timestep (in Dalton*Angstroem**2/eV)
+            Timestep (in Da*Å**2/eV)
 
     Returns:
         numpy.ndarray of shape (n_atoms_in_molecule,3)
-            The positions (in Angstroem) of the molecule's atoms after the transformation
+            The positions (in Å) of the molecule's atoms after the transformation
     '''
     t_center = np.array(t_center)
     mol_com = mol.get_center_of_mass()
     tmp = mol_inertia_inv@t_center
-    angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in degrees
+    angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in °
     if angle != 0:
         axis = tmp/np.linalg.norm(tmp)
         #angle = tmp[2] * stepsize_rot 
@@ -407,17 +407,17 @@ def transrot_mol(mol, f_center, stepsize_trans_x, stepsize_trans_y, stepsize_tra
         mol: ase.atoms.Atoms
             The molecule to be translated
         f_center: numpy.ndarray of shape (3,) or list of length 3
-            Net force acting on the molecule (in eV/Angstroem)
+            Net force acting on the molecule (in eV/Å)
         stepsize_trans_x/y/z/rot: number
-            Timesteps; usually all four should have the same value; (in Dalton*Angstroem**2/eV)
+            Timesteps; usually all four should have the same value; (in Da*Å**2/eV)
         mol_inertia_inv: numpy.ndarray of shape (3,3)
-            The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+            The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
         t_center: numpy.ndarray of shape (3,) or list of length 3
             Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
 
     Returns:
         numpy.ndarray of shape (n_atoms_in_molecule,3)
-            The positions (in Angstroem) of the molecule's atoms after the transformation
+            The positions (in Å) of the molecule's atoms after the transformation
     '''
     # Translate molecule
     translate_mol(mol=mol, f_center=f_center, stepsize_trans_x=stepsize_trans_x, stepsize_trans_y=stepsize_trans_y, stepsize_trans_z=stepsize_trans_z)

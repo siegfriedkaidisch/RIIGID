@@ -113,5 +113,5 @@ class RIGID:
         """
         optimization_history = self.optimizer.optimization_history
         energies = [step.energy for step in optimization_history]
-        print("Energies: ")  # unit?
+        print("Energies [eV]: ")  
         print(energies)

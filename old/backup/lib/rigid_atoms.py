@@ -81,9 +81,9 @@ class Rigid_Atoms():
 
         Returns:
             numpy.ndarray of shape (3,3)
-                The inertia matrix of the molecule (in Dalton*Angstroem**2)
+                The inertia matrix of the molecule (in Da*Å**2)
             numpy.ndarray of shape (3,3)
-                The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+                The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
         '''
         mol_com = self.atoms.get_center_of_mass()
         mol_inertia = np.zeros([3,3])
@@ -119,7 +119,7 @@ class Rigid_Atoms():
             mol_indices: list of length n_atoms_in_molecule
                 List containing indices of the molecule's atoms in "full"
             f: numpy.ndarray of shape (n_atoms_in_full_system, 3)
-                Forces acting on the atoms in "full" (in eV/Angstroem)
+                Forces acting on the atoms in "full" (in eV/Å)
 
         Returns:
             numpy.ndarray of shape (3,)
@@ -144,17 +144,17 @@ class Rigid_Atoms():
             mol: ase.atoms.Atoms
                 The molecule to be rotated
             mol_inertia_inv: numpy.ndarray of shape (3,3)
-                The inverse inertia matrix of the molecule (in 1/(Dalton*Angstroem**2))
+                The inverse inertia matrix of the molecule (in 1/(Da*Å**2))
             t_center: numpy.ndarray of shape (3,) or list of length 3
                 Net torque acting on the molecule (relative to center of mass of molecule) (in eV)
             stepsize_rot: number
-                Timestep (in Dalton*Angstroem**2/eV)
+                Timestep (in Da*Å**2/eV)
             z_only_rot: Bool
                 Rotate only around the z-axis?
 
         Returns:
             numpy.ndarray of shape (n_atoms_in_molecule,3)
-                The positions (in Angstroem) of the molecule's atoms after the transformation
+                The positions (in Å) of the molecule's atoms after the transformation
         '''
         t_center = np.array(self.t_center)
         mol_com = self.atoms.get_center_of_mass()
@@ -162,7 +162,7 @@ class Rigid_Atoms():
         if z_only_rot:
             angle = tmp[2] * (180/np.pi) * stepsize_rot 
         else:
-            angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in degrees
+            angle = np.linalg.norm(tmp) * (180/np.pi) * stepsize_rot  # in °
         if angle != 0:
             if z_only_rot:
                 axis = np.array([0.0,0.0,1.0])

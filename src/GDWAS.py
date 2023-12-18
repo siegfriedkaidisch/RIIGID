@@ -39,16 +39,16 @@ class GDWAS(Optimizer):
     iteration: int
         Counts the number of finished optimization steps
     stepsize: number
-        Timestep; [Dalton*AA**2/eV]
+        Timestep; [Da*Å**2/eV]
     stepsize_factor_up: number > 1
         Increase stepsize by this factor, if last optimization step lowered the total energy
     stepsize_factor_dn: number < 1
         Decrease stepsize by this factor, if last optimization step increased the total energy
     max_step: number
-        The maximum distance atoms are allowed to move per optimization step; [AA]
+        The maximum distance atoms are allowed to move per optimization step; [Å]
     max_step_0: number
         In the first optimization step, the stepsize is chosen such that the atom(s) moving
-        the farthest change their position by this value; [AA]
+        the farthest change their position by this value; [Å]
     start_structure : ase.atoms.Atoms
         The atoms forming the structure to be optimized.
         This is an ase.Atoms object and should include the
@@ -60,9 +60,9 @@ class GDWAS(Optimizer):
     current_structure: structure.Structure
         The structure currently used by the optimizer
     current_energy: number
-        The energy of current_structure
+        The energy of current_structure; [eV]
     current_forces: numpy.ndarray of shape (n_atoms_in_current_structure, 3)
-        The forces in current_structure
+        The forces in current_structure; [eV/Å]
 
     """
 
@@ -84,10 +84,10 @@ class GDWAS(Optimizer):
         stepsize_factor_dn: number < 1, default: 0.2
             Decrease stepsize by this factor, if last optimization step increased the total energy
         max_step: number, default: 0.1
-            The maximum distance atoms are allowed to move per optimization step; [AA]
+            The maximum distance atoms are allowed to move per optimization step; [Å]
         max_step_0: number, default: 0.01
             In the first optimization step, the stepsize is chosen such that the atom(s) moving
-            the farthest change their position by this value; [AA]
+            the farthest change their position by this value; [Å]
 
         """
         super().__init__()
@@ -210,7 +210,7 @@ class GDWAS(Optimizer):
         ----------
         max_atomic_displacement: number
             In the last update, how far did the atoms move at most (in rotations not all atoms
-            move equally as far); [AA]
+            move equally as far); [Å]
 
         """
         # Initialize stepsize or adapt it to too large atomic displacements

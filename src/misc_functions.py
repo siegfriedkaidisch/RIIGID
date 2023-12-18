@@ -122,7 +122,7 @@ def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction=
     all_atoms: ase.atoms.Atoms
         The full Atoms object
     middle_height: number
-        The height used to separate atoms; [AA]
+        The height used to separate atoms; [Å]
     above: Bool, default: True
         See explanation given above
     direction: 'x','y' or 'z', default: 'z'

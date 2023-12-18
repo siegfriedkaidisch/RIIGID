@@ -36,7 +36,7 @@ def get_mol_indices(full, middle_height, above=True):
         full: ase.atoms.Atoms
             The full system (surface+molecule) under study
         middle_height: number
-            Height (in Angstroem) used to separate molecule from surface (see description above)
+            Height (in Å) used to separate molecule from surface (see description above)
         above: Bool
             See explanation given above
 

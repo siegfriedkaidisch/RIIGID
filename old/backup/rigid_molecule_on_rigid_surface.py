@@ -35,18 +35,18 @@ t1 = time.time()
 ######################################################################################################################
 
 # General settings
-middle_height = 9.0 #in Angstroem, used to separate molecule and surface
-vacuum = 20 # in Angstroem, total height of vacuum
-a = 3.568 # in Angstroem, lattice parameter
+middle_height = 9.0 #in Å, used to separate molecule and surface
+vacuum = 20 # in Å, total height of vacuum
+a = 3.568 # in Å, lattice parameter
 
 # Control initial geometry of molecule relative to surface
-pos_x = 0 * a/5 # Angstroem
-pos_y = 0 * a/5 # Angstroem
-rot_z = 2 * 20  # degrees
+pos_x = 0 * a/5 # Å
+pos_y = 0 * a/5 # Å
+rot_z = 2 * 20  # °
 
 # Settings for rigid geometry optimization
 max_rigid_steps = 500 # maximal number of rigid optimization steps
-pos_conv = 0.00000000001 # in Angstroem, stop rigid optimization if all atoms of the molecule move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
+pos_conv = 0.00000000001 # in Å, stop rigid optimization if all atoms of the molecule move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
 max_step_0 = 0.01 #max allowed change of position of an atom (translation+rotation) in iteration 0
 max_step = 0.1 #max allowed change of position of an atom (translation+rotation) in iterations 1+
 stepsize_factor_up = 1.2 # increase stepsize by this factor, if last iteration successfully lowered energy
@@ -55,7 +55,7 @@ stepsize_factor_dn = 0.2 # decrease stepsize by this factor, if last iteration l
 # Randomness used to escape saddle points (at the moment, only used to escape saddle point initial guesses)
 do_random_step      = True
 random_seed         = 12345
-random_displacement = 0.02 #Angstroem
+random_displacement = 0.02 #Å
 random_angle        = 0.5 #Degrees
 
 # Boundary conditions
@@ -66,7 +66,7 @@ ymax = a/2
 
 # Settings for "normal" VASP geometry optimization following the rigid optimization
 do_vasp_opt = False
-freeze_height = 3 # in Angstroem, freeze atoms below this height
+freeze_height = 3 # in Å, freeze atoms below this height
 
 # Calculator settings for rigid optimization
 rigid_opt_vasp_settings = {

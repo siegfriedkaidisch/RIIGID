@@ -35,7 +35,7 @@ t1 = time.time()
 
 # Settings for rigid geometry optimization
 max_rigid_steps = 5 # maximal number of rigid optimization steps
-pos_conv = 0.00000000001 # in Angstroem, stop rigid optimization if all atoms of the fragment move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
+pos_conv = 0.00000000001 # in Å, stop rigid optimization if all atoms of the fragment move less than pos_conv (Warning: may coverge due to small stepsizes rather than actual convergence)
 max_step_0 = 0.1 #max allowed change of position of an atom (translation+rotation) in iteration 0
 max_step = 0.1 #max allowed change of position of an atom (translation+rotation) in iterations 1+
 stepsize_factor_up = 1.2 # increase stepsize by this factor, if last iteration successfully lowered energy
@@ -152,7 +152,7 @@ for i in range(max_rigid_steps):
             count_bad_steps +=1  # needed to handle situation of two consecutive bad iterations
             stepsize *= stepsize_factor_dn 
             fragment = deepcopy(fragment_list[-1 - count_bad_steps])
-    print('Test Stepsize: ' + str(stepsize))
+    print('Test Stepsize [unit]: ' + str(stepsize))
 
     # Prepare movement of fragment
     fragment_pos_old = copy(fragment.atoms.positions)
@@ -174,7 +174,7 @@ for i in range(max_rigid_steps):
         else:
             factor = 1.0
     stepsize *= factor
-    print('Actual Stepsize: ' + str(stepsize))
+    print('Actual Stepsize [unit]: ' + str(stepsize))
 
     # Move fragment and get new positions
     fragment_pos_new = fragment.transrot_fragment(full=full, f=f, stepsize_trans_x=stepsize, stepsize_trans_y=stepsize, stepsize_trans_z=stepsize,
@@ -208,12 +208,12 @@ f.close()
 print("\n")
 print('///////////////////////////////////////////////////////')
 print('Summary of Optimization:')
-print('Energy:')
+print('Energy [eV]:')
 print(optim_data['energy'])
 
 print("\n")
 print('Final Geometry:')
-print("Energy: "+str(optim_data['energy'][-1]))
+print("Energy [eV]: "+str(optim_data['energy'][-1]))
 
 print("\n")
 print('Duration / h:')

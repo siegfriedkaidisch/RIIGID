@@ -22,7 +22,7 @@ class CC_Displacement(Convergence_Criterion):
     is_converged: bool
         Whether or not the convergence criterion is fulfilled.
     cutoff: number
-        If all atoms move less than cutoff, the criterion is fulfilled; [AA]
+        If all atoms move less than cutoff, the criterion is fulfilled; [Å]
 
     """
 
@@ -32,7 +32,7 @@ class CC_Displacement(Convergence_Criterion):
         Parameters
         ----------
         cutoff: number
-            If all atoms move less than cutoff, the criterion is fulfilled; [AA]
+            If all atoms move less than cutoff, the criterion is fulfilled; [Å]
 
         """
         super().__init__()
