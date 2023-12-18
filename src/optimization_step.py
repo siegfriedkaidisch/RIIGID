@@ -1,10 +1,10 @@
 class Optimization_Step():
-    """
-    Each instantiation of this class corresponds to a step in the optimization process.
+    """Each instantiation of this class corresponds to a step in the optimization process.
 
     Note
     ----
     The stored forces and the energy belong to "structure", not to "updated_structure".
+    
     """
     def __init__(self, structure, forces, energy, updated_structure=None):
         """Initialize the optimization step.

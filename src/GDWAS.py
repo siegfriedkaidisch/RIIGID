@@ -4,8 +4,7 @@ from optimization_step import Optimization_Step
 from optimizer import Optimizer
 
 class GDWAS(Optimizer):
-    """
-    RIGID optimizer: Gradient Descent with Adaptive Stepsize
+    """RIGID optimizer: Gradient Descent with Adaptive Stepsize
 
     Calculates force and torque on each fragment and moves them accordingly (like rigid bodies). 
 
@@ -31,7 +30,39 @@ class GDWAS(Optimizer):
     The user never needs to interact directly with the stepsize. Instead, via max_step_0, the user 
     specifies how much the atoms (at most) shall move in the first optimization step. The stepsize 
     is then initialized accordingly and from there on adapted automatically, as described above.
-    
+
+    Attributes
+    ----------
+    optimization_history: list of optimization_step.Optimization_Step
+        The history of the optimization, which shall be checked for convergence. 
+    iteration: int
+        Counts the number of finished optimization steps
+    stepsize: number
+        Timestep; [Dalton*AA**2/eV]
+    stepsize_factor_up: number > 1
+        Increase stepsize by this factor, if last optimization step lowered the total energy
+    stepsize_factor_dn: number < 1
+        Decrease stepsize by this factor, if last optimization step increased the total energy
+    max_step: number
+        The maximum distance atoms are allowed to move per optimization step; [AA]
+    max_step_0: number
+        In the first optimization step, the stepsize is chosen such that the atom(s) moving 
+        the farthest change their position by this value; [AA]
+    start_structure : ase.atoms.Atoms
+        The atoms forming the structure to be optimized. 
+        This is an ase.Atoms object and should include the 
+        correct unit cell (for periodic systems).
+    calculator : ase.calculators.calculator.Calculator
+        The used ASE calculator object
+    convergence_criterion : convergence_criterion.Convergence_Criterion
+        The used convergence criterion object
+    current_structure: structure.Structure
+        The structure currently used by the optimizer
+    current_energy: number
+        The energy of current_structure
+    current_forces: numpy.ndarray of shape (n_atoms_in_current_structure, 3)
+        The forces in current_structure
+
     """
 
     def __init__(self, stepsize_factor_up=1.2, stepsize_factor_dn=0.2, max_step=0.1, max_step_0=0.01, *args, **kwargs):
