@@ -22,7 +22,20 @@ class Fragment:
 
     Attributes
     ----------
-    
+    atoms: ase.atoms.Atoms
+        The atoms forming the fragment.
+    allowed_translation: str
+        How shall the fragment be allowed to translate?
+        See docstring of __init__ for more details.
+    allowed_rotation: str
+        Allows the user to set constraints on the rotation axis of a fragment.
+        See docstring of __init__ for more details.
+    body_fixed_axis_x/y/z: numpy.ndarray of shape (3,)
+        The body-fixed axis system's xyz vectors (given in space-fixed coordinates)
+    euler_angles: list of length 3
+        The Euler angles of the fragment (alpha, beta, gamma).
+    inertia_matrix/_inv: numpy.ndarray of shape (3,3)
+            The (inverse) inertia matrix of the fragment; [(Dalton*AA**2)]; [1/(Dalton*AA**2)]
 
     """
 
