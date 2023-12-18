@@ -1,5 +1,12 @@
 class Convergence_Criterion:
-    """Base class for RIGID convergence criteria"""
+    """Base class for RIGID convergence criteria
+    
+    Attributes
+    ----------
+    is_converged: bool
+        Whether or not the convergence criterion is fulfilled.
+
+    """
 
     def __init__(self, *args, **kwargs):
         """Initialize the RIGID convergence criterion."""

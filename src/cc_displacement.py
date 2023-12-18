@@ -17,6 +17,13 @@ class CC_Displacement(Convergence_Criterion):
     make sure not to choose a too small value, or use a different/additional convergence criterion. If you
     use an optimizer with automatic stepsize, the optimizer should prevent this from happening.
 
+    Attributes
+    ----------
+    is_converged: bool
+        Whether or not the convergence criterion is fulfilled.
+    cutoff: number
+        If all atoms move less than cutoff, the criterion is fulfilled; [AA]
+
     """
 
     def __init__(self, cutoff, *args, **kwargs):
