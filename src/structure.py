@@ -18,12 +18,12 @@ class Structure:
 
     Attributes
     ----------
-    atoms:
-
-    fragments:
-
-    rest_fragment:
-    
+    atoms: ase.atoms.Atoms
+        All atoms forming the structure, i.e, sum of all fragments.atoms (incl. rest_fragment).
+    fragments: list of fragment.Fragment
+        All fragments that have been defined.
+    rest_fragment: fragment.Fragment
+        All atoms that haven't been assigned a specific fragment together form the rest_fragment.
 
     """
 
