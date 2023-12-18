@@ -14,7 +14,7 @@ class Structure():
 
     Via the Structure class, fragments can be defined, forces and torques on all fragments can be 
     calculated and the fragments can be moved accordingly.
-    
+
     """
 
     def __init__(self, atoms):
@@ -38,7 +38,9 @@ class Structure():
         Define a new fragment by telling RIGID the indices of the atoms (indices relative to 
         Structure.atoms) that shall form the new fragment. 
 
-        Note, that each atom has to belong to exactly one fragment! All atoms that the user never manually
+        Note
+        ----
+        Each atom has to belong to exactly one fragment! All atoms that the user never manually
         assigned to a specific fragment form another fragment together, called the rest_fragment.
 
         Parameters
@@ -61,6 +63,11 @@ class Structure():
             '' forbids any rotation
             'z' allows only rotation of the fragment around the (space-fixed) z-axis
             'xyz' allows for unrestricted rotation of the fragment
+
+        Raises
+        ------
+        Exception
+            If an atom couldn't be found in the rest_fragment. 
 
         """
         fragment_atoms = deepcopy(self.atoms[indices])
@@ -123,6 +130,11 @@ class Structure():
         list of lists of int
             A list containing one list per fragment (excluding the rest_fragment) containing 
             the indices of the fragment
+
+        Raises
+        ------
+        Exception
+            Raises an exception if not all indices of the fragment's atoms could be found.
 
         """
         fragments_indices = []
@@ -227,7 +239,7 @@ class Structure():
 
         Returns
         -------
-        number:
+        number
             The farthest distance an atom was moved in this update step; [AA]
         np.ndarray of shape (n_atoms, 3)
             xyz displacement of each atom; [AA]

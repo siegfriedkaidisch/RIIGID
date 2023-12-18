@@ -8,13 +8,15 @@ class CC_Displacement(Convergence_Criterion):
 
     If all atoms move less than cutoff, the criterion is fulfilled.
 
-    Note, that this criterion could theoretically be fulfilled, even if the calculation is not actually
+    Note
+    ----
+    This criterion could theoretically be fulfilled, even if the calculation is not actually
     converged. This is, because the displacement of the atoms not only depends on the force and torque 
     acting on each fragment, but also on the stepsize. If the stepsize is very small, the atoms may move 
     only very little, even though the forces and torques are still large. If you set the stepsize by hand,
     make sure not to choose a too small value, or use a different/additional convergence criterion. If you 
     use an optimizer with automatic stepsize, the optimizer should prevent this from happening.
-    
+
     """
 
     def __init__(self, cutoff, *args, **kwargs):

@@ -120,7 +120,9 @@ def get_normal_vector_fragment(fragment):
     Otherwise, if it has a nonzero y-component, then choose this y-component to be positive. 
     Otherwise choose the x-component to be positive.
 
-    Note: DO NOT USE THIS FUNCTION WITH A NON-PLANAR OR A LINEAR FRAGMENT!
+    Note
+    ----
+    DO NOT USE THIS FUNCTION WITH A NON-PLANAR OR A LINEAR FRAGMENT!
 
     Parameters
     ----------
@@ -131,6 +133,11 @@ def get_normal_vector_fragment(fragment):
     -------
     np.ndarray of shape (3,)
         The normal vector
+
+    Raises
+    ------
+    Exception
+        If the normal vector search resulted in a zero-vector.
 
     """
     center = fragment.atoms.get_center_of_mass()

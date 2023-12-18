@@ -27,9 +27,9 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
 
         Returns
         -------
-        list of int:
+        list of int
             The list of indices; Normally this should be of the same length as atoms1
-        bool:
+        bool
             Was the search successful? 
             If not all atoms were found (the returned list is shorter than len(atoms1)), this 
             is set to False (In this case, the returned list is useless, but still returned for 
@@ -37,8 +37,11 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
             If all atoms have been found once (the returned list is of length len(atoms1)), this is 
             set to True. 
         
-        Note: If some atoms have been found more than once, an exception is raised. This indicates an 
-        ill-defined Atoms object.
+        Raises
+        ----
+        Exception
+            If some atoms have been found more than once, an exception is raised. This indicates an 
+            ill-defined Atoms object.
 
         """
         atomic_indices = []
@@ -117,8 +120,13 @@ def get_atoms_indices_by_height(all_atoms, middle_height, above=True, direction=
     
     Returns
     -------
-    list:
+    list
         List containing indices of all atoms above/below middle_height
+
+    Raises
+    ------
+    Exception
+        If the given input value for the 'direction' parameter is not known.
 
     """
     if direction == 'x':

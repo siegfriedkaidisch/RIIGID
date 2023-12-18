@@ -15,7 +15,7 @@ class Fragment():
 
     The orientation of a fragment can be defined using Euler angles and its position can be defined 
     by its center of mass.
-    
+
     """
     def __init__(self, atoms:Atoms, allowed_translation, allowed_rotation):
         """Define a new fragment using an ASE Atoms object
@@ -95,7 +95,7 @@ class Fragment():
 
         Returns
         -------
-        list of length 3:
+        list of length 3
             The three Euler angles
 
         """
@@ -122,7 +122,9 @@ class Fragment():
 
         The inertia matrix is defined relative to the fragment's center of mass. 
         
-        Note: the inertia matrix must be updated after every rotation!
+        Note
+        ----
+        The inertia matrix must be updated after every rotation!
 
         Returns
         -------
