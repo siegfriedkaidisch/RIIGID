@@ -18,6 +18,11 @@ class Structure:
 
     Attributes
     ----------
+    atoms:
+
+    fragments:
+
+    rest_fragment:
     
 
     """
