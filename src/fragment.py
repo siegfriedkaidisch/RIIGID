@@ -20,6 +20,10 @@ class Fragment:
     The orientation of a fragment can be defined using Euler angles and its position can be defined
     by its center of mass.
 
+    Attributes
+    ----------
+    
+
     """
 
     def __init__(self, atoms: Atoms, allowed_translation, allowed_rotation):

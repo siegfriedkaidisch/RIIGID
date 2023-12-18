@@ -16,6 +16,10 @@ class Structure:
     Via the Structure class, fragments can be defined, forces and torques on all fragments can be
     calculated and the fragments can be moved accordingly.
 
+    Attributes
+    ----------
+    
+
     """
 
     def __init__(self, atoms):
