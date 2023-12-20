@@ -1,8 +1,9 @@
 from copy import copy, deepcopy
+
 import numpy as np
 from ase import Atoms
 
-from rotation_functions import (
+from rigid.library.rotation import (
     angle_between_vectors,
     rotmat,
     signed_angle_between_vectors,

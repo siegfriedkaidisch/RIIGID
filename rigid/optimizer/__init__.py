@@ -1,0 +1,1 @@
+from .GDWAS import GDWAS

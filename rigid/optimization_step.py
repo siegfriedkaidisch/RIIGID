@@ -1,4 +1,4 @@
-class Optimization_Step:
+class OptimizationStep:
     """Each instantiation of this class corresponds to a step in the optimization process.
 
     Attributes

@@ -1,7 +1,7 @@
 from copy import copy, deepcopy
 
-from optimization_step import Optimization_Step
-from optimizer import Optimizer
+from rigid.optimization_step import OptimizationStep
+from rigid.optimizer.optimizer import Optimizer
 
 
 class GDWAS(Optimizer):
@@ -71,7 +71,7 @@ class GDWAS(Optimizer):
         stepsize_factor_up=1.2,
         stepsize_factor_dn=0.2,
         max_step=0.1,
-        max_step_0=0.01
+        max_step_0=0.01,
     ):
         """Initialize the GDWAS optimizer.
 
@@ -151,7 +151,7 @@ class GDWAS(Optimizer):
             )
 
             # Add Optimization step to history
-            new_step = Optimization_Step(
+            new_step = OptimizationStep(
                 structure=self.current_structure,
                 forces=self.current_forces,
                 energy=self.current_energy,
@@ -213,7 +213,7 @@ class GDWAS(Optimizer):
 
         Note
         ----
-        During the first iteration of the optimizations, this function adapts the stepsize 
+        During the first iteration of the optimizations, this function adapts the stepsize
         such that the maximum movement of the atoms is exactly max_step_0.
 
         """

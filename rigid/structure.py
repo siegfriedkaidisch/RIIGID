@@ -1,8 +1,9 @@
 from copy import deepcopy
+
 import numpy as np
 
-from fragment import Fragment
-from misc_functions import get_indices_of_atoms1_in_atoms2
+from rigid.fragment import Fragment
+from rigid.library.misc import get_indices_of_atoms1_in_atoms2
 
 
 class Structure:

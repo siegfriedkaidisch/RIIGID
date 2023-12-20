@@ -1,9 +1,9 @@
 import numpy as np
 
-from convergence_criterion import Convergence_Criterion
+from rigid.convergence.criterion import Criterion
 
 
-class CC_Displacement(Convergence_Criterion):
+class CC_Displacement(Criterion):
     """RIGID convergence criterion: Displacement
 
     If all atoms move less than cutoff, the criterion is fulfilled.

@@ -1,7 +1,7 @@
 import pickle
 
-from misc_functions import copy_docstring
-from structure import Structure
+from rigid.library.misc import copy_docstring
+from rigid.structure import Structure
 
 
 class RIGID:
@@ -58,7 +58,7 @@ class RIGID:
             The used ASE calculator object
 
         """
-        #if calculator.lower() == "vasp"
+        # if calculator.lower() == "vasp"
         self.calculator = calculator
 
     def set_optimizer(self, optimizer):
@@ -93,7 +93,9 @@ class RIGID:
         )
 
         # Save and print/log results
-        self.save_optimization_data("test_data.pk")  # get raw data (optimization history) from optimizer
+        self.save_optimization_data(
+            "test_data.pk"
+        )  # get raw data (optimization history) from optimizer
         self.print_optimization_summary()  # get raw data from optimizer
 
     def save_optimization_data(self, filename):
@@ -114,5 +116,5 @@ class RIGID:
         """
         optimization_history = self.optimizer.optimization_history
         energies = [step.energy for step in optimization_history]
-        print("Energies [eV]: ")  
+        print("Energies [eV]: ")
         print(energies)

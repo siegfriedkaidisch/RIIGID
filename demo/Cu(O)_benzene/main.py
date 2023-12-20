@@ -2,17 +2,16 @@
 
 """
 
-from ase import Atoms
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.vasp import read_vasp
 
-from cc_displacement import CC_Displacement
-from GDWAS import GDWAS
-from misc_functions import get_atoms_indices_by_height
 from rigid import RIGID
+from rigid.convergence.cc_displacement import CC_Displacement
+from rigid.library.misc import get_atoms_indices_by_height
+from rigid.optimizer.GDWAS import GDWAS
 
 # User defines full system
-atoms = read_vasp(file="./POSCAR_input")
+atoms = read_vasp(file="./POSCAR")
 
 # User instantiates a RIGID calculation object using an ASE atoms object of the full system
 rigid = RIGID(atoms=atoms)

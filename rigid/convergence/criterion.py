@@ -1,6 +1,6 @@
-class Convergence_Criterion:
+class Criterion:
     """Base class for RIGID convergence criteria
-    
+
     Attributes
     ----------
     is_converged: bool
@@ -10,7 +10,7 @@ class Convergence_Criterion:
 
     def __init__(self):
         """Initialize the RIGID convergence criterion."""
-        self.is_converged = False # initialize as unfulfilled
+        self.is_converged = False  # initialize as unfulfilled
 
     def check(self, optimization_history):
         """Check if the convergence criterion is fulfilled
