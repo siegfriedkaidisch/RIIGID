@@ -72,6 +72,11 @@ optimizer_settings = {
     "stepsize_factor_dn": 0.2,
     "max_step": 0.1,
     "max_step_0": 0.01,
+    "start_with_random_step": True,
+    "displacement_r0": 0.01,
+    "angle_r0": 0.1,
+    "respect_restrictions_r0": False,
+    "seed_r0": 1234
 }
 optimizer = GDWAS(**optimizer_settings)  # gradient descent with adaptive stepsize
 rigid.set_optimizer(optimizer)

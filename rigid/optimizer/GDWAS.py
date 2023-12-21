@@ -49,6 +49,21 @@ class GDWAS(Optimizer):
     max_step_0: number
         In the first optimization step, the stepsize is chosen such that the atom(s) moving
         the farthest change their position by this value; [Å]
+    start_with_random_step: bool
+        Shall the fragments forming the structure be randomly translated and rotated before the
+        first optimization step? This can be used to escape a saddle point starting-geometry.
+        The attributes with '_r0' at the end further specify this random step before the first 
+        optimization step.
+    displacement_r0: number
+        How far shall the fragments be translated; [Å]
+    angle_r0: number
+        How much shall the fragments be rotated; [°]
+    respect_restrictions_r0: bool
+        If True, fragment.allowed_translation/rotation is respected.
+        If False, rotation and translation in arbitrary directions is allowed temporarily.
+        (After the random step, the restrictions are respected again.)
+    seed_r0: int
+        The random seed used to generate the translation directions and rotation axes
     start_structure : ase.atoms.Atoms
         The atoms forming the structure to be optimized.
         This is an ase.Atoms object and should include the
@@ -72,6 +87,11 @@ class GDWAS(Optimizer):
         stepsize_factor_dn=0.2,
         max_step=0.1,
         max_step_0=0.01,
+        start_with_random_step=True,
+        displacement_r0=0.01,
+        angle_r0=0.1,
+        respect_restrictions_r0=False,
+        seed_r0=1234,
     ):
         """Initialize the GDWAS optimizer.
 
@@ -86,6 +106,21 @@ class GDWAS(Optimizer):
         max_step_0: number, default: 0.01
             In the first optimization step, the stepsize is chosen such that the atom(s) moving
             the farthest change their position by this value; [Å]
+        start_with_random_step: bool, default:True
+            Shall the fragments forming the structure be randomly translated and rotated before the
+            first optimization step? This can be used to escape a saddle point starting-geometry.
+            The parameters with '_r0' at the end further specify this random step before the first
+            optimization step.
+        displacement_r0: number, default:0.01
+            How far shall the fragments be translated; [Å]
+        angle_r0: number, default:0.1
+            How much shall the fragments be rotated; [°]
+        respect_restrictions_r0: bool, default:False
+            If True, fragment.allowed_translation/rotation is respected.
+            If False, rotation and translation in arbitrary directions is allowed temporarily.
+            (After the random step, the restrictions are respected again.)
+        seed_r0: int, default:1234
+            The random seed used to generate the translation directions and rotation axes
 
         """
         super().__init__()
@@ -94,6 +129,11 @@ class GDWAS(Optimizer):
         self.stepsize_factor_dn = stepsize_factor_dn
         self.max_step = max_step
         self.max_step_0 = max_step_0
+        self.start_with_random_step = start_with_random_step
+        self.displacement_r0 = displacement_r0
+        self.angle_r0 = angle_r0
+        self.respect_restrictions_r0 = respect_restrictions_r0
+        self.seed_r0 = seed_r0
 
     def run(self, start_structure, calculator, convergence_criterion):
         """Let the optimizer run its optimization on the structure.
@@ -119,6 +159,15 @@ class GDWAS(Optimizer):
             else:
                 self.current_structure = deepcopy(
                     self.optimization_history[-1].updated_structure
+                )
+
+            # Before first calculation, perform a random step, if start_with_random_step==True
+            if self.start_with_random_step and self.iteration == 0:
+                self.current_structure.move_random_step(
+                    displacement=self.displacement_r0,
+                    angle=self.angle_r0,
+                    respect_restrictions=self.respect_restrictions_r0,
+                    seed=self.seed_r0,
                 )
 
             # Do Calculation to get energy and forces

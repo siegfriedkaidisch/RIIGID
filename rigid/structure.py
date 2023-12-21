@@ -304,3 +304,59 @@ class Structure:
         atomic_displacements = new_positions - old_positions
         max_atomic_displacement = np.max(np.linalg.norm(atomic_displacements, axis=1))
         return max_atomic_displacement, atomic_displacements
+
+    def move_random_step(self, displacement, angle, respect_restrictions, seed=1234):
+        """Randomly rotate and translate the fragments.
+
+        Useful to escape saddle points, especially when starting a new optimization.
+
+        Parameters
+        ----------
+        displacement: number
+            How far shall the fragments be translated; [Å]
+        angle: number
+            How much shall the fragments be rotated; [°]
+        respect_restrictions: bool
+            If True, fragment.allowed_translation/rotation is respected.
+            If False, rotation and translation in arbitrary directions is allowed temporarily.
+            (After the random step, the restrictions are respected again.)
+        seed: int, default:1234
+            The random seed used to generate the translation directions and rotation axes
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_atoms_in_structure,3)
+            The positions of the structure's atoms after the transformation; [Å]
+
+        Note
+        ----
+        The different fragments are rotated/translated around different axes/
+        in different directions.
+
+        The rest_fragment is not moved!
+
+        """
+
+        # Generate one random seed per fragment, derived from the seed given as input to
+        # this function.
+        backup_seed = np.random.randint(2**32 - 1)
+        np.random.seed(seed)
+        seeds_for_fragments = [
+            np.random.randint(2**32 - 1) for _ in range(len(self.fragments))
+        ]
+        np.random.seed(backup_seed)
+
+        # Randomly move all fragments except the rest_fragment
+        for i, fragment in enumerate(self.fragments):
+            fragment.move_random_step(
+                displacement=displacement,
+                angle=angle,
+                respect_restrictions=respect_restrictions,
+                seed=seeds_for_fragments[i],
+            )
+
+        # update self.atoms by summing up all fragments.atoms
+        self.update_atoms_attribute_from_fragments()
+
+        new_positions = deepcopy(self.atoms.positions)
+        return new_positions

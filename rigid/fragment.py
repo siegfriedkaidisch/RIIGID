@@ -69,7 +69,7 @@ class Fragment:
         # Initialize using an already existing Atoms object
         self.atoms = deepcopy(atoms)
 
-        # Tranlation and rotation, which the fragme        return Nonent is allowed to do
+        # Tranlation and rotation, which the fragment is allowed to do
         self.allowed_translation = allowed_translation
         self.allowed_rotation = allowed_rotation
 
@@ -357,7 +357,7 @@ class Fragment:
         Parameters
         ----------
         displacement: number
-            How far shall the fragment be translates; [Å]
+            How far shall the fragment be translated; [Å]
         angle: number
             How much shall the fragment be rotated; [°]
         respect_restrictions: bool
