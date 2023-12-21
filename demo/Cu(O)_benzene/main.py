@@ -11,7 +11,7 @@ from rigid.library.misc import get_atoms_indices_by_height
 from rigid.optimizer.GDWAS import GDWAS
 
 # User defines full system
-atoms = read_vasp(file="./POSCAR")
+atoms = read_vasp(file="./POSCAR_start")
 
 # User instantiates a RIGID calculation object using an ASE atoms object of the full system
 rigid = RIGID(atoms=atoms)
