@@ -6,9 +6,9 @@ from ase.calculators.vasp.vasp import Vasp
 from ase.io.vasp import read_vasp
 
 from rigid import RIGID
-from rigid.convergence.cc_displacement import CC_Displacement
-from rigid.library.misc import get_atoms_indices_by_height
-from rigid.optimizer.GDWAS import GDWAS
+from rigid.convergence import CC_Displacement
+from rigid.library import get_atoms_indices_by_height
+from rigid.optimizer import GDWAS
 
 # User defines full system
 atoms = read_vasp(file="./POSCAR_start")
