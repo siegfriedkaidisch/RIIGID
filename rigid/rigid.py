@@ -216,6 +216,10 @@ class RIGID:
         # Print some results
         self.print_optimization_summary()
 
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print("Finished RIGID geometry optimization of: ", self.name)
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+
     def save_optimization_history(self):
         """Save the optimization history (list of optimization steps) as a pickle file."""
         optimization_history = self.optimizer.optimization_history
