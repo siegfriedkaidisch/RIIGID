@@ -1,5 +1,6 @@
 import pickle
 from ase.io.trajectory import Trajectory
+from ase.calculators.vasp.vasp import Vasp
 
 from rigid.library.misc import copy_docstring
 from rigid.structure import Structure
@@ -50,22 +51,47 @@ class RIGID:
         """
         self.start_structure = Structure(atoms=atoms)
         self.name = name
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print("RIGID geometry optimization of: ", self.name)
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
 
     @copy_docstring(Structure.define_fragment_by_indices)
     def define_fragment_by_indices(self, *args, **kwargs):
         self.start_structure.define_fragment_by_indices(*args, **kwargs)
+        print("New fragment defined using indices.")
 
     def set_calculator(self, calculator, settings=None):
         """Set the ASE Calculator to be used for optimizing the structure.
 
         Parameters
         ----------
-        calculator : ase.calculators.calculator.Calculator
-            The used ASE calculator object
+        calculator: ase.calculators.calculator.Calculator or str
+            The user can provide an ASE Calculator object or the name (string) of
+            the calculator that shall be used.
+        settings: dict, default:None
+            If the calculator is defined using a string (see above), calculator settings
+            can be defined over using this parameter. If an ASE calculator is provided, this
+            dictionary is ignored, the calculator is assumed to be already set up!
+
+        Raises
+        ------
+        Exception
+            If the provided calculator name (string) is not known.
 
         """
-        # if calculator.lower() == "vasp"
+        if type(calculator) == str:
+            if calculator.lower() == "vasp":
+                calculator = Vasp(**settings)
+            else:
+                raise Exception(
+                    "Calculator not known... did you write the name correctly? Tip: Maybe initialize the calculator in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
+                )
+
         self.calculator = calculator
+        print("Calculator set to: ", str(type(self.calculator)))
+        print("Calculator Settings:")
+        for entry in self.calculator.parameters:
+            print("   - " + str(entry) + ": " + str(settings[entry]))
 
     def set_optimizer(self, optimizer):
         """Set the optimizer to be used for optimizing the structure.
@@ -77,6 +103,7 @@ class RIGID:
 
         """
         self.optimizer = optimizer
+        print("Optimizer set to: ", str(type(self.optimizer)))
 
     def set_convergence_criterion(self, convergence_criterion):
         """Set the convergence criterion for optimizing the structure.
@@ -99,33 +126,31 @@ class RIGID:
         )
 
         # Save some results
-        self.save_optimization_history() 
+        self.save_optimization_history()
         self.create_trajectory_file_from_optimization_history()
 
         # Print some results
-        self.print_optimization_summary() 
+        self.print_optimization_summary()
 
     def save_optimization_history(self):
         """Save the optimization history (list of optimization steps) as a pickle file."""
         optimization_history = self.optimizer.optimization_history
-        f = open(self.name+'.pk', "wb")
+        f = open(self.name + ".pk", "wb")
         pickle.dump(optimization_history, f)
         f.close()
 
     def create_trajectory_file_from_optimization_history(self):
         """Creates and saves the trajectory file of the optimization."""
         optimization_history = self.optimizer.optimization_history
-        traj = Trajectory(self.name+'.traj', 'w')
+        traj = Trajectory(self.name + ".traj", "w")
         for optimization_step in optimization_history:
             traj.write(optimization_step.structure.atoms)
         traj.close()
 
     def print_optimization_summary(self):
         """Print Information about the Optimization."""
+
         optimization_history = self.optimizer.optimization_history
         energies = [step.energy for step in optimization_history]
         print("Energies [eV]: ")
         print(energies)
-
-    
-
