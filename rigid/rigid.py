@@ -185,7 +185,7 @@ class RIGID:
                     "Convergence criterion not known... did you write the name correctly? Tip: Maybe initialize the convergence criterion in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
                 )
         else:
-            provided_convergence_criterion_was_string
+            provided_convergence_criterion_was_string = False
 
         self.convergence_criterion = convergence_criterion
         print("Convergence criterion set to: ", str(type(self.convergence_criterion)))
