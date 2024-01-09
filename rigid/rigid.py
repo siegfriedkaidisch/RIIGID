@@ -99,7 +99,7 @@ class RIGID:
         print("Calculator set to: ", str(type(self.calculator)))
         print("Calculator Settings:")
         if self.calculator.parameters == {}:
-            print('   -')
+            print("   -")
         for entry in self.calculator.parameters:
             print("   - " + str(entry) + ": " + str(self.calculator.parameters[entry]))
 
@@ -141,11 +141,13 @@ class RIGID:
         print("Optimizer Settings:")
         if provided_optimizer_was_string:
             if settings == {}:
-                print('   - No settings provided!')
+                print("   - No settings provided!")
             for entry in settings:
                 print("   - " + str(entry) + ": " + str(settings[entry]))
         else:
-            print('   - Unknown, because an initialized optimizer was provided to RIGID.')
+            print(
+                "   - Unknown, because an initialized optimizer was provided to RIGID."
+            )
 
     def set_convergence_criterion(self, convergence_criterion, settings={}):
         """Set the convergence criterion for optimizing the structure.
@@ -185,11 +187,13 @@ class RIGID:
         print("Convergence criterion Settings:")
         if provided_convergence_criterion_was_string:
             if settings == {}:
-                print('   - No settings provided!')
+                print("   - No settings provided!")
             for entry in settings:
                 print("   - " + str(entry) + ": " + str(settings[entry]))
         else:
-            print('   - Unknown, because an initialized convergence criterion was provided to RIGID.')
+            print(
+                "   - Unknown, because an initialized convergence criterion was provided to RIGID."
+            )
 
     def run(self):
         """Run the optimization"""
@@ -214,7 +218,7 @@ class RIGID:
         f = open(fn, "wb")
         pickle.dump(optimization_history, f)
         f.close()
-        print('Optimization history saved as pickle file: ', fn)
+        print("Optimization history saved as pickle file: ", fn)
 
     def create_trajectory_file_from_optimization_history(self):
         """Creates and saves the trajectory file of the optimization."""
@@ -224,12 +228,12 @@ class RIGID:
         for optimization_step in optimization_history:
             traj.write(optimization_step.structure.atoms)
         traj.close()
-        print('Optimization trajectory saved as ', fn)
+        print("Optimization trajectory saved as ", fn)
 
     def print_optimization_summary(self):
         """Print Information about the Optimization."""
-
+        print("Summary of Optimization:")
         optimization_history = self.optimizer.optimization_history
         for iteration, step in enumerate(optimization_history):
-            print('Optimization Step '+str(iteration)+':')
-            print('   Energy [eV]: '+str(step.energy))
+            print("Optimization Step " + str(iteration) + ":")
+            print("   Energy [eV]: " + str(step.energy))
