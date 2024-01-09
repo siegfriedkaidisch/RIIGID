@@ -98,33 +98,19 @@ class RIGID:
             convergence_criterion=self.convergence_criterion,
         )
 
-        # Save and print/log results
-        self.save_optimization_data(
-            "test_data.pk"
-        )  # get raw data (optimization history) from optimizer
-        self.print_optimization_summary()  # get raw data from optimizer
+        # Save some results
+        self.save_optimization_history() 
         self.create_trajectory_file_from_optimization_history()
 
-    def save_optimization_data(self, filename):
-        """
-        ??
-        """
+        # Print some results
+        self.print_optimization_summary() 
+
+    def save_optimization_history(self):
+        """Save the optimization history (list of optimization steps) as a pickle file."""
         optimization_history = self.optimizer.optimization_history
-        f = open(filename, "wb")
+        f = open(self.name+'.pk', "wb")
         pickle.dump(optimization_history, f)
         f.close()
-
-    def print_optimization_summary(self, properties=None):
-        """
-        ??
-        properties defines which properties will be printed
-        extra function regarding final step
-        extra function regarding logging this data to a txt file
-        """
-        optimization_history = self.optimizer.optimization_history
-        energies = [step.energy for step in optimization_history]
-        print("Energies [eV]: ")
-        print(energies)
 
     def create_trajectory_file_from_optimization_history(self):
         """Creates and saves the trajectory file of the optimization."""
@@ -132,4 +118,14 @@ class RIGID:
         traj = Trajectory(self.name+'.traj', 'w')
         for optimization_step in optimization_history:
             traj.write(optimization_step.structure.atoms)
+        traj.close()
+
+    def print_optimization_summary(self):
+        """Print Information about the Optimization."""
+        optimization_history = self.optimizer.optimization_history
+        energies = [step.energy for step in optimization_history]
+        print("Energies [eV]: ")
+        print(energies)
+
+    
 
