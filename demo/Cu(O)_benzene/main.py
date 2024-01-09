@@ -14,7 +14,7 @@ from rigid.optimizer import GDWAS
 atoms = read_vasp(file="./POSCAR_start")
 
 # User instantiates a RIGID calculation object using an ASE atoms object of the full system
-rigid = RIGID(atoms=atoms)
+rigid = RIGID(atoms=atoms, name='example_system')
 
 # User defines a fragment using the molecule's coordinates and defines what kind of motion is allowed
 # Maybe at some point additional ways of defining fragments... e.g. by adding an additional atoms object

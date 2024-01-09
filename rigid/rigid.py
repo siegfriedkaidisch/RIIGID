@@ -1,4 +1,5 @@
 import pickle
+from ase.io.trajectory import Trajectory
 
 from rigid.library.misc import copy_docstring
 from rigid.structure import Structure
@@ -23,6 +24,8 @@ class RIGID:
         The atoms forming the structure to be optimized.
         This is an ase.Atoms object and should include the
         correct unit cell (for periodic systems).
+    name : str
+        The name of the studied system.
     calculator : ase.calculators.calculator.Calculator
         The used ASE calculator object
     optimizer : optimizer.Optimizer
@@ -32,7 +35,7 @@ class RIGID:
 
     """
 
-    def __init__(self, atoms):
+    def __init__(self, atoms, name):
         """Initialize a RIGID geometry optimization.
 
         Parameters
@@ -41,9 +44,12 @@ class RIGID:
             The atoms forming the structure to be optimized.
             This is an ase.Atoms object and should include the
             correct unit cell (for periodic systems).
+        name : str
+            The name of the studied system. E.g.: "Benzene"
 
         """
         self.start_structure = Structure(atoms=atoms)
+        self.name = name
 
     @copy_docstring(Structure.define_fragment_by_indices)
     def define_fragment_by_indices(self, *args, **kwargs):
@@ -97,6 +103,7 @@ class RIGID:
             "test_data.pk"
         )  # get raw data (optimization history) from optimizer
         self.print_optimization_summary()  # get raw data from optimizer
+        self.create_trajectory_file_from_optimization_history()
 
     def save_optimization_data(self, filename):
         """
@@ -118,3 +125,11 @@ class RIGID:
         energies = [step.energy for step in optimization_history]
         print("Energies [eV]: ")
         print(energies)
+
+    def create_trajectory_file_from_optimization_history(self):
+        """Creates and saves the trajectory file of the optimization."""
+        optimization_history = self.optimizer.optimization_history
+        traj = Trajectory(self.name+'.traj', 'w')
+        for optimization_step in optimization_history:
+            traj.write(optimization_step.structure.atoms)
+
