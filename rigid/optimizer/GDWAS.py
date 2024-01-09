@@ -52,7 +52,7 @@ class GDWAS(Optimizer):
     start_with_random_step: bool
         Shall the fragments forming the structure be randomly translated and rotated before the
         first optimization step? This can be used to escape a saddle point starting-geometry.
-        The attributes with '_r0' at the end further specify this random step before the first 
+        The attributes with '_r0' at the end further specify this random step before the first
         optimization step.
     displacement_r0: number
         How far shall the fragments be translated; [Å]
@@ -65,7 +65,7 @@ class GDWAS(Optimizer):
     seed_r0: int
         The random seed used to generate the translation directions and rotation axes
     max_iter: int
-        The maximal number of optimization steps to be performed. 
+        The maximal number of optimization steps to be performed.
         If the calculation does not converge within this limit, it is stopped.
     start_structure : ase.atoms.Atoms
         The atoms forming the structure to be optimized.
@@ -95,7 +95,7 @@ class GDWAS(Optimizer):
         angle_r0=0.1,
         respect_restrictions_r0=False,
         seed_r0=1234,
-        max_iter=500
+        max_iter=500,
     ):
         """Initialize the GDWAS optimizer.
 
@@ -126,11 +126,11 @@ class GDWAS(Optimizer):
         seed_r0: int, default:1234
             The random seed used to generate the translation directions and rotation axes
         max_iter: int, default: 500
-            The maximal number of optimization steps to be performed. 
+            The maximal number of optimization steps to be performed.
             If the calculation does not converge within this limit, it is stopped.
 
         """
-        super().__init__()
+        super().__init__(max_iter=max_iter)
         self.stepsize = 100  # initial stepsize, value doesn't matter, is later adapted to max_step_0
         self.stepsize_factor_up = stepsize_factor_up
         self.stepsize_factor_dn = stepsize_factor_dn
@@ -141,7 +141,6 @@ class GDWAS(Optimizer):
         self.angle_r0 = angle_r0
         self.respect_restrictions_r0 = respect_restrictions_r0
         self.seed_r0 = seed_r0
-        self.max_iter = max_iter
 
     def run(self, start_structure, calculator, convergence_criterion):
         """Let the optimizer run its optimization on the structure.
@@ -156,12 +155,12 @@ class GDWAS(Optimizer):
             The used convergence criterion object
 
         """
-        print('Starting optimization...')
+        print("Starting optimization...")
         self.start_structure = start_structure
         self.calculator = calculator
         self.convergence_criterion = convergence_criterion
 
-        while not convergence_criterion.is_converged or self.iteration<self.max_iter:
+        while not convergence_criterion.is_converged or self.iteration < self.max_iter:
             # Get current structure (starting structure or updated structure from last step)
             if self.iteration == 0:
                 self.current_structure = deepcopy(start_structure)
@@ -224,7 +223,7 @@ class GDWAS(Optimizer):
             self.convergence_criterion.check(
                 optimization_history=self.optimization_history
             )
-        
+
         self.print_reason_for_end_of_optimization()
 
     def adapt_stepsize_to_energy_change(self):

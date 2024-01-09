@@ -8,7 +8,7 @@ class Optimizer:
     iteration: int
         Counts the number of finished optimization steps
     max_iter: int
-        The maximal number of optimization steps to be performed. 
+        The maximal number of optimization steps to be performed.
         If the calculation does not converge within this limit, it is stopped.
 
     Note
@@ -20,16 +20,16 @@ class Optimizer:
 
     def __init__(self, max_iter):
         """Initialize a RIGID optimizer.
-        
+
         Parameters
         ----------
         max_iter: int
-            The maximal number of optimization steps to be performed. 
+            The maximal number of optimization steps to be performed.
             If the calculation does not converge within this limit, it is stopped.
 
         """
-        self.optimization_history = [] 
-        self.iteration = 0  
+        self.optimization_history = []
+        self.iteration = 0
         self.max_iter = max_iter
 
     def run(self, start_structure, calculator, convergence_criterion):
@@ -50,14 +50,16 @@ class Optimizer:
 
     def print_reason_for_end_of_optimization(self):
         """Prints the reason why the optimization has ended.
-        
+
         Call this function when the optimization is finished.
-        
+
         """
-        print('Optimization finished...')
+        print("Optimization finished...")
         if self.convergence_criterion.is_converged:
-            print('   ...converged!')
+            print("   ...converged!")
         else:
-            print('   ...NOT converged!')
-            if self.iteration==self.max_iter:
-                print('   Optimizer did not converge within the maximal number of allowed iterations (optimizer.max_iter).')
+            print("   ...NOT converged!")
+            if self.iteration == self.max_iter:
+                print(
+                    "   Optimizer did not converge within the maximal number of allowed iterations (optimizer.max_iter)."
+                )

@@ -1,12 +1,13 @@
 import pickle
-from ase.io.trajectory import Trajectory
-from ase.calculators.vasp.vasp import Vasp
 import warnings
 
-from rigid.library.misc import copy_docstring
-from rigid.structure import Structure
-from rigid.optimizer.GDWAS import GDWAS
+from ase.calculators.vasp.vasp import Vasp
+from ase.io.trajectory import Trajectory
+
 from rigid.convergence.cc_displacement import CC_Displacement
+from rigid.library.misc import copy_docstring
+from rigid.optimizer.GDWAS import GDWAS
+from rigid.structure import Structure
 
 
 class RIGID:
