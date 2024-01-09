@@ -26,12 +26,12 @@ class CC_Displacement(Criterion):
 
     """
 
-    def __init__(self, cutoff):
+    def __init__(self, cutoff=1e-6):
         """Initialize the Displacement convergence criterion.
 
         Parameters
         ----------
-        cutoff: number
+        cutoff: number, default:1e-6
             If all atoms move less than cutoff, the criterion is fulfilled; [Å]
 
         """

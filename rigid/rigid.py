@@ -1,9 +1,12 @@
 import pickle
 from ase.io.trajectory import Trajectory
 from ase.calculators.vasp.vasp import Vasp
+import warnings
 
 from rigid.library.misc import copy_docstring
 from rigid.structure import Structure
+from rigid.optimizer.GDWAS import GDWAS
+from rigid.convergence.cc_displacement import CC_Displacement
 
 
 class RIGID:
@@ -60,7 +63,7 @@ class RIGID:
         self.start_structure.define_fragment_by_indices(*args, **kwargs)
         print("New fragment defined using indices.")
 
-    def set_calculator(self, calculator, settings=None):
+    def set_calculator(self, calculator, settings={}):
         """Set the ASE Calculator to be used for optimizing the structure.
 
         Parameters
@@ -68,9 +71,9 @@ class RIGID:
         calculator: ase.calculators.calculator.Calculator or str
             The user can provide an ASE Calculator object or the name (string) of
             the calculator that shall be used.
-        settings: dict, default:None
+        settings: dict, default:{}
             If the calculator is defined using a string (see above), calculator settings
-            can be defined over using this parameter. If an ASE calculator is provided, this
+            can be defined using this parameter. If an ASE calculator is provided, this
             dictionary is ignored, the calculator is assumed to be already set up!
 
         Raises
@@ -79,7 +82,12 @@ class RIGID:
             If the provided calculator name (string) is not known.
 
         """
-        if type(calculator) == str:
+        if isinstance(calculator, str):
+            if settings == {}:
+                warnings.warn(
+                    "Warning: No calculator settings provided! Depending on the calculator, the calculation may fail."
+                )
+
             if calculator.lower() == "vasp":
                 calculator = Vasp(**settings)
             else:
@@ -90,31 +98,98 @@ class RIGID:
         self.calculator = calculator
         print("Calculator set to: ", str(type(self.calculator)))
         print("Calculator Settings:")
+        if self.calculator.parameters == {}:
+            print('   -')
         for entry in self.calculator.parameters:
-            print("   - " + str(entry) + ": " + str(settings[entry]))
+            print("   - " + str(entry) + ": " + str(self.calculator.parameters[entry]))
 
-    def set_optimizer(self, optimizer):
+    def set_optimizer(self, optimizer, settings={}):
         """Set the optimizer to be used for optimizing the structure.
 
         Parameters
         ----------
-        optimizer : optimizer.Optimizer
-            The used optimizer object
+        optimizer : optimizer.Optimizer or str
+            The user can provide an Optimizer object or the name (string) of
+            the optimizer that shall be used.
+        settings: dict, default:{}
+            If the optimizer is defined using a string (see above), optimizer settings
+            can be defined using this parameter. If an Optimizer object is provided, this
+            dictionary is ignored, the optimizer is assumed to be already set up!
+
+        Raises
+        ------
+        Exception
+            If the provided optimizer name (string) is not known.
 
         """
+        if isinstance(optimizer, str):
+            provided_optimizer_was_string = True
+            if settings == {}:
+                warnings.warn(
+                    "Warning: No optimizer settings provided! Using default settings."
+                )
+
+            if optimizer.lower() == "gdwas":
+                optimizer = GDWAS(**settings)
+            else:
+                raise Exception(
+                    "Optimizer not known... did you write the name correctly? Tip: Maybe initialize the optimizer in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
+                )
+
         self.optimizer = optimizer
         print("Optimizer set to: ", str(type(self.optimizer)))
+        print("Optimizer Settings:")
+        if provided_optimizer_was_string:
+            if settings == {}:
+                print('   - No settings provided!')
+            for entry in settings:
+                print("   - " + str(entry) + ": " + str(settings[entry]))
+        else:
+            print('   - Unknown, because an initialized optimizer was provided to RIGID.')
 
-    def set_convergence_criterion(self, convergence_criterion):
+    def set_convergence_criterion(self, convergence_criterion, settings={}):
         """Set the convergence criterion for optimizing the structure.
 
         Parameters
         ----------
-        convergence_criterion : convergence_criterion.Convergence_Criterion
-            The used convergence criterion object
+        convergence_criterion : convergence_criterion.Convergence_Criterion or str
+            The user can provide a convergence criterion object or the name (string) of
+            the convergence criterion that shall be used.
+        settings: dict, default:{}
+            If the convergence criterion is defined using a string (see above), convergence criterion settings
+            can be defined using this parameter. If a convergence criterion object is provided, this
+            dictionary is ignored, the convergence criterion is assumed to be already set up!
+
+        Raises
+        ------
+        Exception
+            If the provided convergence criterion name (string) is not known.
 
         """
+        if isinstance(convergence_criterion, str):
+            provided_convergence_criterion_was_string = True
+            if settings == {}:
+                warnings.warn(
+                    "Warning: No convergence criterion settings provided! Using default settings."
+                )
+
+            if convergence_criterion.lower() == "cc_displacement":
+                convergence_criterion = CC_Displacement(**settings)
+            else:
+                raise Exception(
+                    "Convergence criterion not known... did you write the name correctly? Tip: Maybe initialize the convergence criterion in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
+                )
+
         self.convergence_criterion = convergence_criterion
+        print("Convergence criterion set to: ", str(type(self.convergence_criterion)))
+        print("Convergence criterion Settings:")
+        if provided_convergence_criterion_was_string:
+            if settings == {}:
+                print('   - No settings provided!')
+            for entry in settings:
+                print("   - " + str(entry) + ": " + str(settings[entry]))
+        else:
+            print('   - Unknown, because an initialized convergence criterion was provided to RIGID.')
 
     def run(self):
         """Run the optimization"""
@@ -135,22 +210,26 @@ class RIGID:
     def save_optimization_history(self):
         """Save the optimization history (list of optimization steps) as a pickle file."""
         optimization_history = self.optimizer.optimization_history
-        f = open(self.name + ".pk", "wb")
+        fn = self.name + ".pk"
+        f = open(fn, "wb")
         pickle.dump(optimization_history, f)
         f.close()
+        print('Optimization history saved as pickle file: ', fn)
 
     def create_trajectory_file_from_optimization_history(self):
         """Creates and saves the trajectory file of the optimization."""
         optimization_history = self.optimizer.optimization_history
-        traj = Trajectory(self.name + ".traj", "w")
+        fn = self.name + ".traj"
+        traj = Trajectory(fn, "w")
         for optimization_step in optimization_history:
             traj.write(optimization_step.structure.atoms)
         traj.close()
+        print('Optimization trajectory saved as ', fn)
 
     def print_optimization_summary(self):
         """Print Information about the Optimization."""
 
         optimization_history = self.optimizer.optimization_history
-        energies = [step.energy for step in optimization_history]
-        print("Energies [eV]: ")
-        print(energies)
+        for iteration, step in enumerate(optimization_history):
+            print('Optimization Step '+str(iteration)+':')
+            print('   Energy [eV]: '+str(step.energy))
