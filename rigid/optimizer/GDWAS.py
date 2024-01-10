@@ -160,7 +160,7 @@ class GDWAS(Optimizer):
         self.calculator = calculator
         self.convergence_criterion = convergence_criterion
 
-        while not convergence_criterion.is_converged or self.iteration < self.max_iter:
+        while not convergence_criterion.is_converged and self.iteration < self.max_iter:
             # Get current structure (starting structure or updated structure from last step)
             if self.iteration == 0:
                 self.current_structure = deepcopy(start_structure)
