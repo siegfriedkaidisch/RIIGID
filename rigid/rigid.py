@@ -20,8 +20,8 @@ class RIGID:
     are then moved in accordance to these forces and torques (like rigid bodies). This way,
     the energy of this system of (rigid) fragments is minimized.
 
-    The user has to provide the structure, define the fragments and choose calculator,
-    optimizer and convergence criterion.
+    The user has to provide the structure, define the fragments and choose a calculator.
+    Optimizer and convergence criterion can be defined by the user, or be left default.
 
     Attributes
     ----------
@@ -35,7 +35,7 @@ class RIGID:
         The used ASE calculator object
     optimizer : optimizer.Optimizer
         The used optimizer object
-    convergence_criterion : convergence_criterion.Convergence_Criterion
+    convergence_criterion : convergence.Criterion
         The used convergence criterion object
 
     """
