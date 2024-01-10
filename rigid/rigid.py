@@ -1,5 +1,6 @@
 import pickle
 import warnings
+import time
 
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
@@ -221,6 +222,8 @@ class RIGID:
 
         """
         print()
+        time_start = time.time()
+
         # Raise exception, if no calculator was defined
         if self.calculator is None:
             raise Exception('No calculator defined! Please use RIGID.set_calculator.')
@@ -248,6 +251,12 @@ class RIGID:
 
         # Print some results
         self.print_optimization_summary()
+
+        # Print duration
+        print()
+        duration = (time.time() - time_start)/3600
+        print("Duration [h]: ", str(duration))
+        print()
 
         print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
         print("Finished RIGID geometry optimization of: ", self.name)
