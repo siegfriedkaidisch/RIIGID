@@ -55,6 +55,9 @@ class RIGID:
         """
         self.start_structure = Structure(atoms=atoms)
         self.name = name
+        self.calculator = None
+        self.optimizer = None
+        self.convergence_criterion = None
         print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
         print("RIGID geometry optimization of: ", self.name)
         print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
@@ -201,7 +204,28 @@ class RIGID:
             )
 
     def run(self):
-        """Run the optimization"""
+        """Run the optimization
+        
+        Raises
+        ------
+        Exception
+            If RIGID.calculator is None, i.e. if the calculator was not defined by the user.
+
+        """
+        # Raise exception, if no calculator was defined
+        if self.calculator is None:
+            raise Exception('No calculator defined! Please use RIGID.set_calculator.')
+
+        # Set default optimizer, if nothing was defined by user
+        if self.optimizer is None:
+            print('No optimizer defined by user... using default.')
+            self.set_optimizer(optimizer="GDWAS", settings={})
+
+        # Set default convergence criterion, if nothing was defined by user
+        if self.convergence_criterion is None:
+            print('No convergence criterion defined by user... using default.')
+            self.set_convergence_criterion(convergence_criterion="CC_Displacement", settings={})
+
         # Perform rigid optimization
         self.optimizer.run(
             start_structure=self.start_structure,
