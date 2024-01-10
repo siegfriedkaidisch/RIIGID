@@ -259,7 +259,7 @@ class RIGID:
         fn = self.name + ".traj"
         traj = Trajectory(fn, "w")
         for optimization_step in optimization_history:
-            traj.write(optimization_step.structure.atoms)
+            traj.write(atoms=optimization_step.structure.atoms, energy=optimization_step.energy)
         traj.close()
         print("Optimization trajectory saved as ", fn)
 
