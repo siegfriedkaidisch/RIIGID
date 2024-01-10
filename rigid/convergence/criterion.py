@@ -90,7 +90,7 @@ class Compound_Criterion(Criterion):
             How shall the two convergence criteria be combined?
 
         """
-        self.is_converged = False  # initialize as unfulfilled
+        super().__init__()
         self.cc1 = cc1
         self.cc2 = cc2
         self.operator = operator
