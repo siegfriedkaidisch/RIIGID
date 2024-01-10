@@ -127,7 +127,7 @@ class Structure:
         indices relative to original Structure.atoms?
 
         """
-        print("Not yet implemented")
+        raise Exception("Not yet implemented")
 
     def calculate_energy_and_forces(self, calculator):
         """Calculate forces on all atoms and total energy.

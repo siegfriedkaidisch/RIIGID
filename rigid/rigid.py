@@ -58,14 +58,16 @@ class RIGID:
         self.calculator = None
         self.optimizer = None
         self.convergence_criterion = None
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
         print("RIGID geometry optimization of: ", self.name)
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
 
     @copy_docstring(Structure.define_fragment_by_indices)
     def define_fragment_by_indices(self, *args, **kwargs):
+        print()
         self.start_structure.define_fragment_by_indices(*args, **kwargs)
         print("New fragment defined using indices.")
+        print()
 
     def set_calculator(self, calculator, settings={}):
         """Set the ASE Calculator to be used for optimizing the structure.
@@ -86,6 +88,7 @@ class RIGID:
             If the provided calculator name (string) is not known.
 
         """
+        print()
         if isinstance(calculator, str):
             if settings == {}:
                 warnings.warn(
@@ -106,6 +109,7 @@ class RIGID:
             print("   -")
         for entry in self.calculator.parameters:
             print("   - " + str(entry) + ": " + str(self.calculator.parameters[entry]))
+        print()
 
     def set_optimizer(self, optimizer, settings={}):
         """Set the optimizer to be used for optimizing the structure.
@@ -126,6 +130,7 @@ class RIGID:
             If the provided optimizer name (string) is not known.
 
         """
+        print()
         if isinstance(optimizer, str):
             provided_optimizer_was_string = True
             if settings == {}:
@@ -154,6 +159,7 @@ class RIGID:
             print(
                 "   - Unknown, because an initialized optimizer was provided to RIGID."
             )
+        print()
 
     def set_convergence_criterion(self, convergence_criterion, settings={}):
         """Set the convergence criterion for optimizing the structure.
@@ -174,6 +180,7 @@ class RIGID:
             If the provided convergence criterion name (string) is not known.
 
         """
+        print()
         if isinstance(convergence_criterion, str):
             provided_convergence_criterion_was_string = True
             if settings == {}:
@@ -202,6 +209,7 @@ class RIGID:
             print(
                 "   - Unknown, because an initialized convergence criterion was provided to RIGID."
             )
+        print()
 
     def run(self):
         """Run the optimization
@@ -212,6 +220,7 @@ class RIGID:
             If RIGID.calculator is None, i.e. if the calculator was not defined by the user.
 
         """
+        print()
         # Raise exception, if no calculator was defined
         if self.calculator is None:
             raise Exception('No calculator defined! Please use RIGID.set_calculator.')
@@ -240,21 +249,25 @@ class RIGID:
         # Print some results
         self.print_optimization_summary()
 
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
         print("Finished RIGID geometry optimization of: ", self.name)
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print()
 
     def save_optimization_history(self):
         """Save the optimization history (list of optimization steps) as a pickle file."""
+        print()
         optimization_history = self.optimizer.optimization_history
         fn = self.name + ".pk"
         f = open(fn, "wb")
         pickle.dump(optimization_history, f)
         f.close()
         print("Optimization history saved as pickle file: ", fn)
+        print()
 
     def create_trajectory_file_from_optimization_history(self):
         """Creates and saves the trajectory file of the optimization."""
+        print()
         optimization_history = self.optimizer.optimization_history
         fn = self.name + ".traj"
         traj = Trajectory(fn, "w")
@@ -262,11 +275,14 @@ class RIGID:
             traj.write(atoms=optimization_step.structure.atoms, energy=optimization_step.energy)
         traj.close()
         print("Optimization trajectory saved as ", fn)
+        print()
 
     def print_optimization_summary(self):
         """Print Information about the Optimization."""
+        print()
         print("Summary of Optimization:")
         optimization_history = self.optimizer.optimization_history
         for iteration, step in enumerate(optimization_history):
             print("Optimization Step " + str(iteration) + ":")
             print("   Energy [eV]: " + str(step.energy))
+        print()
