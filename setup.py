@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="RIGID.py",
     version="0.0.1",
-    description="Geometry optimization of an atomic system split into rigid fragments",
+    description="Geometry optimization of atomic systems split into rigid fragments",
     packages=find_packages(),
     license="MIT",
     python_requires=">3.8.0",
