@@ -63,3 +63,4 @@ class Optimizer:
                 print(
                     "   Optimizer did not converge within the maximal number of allowed iterations (optimizer.max_iter)."
                 )
+        print()

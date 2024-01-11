@@ -62,6 +62,7 @@ class RIGID:
         print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
         print("RIGID geometry optimization of: ", self.name)
         print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print()
 
     @copy_docstring(Structure.define_fragment_by_indices)
     def define_fragment_by_indices(self, *args, **kwargs):
@@ -107,7 +108,7 @@ class RIGID:
         print("Calculator set to: ", str(type(self.calculator)))
         print("Calculator Settings:")
         if self.calculator.parameters == {}:
-            print("   -")
+            print("   - calculator.parameters is empty")
         for entry in self.calculator.parameters:
             print("   - " + str(entry) + ": " + str(self.calculator.parameters[entry]))
         print()
@@ -153,7 +154,7 @@ class RIGID:
         print("Optimizer Settings:")
         if provided_optimizer_was_string:
             if settings == {}:
-                print("   - No settings provided!")
+                print("   - No settings provided - using defaults!")
             for entry in settings:
                 print("   - " + str(entry) + ": " + str(settings[entry]))
         else:
@@ -203,7 +204,7 @@ class RIGID:
         print("Convergence criterion Settings:")
         if provided_convergence_criterion_was_string:
             if settings == {}:
-                print("   - No settings provided!")
+                print("   - No settings provided - using defaults!")
             for entry in settings:
                 print("   - " + str(entry) + ": " + str(settings[entry]))
         else:
@@ -232,11 +233,13 @@ class RIGID:
         if self.optimizer is None:
             print('No optimizer defined by user... using default.')
             self.set_optimizer(optimizer="GDWAS", settings={})
+            print()
 
         # Set default convergence criterion, if nothing was defined by user
         if self.convergence_criterion is None:
             print('No convergence criterion defined by user... using default.')
             self.set_convergence_criterion(convergence_criterion="CC_Displacement", settings={})
+            print()
 
         # Perform rigid optimization
         self.optimizer.run(
