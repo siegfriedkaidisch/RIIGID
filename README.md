@@ -32,7 +32,7 @@ The user has to define the *atomic system* (as an ASE Atoms object), define the 
 RIGID comes with its own optimizers and convergence criteria. The user can choose explicitly which optimizer and convergence criterion to use, or keep the defaults.
 
 Information about the optimization is written to the standard output. 
-Additionally, and ASE trajectory file is produced. 
+Additionally, an ASE trajectory file is produced. 
 
 Have a look at the "demo" folder for working examples!
 Note, that for the demo to work, ASE must be able to execute your VASP installation, see https://wiki.fysik.dtu.dk/ase/ase/calculators/vasp.html#environment-variables.
