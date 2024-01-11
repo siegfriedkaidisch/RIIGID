@@ -1,1 +1,2 @@
-from .cc_displacement import CC_Displacement
+from .criterion import Criterion
+from .displacement import Criterion_Displacement

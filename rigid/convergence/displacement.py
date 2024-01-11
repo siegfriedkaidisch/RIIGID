@@ -1,9 +1,9 @@
 import numpy as np
 
-from rigid.convergence.criterion import Criterion
+from rigid.convergence import Criterion
 
 
-class CC_Displacement(Criterion):
+class Criterion_Displacement(Criterion):
     """RIGID convergence criterion: Displacement
 
     If all atoms move less than cutoff, the criterion is fulfilled.
@@ -45,7 +45,7 @@ class CC_Displacement(Criterion):
 
         Parameters
         ----------
-        optimization_history: list of optimization_step.Optimization_Step
+        optimization_history: list of rigid.Optimization_Step
             The history of the optimization, which shall be checked for convergence.
             (The optimization history is an attribute of the optimizer.)
 

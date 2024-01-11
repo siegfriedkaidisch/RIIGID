@@ -3,7 +3,7 @@ class Optimizer:
 
     Attributes
     ----------
-    optimization_history: list of optimization_step.Optimization_Step
+    optimization_history: list of rigid.Optimization_Step
         The history of the optimization, which shall be checked for convergence.
     iteration: int
         Counts the number of finished optimization steps
@@ -37,11 +37,11 @@ class Optimizer:
 
         Parameters
         ----------
-        start_structure: structure.Structure
+        start_structure: rigid.Structure
             The structure to be optimized
         calculator : ase.calculators.calculator.Calculator
             The used ASE calculator object
-        convergence_criterion : convergence_criterion.Convergence_Criterion
+        convergence_criterion : rigid.convergence.Criterion
             The used convergence criterion object
 
         """

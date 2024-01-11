@@ -53,7 +53,7 @@ def signed_angle_between_vectors(v1, v2, axis):
     # Next, calculate the sign of the angle.
     sign = np.sign(np.dot(np.cross(v1, v2), axis))
 
-    # Finally, adapt the angle, such that it is always positive and right-hand measured 
+    # Finally, adapt the angle, such that it is always positive and right-hand measured
     # around axis, from v1 to v2.
     if sign == 1:
         None
@@ -82,7 +82,7 @@ def rotmat(axis, angle):
     """
     angle *= np.pi / 180  # convert to rad
     axis = np.array(axis)
-    axis /= np.linalg.norm(axis) # normalize axis
+    axis /= np.linalg.norm(axis)  # normalize axis
 
     unit_mat = np.eye(3)
     cross_prod_mat = np.array(
@@ -154,7 +154,7 @@ def get_normal_vector_fragment(fragment):
 
     Parameters
     ----------
-    fragment: fragment.Fragment
+    fragment: rigid.Fragment
         The planar, non-linear fragment whose normal vector shall be calculated
 
     Returns

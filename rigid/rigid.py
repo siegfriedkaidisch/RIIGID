@@ -1,14 +1,14 @@
 import pickle
-import warnings
 import time
+import warnings
 
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
 
-from rigid.convergence.cc_displacement import CC_Displacement
+from rigid import Structure
+from rigid.convergence import Criterion_Displacement
 from rigid.library.misc import copy_docstring
-from rigid.optimizer.GDWAS import GDWAS
-from rigid.structure import Structure
+from rigid.optimizer import GDWAS
 
 
 class RIGID:
@@ -26,17 +26,15 @@ class RIGID:
 
     Attributes
     ----------
-    start_structure : ase.atoms.Atoms
-        The atoms forming the structure to be optimized.
-        This is an ase.Atoms object and should include the
-        correct unit cell (for periodic systems).
+    start_structure: rigid.Structure
+            The structure to be optimized
     name : str
         The name of the studied system.
     calculator : ase.calculators.calculator.Calculator
         The used ASE calculator object
-    optimizer : optimizer.Optimizer
+    optimizer : rigid.optimizer.Optimizer
         The used optimizer object
-    convergence_criterion : convergence.Criterion
+    convergence_criterion : rigid.convergence.Criterion
         The used convergence criterion object
 
     """
@@ -59,9 +57,13 @@ class RIGID:
         self.calculator = None
         self.optimizer = None
         self.convergence_criterion = None
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print(
+            "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
+        )
         print("RIGID geometry optimization of: ", self.name)
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print(
+            "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
+        )
         print()
 
     @copy_docstring(Structure.define_fragment_by_indices)
@@ -118,7 +120,7 @@ class RIGID:
 
         Parameters
         ----------
-        optimizer : optimizer.Optimizer or str
+        optimizer : rigid.optimizer.Optimizer or str
             The user can provide an Optimizer object or the name (string) of
             the optimizer that shall be used.
         settings: dict, default:{}
@@ -168,7 +170,7 @@ class RIGID:
 
         Parameters
         ----------
-        convergence_criterion : convergence_criterion.Convergence_Criterion or str
+        convergence_criterion : rigid.convergence.Criterion or str
             The user can provide a convergence criterion object or the name (string) of
             the convergence criterion that shall be used.
         settings: dict, default:{}
@@ -190,8 +192,8 @@ class RIGID:
                     "Warning: No convergence criterion settings provided! Using default settings."
                 )
 
-            if convergence_criterion.lower() == "cc_displacement":
-                convergence_criterion = CC_Displacement(**settings)
+            if convergence_criterion.lower() == "Criterion_Displacement":
+                convergence_criterion = Criterion_Displacement(**settings)
             else:
                 raise Exception(
                     "Convergence criterion not known... did you write the name correctly? Tip: Maybe initialize the convergence criterion in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
@@ -215,7 +217,7 @@ class RIGID:
 
     def run(self):
         """Run the optimization
-        
+
         Raises
         ------
         Exception
@@ -227,18 +229,20 @@ class RIGID:
 
         # Raise exception, if no calculator was defined
         if self.calculator is None:
-            raise Exception('No calculator defined! Please use RIGID.set_calculator.')
+            raise Exception("No calculator defined! Please use RIGID.set_calculator.")
 
         # Set default optimizer, if nothing was defined by user
         if self.optimizer is None:
-            print('No optimizer defined by user... using default.')
+            print("No optimizer defined by user... using default.")
             self.set_optimizer(optimizer="GDWAS", settings={})
             print()
 
         # Set default convergence criterion, if nothing was defined by user
         if self.convergence_criterion is None:
-            print('No convergence criterion defined by user... using default.')
-            self.set_convergence_criterion(convergence_criterion="CC_Displacement", settings={})
+            print("No convergence criterion defined by user... using default.")
+            self.set_convergence_criterion(
+                convergence_criterion="CC_Displacement", settings={}
+            )
             print()
 
         # Perform rigid optimization
@@ -257,13 +261,17 @@ class RIGID:
 
         # Print duration
         print()
-        duration = (time.time() - time_start)/3600
+        duration = (time.time() - time_start) / 3600
         print("Duration [h]: ", str(duration))
         print()
 
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print(
+            "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
+        )
         print("Finished RIGID geometry optimization of: ", self.name)
-        print("+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+")
+        print(
+            "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
+        )
         print()
 
     def save_optimization_history(self):
@@ -284,7 +292,9 @@ class RIGID:
         fn = self.name + ".traj"
         traj = Trajectory(fn, "w")
         for optimization_step in optimization_history:
-            traj.write(atoms=optimization_step.structure.atoms, energy=optimization_step.energy)
+            traj.write(
+                atoms=optimization_step.structure.atoms, energy=optimization_step.energy
+            )
         traj.close()
         print("Optimization trajectory saved as ", fn)
         print()

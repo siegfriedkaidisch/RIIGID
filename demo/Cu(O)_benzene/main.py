@@ -6,17 +6,19 @@ from ase.calculators.vasp.vasp import Vasp
 from ase.io.vasp import read_vasp
 
 from rigid import RIGID
-from rigid.convergence import CC_Displacement
-from rigid.library import get_atoms_indices_by_height
+from rigid.convergence import Criterion_Displacement
+from rigid.library.misc import get_atoms_indices_by_height
 from rigid.optimizer import GDWAS
 
-# User defines full system
+###############################################################################################
+
+# Define full system
 atoms = read_vasp(file="./POSCAR_start")
 
-# User instantiates a RIGID calculation object using an ASE atoms object of the full system
+# Instantiate a RIGID calculation object using an ASE atoms object of the full system
 rigid = RIGID(atoms=atoms, name="example")
 
-# User defines a fragment using the molecule's coordinates and defines what kind of motion is allowed
+# Define a fragment using the molecule's indices and define what kind of motion is allowed
 # Maybe at some point additional ways of defining fragments... e.g. by adding an additional atoms object
 middle_height = 9.0  # in Angstroem, used to separate molecule and surface
 molecule_indices = get_atoms_indices_by_height(
@@ -26,7 +28,9 @@ rigid.define_fragment_by_indices(
     indices=molecule_indices, allowed_translation="xy", allowed_rotation="z"
 )
 
-# User sets up the ASE calculator and its settings
+###############################################################################################
+
+# Set up the ASE calculator and its settings
 vasp_settings = {
     "directory": "./vasp/",
     "txt": "out",
@@ -66,7 +70,9 @@ vasp_settings = {
 calculator = Vasp(**vasp_settings)
 rigid.set_calculator(calculator)
 
-# User sets the RIGID optimizer and its settings
+###############################################################################################
+
+# Set the RIGID optimizer and its settings
 optimizer_settings = {
     "stepsize_factor_up": 1.2,
     "stepsize_factor_dn": 0.2,
@@ -77,15 +83,19 @@ optimizer_settings = {
     "angle_r0": 0.1,
     "respect_restrictions_r0": False,
     "seed_r0": 1234,
-    "max_iter": 100
+    "max_iter": 100,
 }
 optimizer = GDWAS(**optimizer_settings)  # gradient descent with adaptive stepsize
 rigid.set_optimizer(optimizer)
 
-# User sets the convergence criterion
+###############################################################################################
+
+# Set the convergence criterion
 convergence_settings = {"cutoff": 0.0001}
-convergence1 = CC_Displacement(**convergence_settings)
+convergence1 = Criterion_Displacement(**convergence_settings)
 rigid.set_convergence_criterion(convergence1)
+
+###############################################################################################
 
 # Start the rigid optimization
 rigid.run()
