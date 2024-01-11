@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from rigid import Fragment
+from rigid.fragment import Fragment
 from rigid.library.misc import get_indices_of_atoms1_in_atoms2
 
 

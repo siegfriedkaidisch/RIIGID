@@ -1,6 +1,6 @@
 import numpy as np
 
-from rigid.convergence import Criterion
+from rigid.convergence.criterion import Criterion
 
 
 class Criterion_Displacement(Criterion):

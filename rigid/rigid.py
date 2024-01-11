@@ -5,10 +5,10 @@ import warnings
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
 
-from rigid import Structure
-from rigid.convergence import Criterion_Displacement
+from rigid.structure import Structure
+from rigid.convergence.displacement import Criterion_Displacement
 from rigid.library.misc import copy_docstring
-from rigid.optimizer import GDWAS
+from rigid.optimizer.GDWAS import GDWAS
 
 
 class RIGID:

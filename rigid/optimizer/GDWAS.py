@@ -1,7 +1,7 @@
 from copy import copy, deepcopy
 
-from rigid import OptimizationStep
-from rigid.optimizer import Optimizer
+from rigid.optimization_step import OptimizationStep
+from rigid.optimizer.optimizer import Optimizer
 
 
 class GDWAS(Optimizer):
