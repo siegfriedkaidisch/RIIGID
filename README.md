@@ -44,4 +44,3 @@ For a list of known issues please see the [issues page on GitHub](https://github
 
 
 
-![Logo](https://github.com/siegfriedkaidisch/RIGID.py/blob/main/rigid/resources/images/logo.png)
