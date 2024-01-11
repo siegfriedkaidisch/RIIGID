@@ -192,7 +192,7 @@ class RIGID:
                     "Warning: No convergence criterion settings provided! Using default settings."
                 )
 
-            if convergence_criterion.lower() == "Criterion_Displacement":
+            if convergence_criterion.lower() == "criterion_displacement":
                 convergence_criterion = Criterion_Displacement(**settings)
             else:
                 raise Exception(
