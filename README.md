@@ -45,6 +45,6 @@ For a list of known issues please see the [issues page on GitHub](https://github
 ## Misc.
 
 The logo was created using
-<a href="https://www.freepik.com/free-vector/molecular-structure-background_1476249.htm#query=molecules&position=1&from_view=search&track=sph&uuid=42cb47de-2f1f-48d1-9783-79c1c0e54126#position=1&query=molecules">this Image by katemangostar</a> on Freepik
+<a href="https://www.freepik.com/free-vector/molecular-structure-background_1476249.htm#query=molecules&position=1&from_view=search&track=sph&uuid=42cb47de-2f1f-48d1-9783-79c1c0e54126#position=1&query=molecules">this Image by katemangostar</a> on Freepik.
 
 
