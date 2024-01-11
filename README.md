@@ -1,5 +1,6 @@
 # RIGID.py
 
+
 RIGID.py is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
 
 The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them, thus forming a rigid body. Using an ASE (https://wiki.fysik.dtu.dk/ase/) calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques (like rigid bodies). This way, the energy of this system of (rigid) fragments is minimized.
@@ -7,7 +8,7 @@ The structure under investigation is separated into so-called fragments, which a
 Author: Siegfried Kaidisch (siegfried.kaidisch(at)uni-graz.at)
 
 
-![](https://github.com/siegfriedkaidisch/RIGID.py/blob/main/demo/Cu(O)_benzene/demo_CU(O)_benzene.gif)
+![Demo Cu(O)_benzene](https://github.com/siegfriedkaidisch/RIGID.py/blob/main/demo/Cu(O)_benzene/demo_CU(O)_benzene.gif)
 
 ## Quickstart
 
