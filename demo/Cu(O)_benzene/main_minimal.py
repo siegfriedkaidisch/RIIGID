@@ -5,7 +5,7 @@
 from ase.io.vasp import read_vasp
 
 from rigid import RIGID
-from rigid.library import get_atoms_indices_by_height
+from rigid.library.misc import get_atoms_indices_by_height
 
 ###############################################################################################
 
