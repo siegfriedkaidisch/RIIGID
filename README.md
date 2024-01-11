@@ -1,5 +1,3 @@
-# RIGID.py
-
 ![Logo](https://github.com/siegfriedkaidisch/RIGID.py/blob/main/rigid/resources/images/rigid_bar.png)
 
 RIGID.py is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
