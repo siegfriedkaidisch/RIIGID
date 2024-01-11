@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="RIGID",
-    version="0.0.1a",
-    description="Geometry optimization of rigid molecules on rigid surfaces.",
+    name="RIGID.py",
+    version="0.0.1",
+    description="Geometry optimization of an atomic system split into rigid fragments",
     packages=find_packages(),
     license="MIT",
-    python_requires=">3.6.0",
-    url="https://github.com/siegfriedkaidisch/RIGID",
+    python_requires=">3.8.0",
+    url="https://github.com/siegfriedkaidisch/RIGID.py",
     author="Siegfried Kaidisch",
     author_email="siegfried.kaidisch@uni-graz.at",
     install_requires=["numpy", "ase"],
