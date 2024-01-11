@@ -40,3 +40,8 @@ Note, that for the demo to work, ASE must be able to execute your VASP installat
 ## Known issues
 
 For a list of known issues please see the [issues page on GitHub](https://github.com/siegfriedkaidisch/RIGID.py/issues), otherwise please open a new issue.
+
+
+
+
+![Logo]()
