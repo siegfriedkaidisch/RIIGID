@@ -135,7 +135,7 @@ class RIGID:
         if isinstance(optimizer, str):
             provided_optimizer_was_string = True
             if settings == {}:
-                warnings.warn(
+                print(
                     "Warning: No optimizer settings provided! Using default settings."
                 )
 
@@ -185,7 +185,7 @@ class RIGID:
         if isinstance(convergence_criterion, str):
             provided_convergence_criterion_was_string = True
             if settings == {}:
-                warnings.warn(
+                print(
                     "Warning: No convergence criterion settings provided! Using default settings."
                 )
 
