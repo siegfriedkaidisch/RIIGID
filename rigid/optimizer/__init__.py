@@ -1,2 +1,2 @@
-from .GDWAS import GDWAS
-from .optimizer import Optimizer
+from rigid.optimizer.GDWAS import GDWAS
+from rigid.optimizer.optimizer import Optimizer

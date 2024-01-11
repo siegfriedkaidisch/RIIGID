@@ -1,2 +1,2 @@
-from .criterion import Criterion
-from .displacement import Criterion_Displacement
+from rigid.convergence.criterion import Criterion
+from rigid.convergence.displacement import Criterion_Displacement
