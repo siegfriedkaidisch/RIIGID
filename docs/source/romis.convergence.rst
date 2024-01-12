@@ -1,9 +1,6 @@
 romis.convergence package
 =========================
 
-Submodules
-----------
-
 romis.convergence.criterion module
 ----------------------------------
 
@@ -20,10 +17,4 @@ romis.convergence.displacement module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: romis.convergence
-   :members:
-   :undoc-members:
-   :show-inheritance:

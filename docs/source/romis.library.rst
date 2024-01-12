@@ -1,9 +1,6 @@
 romis.library package
 =====================
 
-Submodules
-----------
-
 romis.library.misc module
 -------------------------
 
@@ -20,10 +17,4 @@ romis.library.rotation module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: romis.library
-   :members:
-   :undoc-members:
-   :show-inheritance:

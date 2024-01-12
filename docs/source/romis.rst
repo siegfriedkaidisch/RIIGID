@@ -1,10 +1,34 @@
-ROMIS
-=============
+Code Documentation
+==================
 
-Module contents
----------------
+romis.romis module
+------------------
 
-.. automodule:: romis
+.. automodule:: romis.romis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+romis.structure module
+----------------------
+
+.. automodule:: romis.structure
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+romis.fragment module
+---------------------
+
+.. automodule:: romis.fragment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+romis.optimization\_step module
+-------------------------------
+
+.. automodule:: romis.optimization_step
    :members:
    :undoc-members:
    :show-inheritance:
@@ -18,38 +42,3 @@ Subpackages
    romis.convergence
    romis.library
    romis.optimizer
-
-
-romis.fragment
----------------------
-
-.. automodule:: romis.fragment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-romis.optimization\_step
--------------------------------
-
-.. automodule:: romis.optimization_step
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-romis.romis
-------------------
-
-.. automodule:: romis.romis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-romis.structure
-----------------------
-
-.. automodule:: romis.structure
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
