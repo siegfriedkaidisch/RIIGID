@@ -38,7 +38,7 @@ def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
         set to True.
 
     Raises
-    ----
+    ------
     RuntimeError
         If some atoms have been found more than once, an exception is raised. This indicates an
         ill-defined Atoms object.
