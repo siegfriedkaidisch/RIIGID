@@ -1,11 +1,11 @@
 from copy import copy, deepcopy
 
-from rigid.optimization_step import OptimizationStep
-from rigid.optimizer.optimizer import Optimizer
+from romis.optimization_step import OptimizationStep
+from romis.optimizer.optimizer import Optimizer
 
 
 class GDWAS(Optimizer):
-    """RIGID optimizer: Gradient Descent with Adaptive Stepsize
+    """ROMIS optimizer: Gradient Descent with Adaptive Stepsize
 
     Calculates force and torque on each fragment and moves them accordingly (like rigid bodies).
 
@@ -34,7 +34,7 @@ class GDWAS(Optimizer):
 
     Attributes
     ----------
-    optimization_history: list of rigid.Optimization_Step
+    optimization_history: list of romis.Optimization_Step
         The history of the optimization, which shall be checked for convergence.
     iteration: int
         Counts the number of finished optimization steps
@@ -67,13 +67,13 @@ class GDWAS(Optimizer):
     max_iter: int
         The maximal number of optimization steps to be performed.
         If the calculation does not converge within this limit, it is stopped.
-    start_structure: rigid.Structure
+    start_structure: romis.Structure
             The structure to be optimized
     calculator : ase.calculators.calculator.Calculator
         The used ASE calculator object
-    convergence_criterion : rigid.convergence.Criterion
+    convergence_criterion : romis.convergence.Criterion
         The used convergence criterion object
-    current_structure: rigid.Structure
+    current_structure: romis.Structure
         The structure currently used by the optimizer
     current_energy: number
         The energy of current_structure; [eV]
@@ -145,11 +145,11 @@ class GDWAS(Optimizer):
 
         Parameters
         ----------
-        start_structure: rigid.Structure
+        start_structure: romis.Structure
             The structure to be optimized
         calculator : ase.calculators.calculator.Calculator
             The used ASE calculator object
-        convergence_criterion : rigid.convergence.criterion
+        convergence_criterion : romis.convergence.criterion
             The used convergence criterion object
 
         """

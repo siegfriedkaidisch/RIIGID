@@ -2,7 +2,7 @@ from copy import deepcopy
 
 
 class Criterion:
-    """Base class for RIGID convergence criteria
+    """Base class for ROMIS convergence criteria
 
     Attributes
     ----------
@@ -12,7 +12,7 @@ class Criterion:
     """
 
     def __init__(self):
-        """Initialize the RIGID convergence criterion."""
+        """Initialize the ROMIS convergence criterion."""
         self.is_converged = False  # initialize as unfulfilled
 
     def check(self, optimization_history):
@@ -22,7 +22,7 @@ class Criterion:
 
         Parameters
         ----------
-        optimization_history: list of rigid.Optimization_Step
+        optimization_history: list of romis.Optimization_Step
             The history of the optimization, which shall be checked for convergence.
             (The optimization history is an attribute of the optimizer.)
 
@@ -36,12 +36,12 @@ class Criterion:
 
         Parameters
         ----------
-        cc2: rigid.convergence.Criterion
+        cc2: romis.convergence.Criterion
             The second convergence criterion.
 
         Returns
         -------
-        rigid.convergence.Criterion
+        romis.convergence.Criterion
             The logical "and" of self and cc1
 
         """
@@ -54,12 +54,12 @@ class Criterion:
 
         Parameters
         ----------
-        cc2: rigid.convergence.Criterion
+        cc2: romis.convergence.Criterion
             The second convergence criterion.
 
         Returns
         -------
-        rigid.convergence.Criterion
+        romis.convergence.Criterion
             The logical "or" of self and cc1
 
         """
@@ -75,7 +75,7 @@ class Compound_Criterion(Criterion):
     ----------
     is_converged: bool
         Whether or not the convergence criterion is fulfilled.
-    cc1, cc2: rigid.convergence.Criterion
+    cc1, cc2: romis.convergence.Criterion
         The two convergence criteria to combine.
     operator: str, options: "and", "or"
         How shall the two convergence criteria be combined?
@@ -87,7 +87,7 @@ class Compound_Criterion(Criterion):
 
         Parameters
         ----------
-        cc1, cc2: rigid.convergence.Criterion
+        cc1, cc2: romis.convergence.Criterion
             The two convergence criteria to combine.
         operator: str, options: "and", "or"
             How shall the two convergence criteria be combined?
@@ -105,7 +105,7 @@ class Compound_Criterion(Criterion):
 
         Parameters
         ----------
-        optimization_history: list of rigid.Optimization_Step
+        optimization_history: list of romis.Optimization_Step
             The history of the optimization, which shall be checked for convergence.
             (The optimization history is an attribute of the optimizer.)
 

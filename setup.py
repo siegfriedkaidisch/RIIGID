@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="RIGID.py",
+    name="ROMIS",
     version="1.0.0a",
-    description="Geometry optimization of atomic systems split into rigid fragments",
+    description="Rigid Optimization of Molecular Interface Structures",
     packages=find_packages(),
     license="MIT",
     python_requires=">3.8.0",
-    url="https://github.com/siegfriedkaidisch/RIGID.py",
+    url="https://github.com/siegfriedkaidisch/ROMIS",
     author="Siegfried Kaidisch",
     author_email="siegfried.kaidisch@uni-graz.at",
     install_requires=["numpy", "ase"],

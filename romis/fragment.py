@@ -3,7 +3,7 @@ from copy import copy, deepcopy
 import numpy as np
 from ase import Atoms
 
-from rigid.library.rotation import (
+from romis.library.rotation import (
     angle_between_vectors,
     rotmat,
     signed_angle_between_vectors,
@@ -13,7 +13,7 @@ from rigid.library.rotation import (
 class Fragment:
     """A collection of atoms with frozen bonds between them.
 
-    In RIGID a structure is a set of atoms separated into disjunctive subsets called fragments.
+    In ROMIS a structure is a set of atoms separated into disjunctive subsets called fragments.
     The fragments are treated as rigid bodies, that is, the bonds between all atoms belonging to
     the same fragment are frozen.
     As already said, all these fragments together then form the structure.

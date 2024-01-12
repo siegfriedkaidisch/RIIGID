@@ -2,14 +2,14 @@ from copy import deepcopy
 
 import numpy as np
 
-from rigid.fragment import Fragment
-from rigid.library.misc import get_indices_of_atoms1_in_atoms2
+from romis.fragment import Fragment
+from romis.library.misc import get_indices_of_atoms1_in_atoms2
 
 
 class Structure:
     """Structure containing all the atoms and defined fragments.
 
-    In RIGID a structure is a set of atoms separated into disjunctive subsets called fragments.
+    In ROMIS a structure is a set of atoms separated into disjunctive subsets called fragments.
     The fragments are treated as rigid bodies, that is, the bonds between all atoms belonging to
     the same fragment are frozen.
     As already said, all these fragments together then form the structure.
@@ -21,15 +21,15 @@ class Structure:
     ----------
     atoms: ase.atoms.Atoms
         All atoms forming the structure, i.e, sum of all fragments.atoms (incl. rest_fragment).
-    fragments: list of rigid.Fragment
+    fragments: list of romis.Fragment
         All fragments that have been defined.
-    rest_fragment: rigid.Fragment
+    rest_fragment: romis.Fragment
         All atoms that haven't been assigned a specific fragment together form the rest_fragment.
 
     """
 
     def __init__(self, atoms):
-        """Initialize RIGID structure object.
+        """Initialize ROMIS structure object.
 
         Parameters
         ----------
@@ -48,9 +48,9 @@ class Structure:
     def define_fragment_by_indices(
         self, indices, allowed_translation, allowed_rotation
     ):
-        """Define a RIGID fragment by its indices.
+        """Define a ROMIS fragment by its indices.
 
-        Define a new fragment by telling RIGID the indices of the atoms (indices relative to
+        Define a new fragment by telling ROMIS the indices of the atoms (indices relative to
         Structure.atoms) that shall form the new fragment.
 
         Note

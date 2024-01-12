@@ -5,14 +5,14 @@ import warnings
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
 
-from rigid.structure import Structure
-from rigid.convergence.displacement import Criterion_Displacement
-from rigid.library.misc import copy_docstring
-from rigid.optimizer.GDWAS import GDWAS
+from romis.structure import Structure
+from romis.convergence.displacement import Criterion_Displacement
+from romis.library.misc import copy_docstring
+from romis.optimizer.GDWAS import GDWAS
 
 
-class RIGID:
-    """RIGID Geometry Optimization
+class ROMIS:
+    """Rigid Optimization of Molecular Interface Structures
 
     The structure under investigation is separated into so-called fragments, which are a
     set of atoms with fixed bonds between them, thus forming a rigid body. Using an ASE
@@ -26,21 +26,21 @@ class RIGID:
 
     Attributes
     ----------
-    start_structure: rigid.Structure
+    start_structure: romis.Structure
             The structure to be optimized
     name : str
         The name of the studied system.
     calculator : ase.calculators.calculator.Calculator
         The used ASE calculator object
-    optimizer : rigid.optimizer.Optimizer
+    optimizer : romis.optimizer.Optimizer
         The used optimizer object
-    convergence_criterion : rigid.convergence.Criterion
+    convergence_criterion : romis.convergence.Criterion
         The used convergence criterion object
 
     """
 
     def __init__(self, atoms, name):
-        """Initialize a RIGID geometry optimization.
+        """Initialize a ROMIS geometry optimization.
 
         Parameters
         ----------
@@ -60,7 +60,7 @@ class RIGID:
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
-        print("RIGID geometry optimization of: ", self.name)
+        print("ROMIS geometry optimization of: ", self.name)
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
@@ -103,7 +103,7 @@ class RIGID:
                 calculator = Vasp(**settings)
             else:
                 raise Exception(
-                    "Calculator not known... did you write the name correctly? Tip: Maybe initialize the calculator in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
+                    "Calculator not known... did you write the name correctly? Tip: Maybe initialize the calculator in your code and hand it to ROMIS, instead of handing its name (string) to ROMIS."
                 )
 
         self.calculator = calculator
@@ -120,7 +120,7 @@ class RIGID:
 
         Parameters
         ----------
-        optimizer : rigid.optimizer.Optimizer or str
+        optimizer : romis.optimizer.Optimizer or str
             The user can provide an Optimizer object or the name (string) of
             the optimizer that shall be used.
         settings: dict, default:{}
@@ -146,7 +146,7 @@ class RIGID:
                 optimizer = GDWAS(**settings)
             else:
                 raise Exception(
-                    "Optimizer not known... did you write the name correctly? Tip: Maybe initialize the optimizer in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
+                    "Optimizer not known... did you write the name correctly? Tip: Maybe initialize the optimizer in your code and hand it to ROMIS, instead of handing its name (string) to ROMIS."
                 )
         else:
             provided_optimizer_was_string = False
@@ -161,7 +161,7 @@ class RIGID:
                 print("   - " + str(entry) + ": " + str(settings[entry]))
         else:
             print(
-                "   - Unknown, because an initialized optimizer was provided to RIGID."
+                "   - Unknown, because an initialized optimizer was provided to ROMIS."
             )
         print()
 
@@ -170,7 +170,7 @@ class RIGID:
 
         Parameters
         ----------
-        convergence_criterion : rigid.convergence.Criterion or str
+        convergence_criterion : romis.convergence.Criterion or str
             The user can provide a convergence criterion object or the name (string) of
             the convergence criterion that shall be used.
         settings: dict, default:{}
@@ -196,7 +196,7 @@ class RIGID:
                 convergence_criterion = Criterion_Displacement(**settings)
             else:
                 raise Exception(
-                    "Convergence criterion not known... did you write the name correctly? Tip: Maybe initialize the convergence criterion in your code and hand it to RIGID, instead of handing its name (string) to RIGID."
+                    "Convergence criterion not known... did you write the name correctly? Tip: Maybe initialize the convergence criterion in your code and hand it to ROMIS, instead of handing its name (string) to ROMIS."
                 )
         else:
             provided_convergence_criterion_was_string = False
@@ -211,7 +211,7 @@ class RIGID:
                 print("   - " + str(entry) + ": " + str(settings[entry]))
         else:
             print(
-                "   - Unknown, because an initialized convergence criterion was provided to RIGID."
+                "   - Unknown, because an initialized convergence criterion was provided to ROMIS."
             )
         print()
 
@@ -221,7 +221,7 @@ class RIGID:
         Raises
         ------
         Exception
-            If RIGID.calculator is None, i.e. if the calculator was not defined by the user.
+            If ROMIS.calculator is None, i.e. if the calculator was not defined by the user.
 
         """
         print()
@@ -229,7 +229,7 @@ class RIGID:
 
         # Raise exception, if no calculator was defined
         if self.calculator is None:
-            raise Exception("No calculator defined! Please use RIGID.set_calculator.")
+            raise Exception("No calculator defined! Please use ROMIS.set_calculator.")
 
         # Set default optimizer, if nothing was defined by user
         if self.optimizer is None:
@@ -245,7 +245,7 @@ class RIGID:
             )
             print()
 
-        # Perform rigid optimization
+        # Perform ROMIS optimization
         self.optimizer.run(
             start_structure=self.start_structure,
             calculator=self.calculator,
@@ -269,7 +269,7 @@ class RIGID:
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
-        print("Finished RIGID geometry optimization of: ", self.name)
+        print("Finished ROMIS geometry optimization of: ", self.name)
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )

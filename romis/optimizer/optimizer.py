@@ -1,9 +1,9 @@
 class Optimizer:
-    """Base class for RIGID optimizers
+    """Base class for ROMIS optimizers
 
     Attributes
     ----------
-    optimization_history: list of rigid.Optimization_Step
+    optimization_history: list of romis.Optimization_Step
         The history of the optimization, which shall be checked for convergence.
     iteration: int
         Counts the number of finished optimization steps
@@ -19,7 +19,7 @@ class Optimizer:
     """
 
     def __init__(self, max_iter):
-        """Initialize a RIGID optimizer.
+        """Initialize a ROMIS optimizer.
 
         Parameters
         ----------
@@ -37,11 +37,11 @@ class Optimizer:
 
         Parameters
         ----------
-        start_structure: rigid.Structure
+        start_structure: romis.Structure
             The structure to be optimized
         calculator : ase.calculators.calculator.Calculator
             The used ASE calculator object
-        convergence_criterion : rigid.convergence.Criterion
+        convergence_criterion : romis.convergence.Criterion
             The used convergence criterion object
 
         """
