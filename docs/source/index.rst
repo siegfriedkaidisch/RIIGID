@@ -12,7 +12,9 @@ ROMIS is a geometry optimization package intended to be used in theoretical soli
    :maxdepth: 2
    :caption: Contents:
 
-   romis
+   Introduction <introduction>
+   Code Documentation <romis>
+
 
 
 Indices and tables
