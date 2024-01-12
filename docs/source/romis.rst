@@ -1,5 +1,13 @@
-romis package
+ROMIS
 =============
+
+Module contents
+---------------
+
+.. automodule:: romis
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Subpackages
 -----------
@@ -11,10 +19,8 @@ Subpackages
    romis.library
    romis.optimizer
 
-Submodules
-----------
 
-romis.fragment module
+romis.fragment
 ---------------------
 
 .. automodule:: romis.fragment
@@ -22,7 +28,7 @@ romis.fragment module
    :undoc-members:
    :show-inheritance:
 
-romis.optimization\_step module
+romis.optimization\_step
 -------------------------------
 
 .. automodule:: romis.optimization_step
@@ -30,7 +36,7 @@ romis.optimization\_step module
    :undoc-members:
    :show-inheritance:
 
-romis.romis module
+romis.romis
 ------------------
 
 .. automodule:: romis.romis
@@ -38,7 +44,7 @@ romis.romis module
    :undoc-members:
    :show-inheritance:
 
-romis.structure module
+romis.structure
 ----------------------
 
 .. automodule:: romis.structure
@@ -46,10 +52,4 @@ romis.structure module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
 
-.. automodule:: romis
-   :members:
-   :undoc-members:
-   :show-inheritance:

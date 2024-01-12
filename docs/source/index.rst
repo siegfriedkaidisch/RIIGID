@@ -6,11 +6,13 @@
 Welcome to ROMIS's documentation!
 =================================
 
+ROMIS is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   romis
 
 
 Indices and tables
