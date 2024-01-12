@@ -9,7 +9,9 @@
 import os
 import sys
 
+#sys.path.insert(0, os.path.abspath("../romis/"))
 sys.path.insert(0, os.path.abspath(".."))
+
 
 project = 'ROMIS'
 copyright = '2024, Siegfried Kaidisch'
@@ -19,8 +21,8 @@ release = '1.0.0a0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.autodoc","sphinx_rtd_theme"]
-#extensions = ["sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.autodoc"]
+extensions = ["sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.autodoc",'sphinx.ext.napoleon',"sphinx_rtd_theme"]
+#extensions = ["sphinx.ext.todo","sphinx.ext.viewcode","sphinx.ext.autodoc,'sphinx.ext.napoleon'"]
 
 
 templates_path = ['_templates']
