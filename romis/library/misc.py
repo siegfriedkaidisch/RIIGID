@@ -89,7 +89,6 @@ def copy_docstring(take_from_fct):
     >>>
     >>> help(fun2)
     Help on function fun2 in module __main__:
-
     fun2()
     This function has a docstring!
 
