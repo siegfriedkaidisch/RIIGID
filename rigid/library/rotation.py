@@ -79,6 +79,10 @@ def rotmat(axis, angle):
     numpy.ndarray of shape (3,3)
         The rotation matrix
 
+    References
+    ----------
+    Cole, Ian R. (2015). Modelling CPV. Loughborough University. Thesis. https://hdl.handle.net/2134/18050 
+
     """
     angle *= np.pi / 180  # convert to rad
     axis = np.array(axis)
