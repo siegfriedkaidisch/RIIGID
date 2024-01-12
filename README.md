@@ -2,7 +2,7 @@
 
 RIGID.py is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
 
-The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them, thus forming a rigid body. Using an ASE (https://wiki.fysik.dtu.dk/ase/) calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques (like rigid bodies). This way, the energy of this system of (rigid) fragments is minimized.
+The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them, thus forming a rigid body. Using an ASE (https://wiki.fysik.dtu.dk/ase/) calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques. This way, the energy of this system of (rigid) fragments is minimized.
 
 Author: Siegfried Kaidisch (siegfried.kaidisch(at)uni-graz.at)
 
@@ -11,7 +11,18 @@ Author: Siegfried Kaidisch (siegfried.kaidisch(at)uni-graz.at)
 
 ## Quickstart
 
-    pip install rigid.py
+    from rigid import RIGID
+
+    atoms = <an ASE Atoms object>
+    indices = <list of indices of atoms to form a Fragment>
+    name = "free to choose, e.g.: the name of the system"
+    calculator_name = "the name of the calculator you want to use"
+    calculator_settings = <dict of calculator settings>
+
+    rigid = RIGID(atoms=atoms, name=name)
+    rigid.define_fragment_by_indices(indices=indices, allowed_translation="xyz", allowed_rotation="xyz")
+    rigid.set_calculator(calculator=calculator_name, settings=calculator_settings)
+    rigid.run()
 
 ## Installation
     
