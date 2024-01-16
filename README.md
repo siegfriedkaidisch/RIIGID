@@ -1,6 +1,6 @@
 ![Logo](https://github.com/siegfriedkaidisch/RIIGID/blob/main/riigid/resources/images/riigid_bar.png)
 
-RIIGID is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
+RIIGID.py is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
 
 The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them (usually molecules), thus forming a rigid body. Using an [ASE](https://wiki.fysik.dtu.dk/ase/) calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques. This way, the energy of this system of (rigid) fragments is minimized.
 
