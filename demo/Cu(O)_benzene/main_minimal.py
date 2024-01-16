@@ -1,4 +1,4 @@
-"""Minimal example of a RIIGID.py geometry optimization
+"""Minimal example of a RIIGID geometry optimization
 
 """
 

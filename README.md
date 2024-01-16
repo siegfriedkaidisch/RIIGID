@@ -1,6 +1,6 @@
-![Logo](https://github.com/siegfriedkaidisch/RIIGID.py/blob/main/riigid/resources/images/riigid_bar.png)
+![Logo](https://github.com/siegfriedkaidisch/RIIGID/blob/main/riigid/resources/images/riigid_bar.png)
 
-RIIGID.py is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
+RIIGID is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
 
 The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them (usually molecules), thus forming a rigid body. Using an [ASE](https://wiki.fysik.dtu.dk/ase/) calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques. This way, the energy of this system of (rigid) fragments is minimized.
 
@@ -9,7 +9,7 @@ The structure under investigation is separated into so-called fragments, which a
 Author: Siegfried Kaidisch (siegfried.kaidisch(at)uni-graz.at)
 
 
-![Demo Cu(O)_benzene](https://github.com/siegfriedkaidisch/RIIGID.py/blob/main/demo/Cu(O)_benzene/demo_CU(O)_benzene.gif)
+![Demo Cu(O)_benzene](https://github.com/siegfriedkaidisch/RIIGID/blob/main/demo/Cu(O)_benzene/demo_CU(O)_benzene.gif)
 
 ## Quickstart
 
@@ -32,19 +32,19 @@ riigid.run()
     
 From PyPI:
 
-    pip install riigid.py
+    pip install RIIGID
 
 From GitHub:
 
-    git clone https://github.com/siegfriedkaidisch/RIIGID.py
-    cd RIIGID.py
+    git clone https://github.com/siegfriedkaidisch/RIIGID
+    cd RIIGID
     pip install .
 
 ## Usage
     
-The user has to define the *atomic system* (as an ASE Atoms object), define the *fragments* and choose a *calculator*. Thanks to RIIGID.py's reliance on the ASE package, many different atomic structure codes (e.g.: [VASP](https://www.vasp.at/)) can be used as a calculator.
+The user has to define the *atomic system* (as an ASE Atoms object), define the *fragments* and choose a *calculator*. Thanks to RIIGID's reliance on the ASE package, many different atomic structure codes (e.g.: [VASP](https://www.vasp.at/)) can be used as a calculator.
 
-RIIGID.py comes with its own optimizers and convergence criteria. The user can choose explicitly which optimizer and convergence criterion to use, or keep the defaults.
+RIIGID comes with its own optimizers and convergence criteria. The user can choose explicitly which optimizer and convergence criterion to use, or keep the defaults.
 
 Information about the optimization is written to the standard output. 
 Additionally, an ASE trajectory file is produced. 
@@ -54,7 +54,7 @@ Note, that for the demo to work, ASE must be able to execute your VASP installat
 
 ## Known issues
 
-For a list of known issues please see the [issues page on GitHub](https://github.com/siegfriedkaidisch/RIIGID.py/issues), otherwise please open a new issue.
+For a list of known issues please see the [issues page on GitHub](https://github.com/siegfriedkaidisch/RIIGID/issues), otherwise please open a new issue.
 
 
 ## Misc.

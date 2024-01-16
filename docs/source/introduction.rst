@@ -1,7 +1,7 @@
 Introduction
 ============
 
-RIIGID.py is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
+RIIGID is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
 
 The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them (usually molecules), thus forming a rigid body. Using an `ASE <https://wiki.fysik.dtu.dk/ase/>`_ calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques. This way, the energy of this system of (rigid) fragments is minimized.
 
@@ -42,29 +42,29 @@ From PyPI:
 From GitHub:
 ::
 
-    git clone https://github.com/siegfriedkaidisch/RIIGID.py
-    cd RIIGID.py
+    git clone https://github.com/siegfriedkaidisch/RIIGID
+    cd RIIGID
     pip install .
 
 
 Usage
 -----
 
-The user has to define the *atomic system* (as an ASE Atoms object), define the *fragments* and choose a *calculator*. Thanks to RIIGID.py's reliance on the ASE package, many different atomic structure codes (e.g.: `VASP <https://www.vasp.at/>`_) can be used as a calculator.
+The user has to define the *atomic system* (as an ASE Atoms object), define the *fragments* and choose a *calculator*. Thanks to RIIGID's reliance on the ASE package, many different atomic structure codes (e.g.: `VASP <https://www.vasp.at/>`_) can be used as a calculator.
 
-RIIGID.py comes with its own optimizers and convergence criteria. The user can choose explicitly which optimizer and convergence criterion to use, or keep the defaults.
+RIIGID comes with its own optimizers and convergence criteria. The user can choose explicitly which optimizer and convergence criterion to use, or keep the defaults.
 
 Information about the optimization is written to the standard output. 
 Additionally, an ASE trajectory file is produced. 
 
-Have a look at the `demo folder <https://github.com/siegfriedkaidisch/RIIGID.py/tree/main/demo>`_ for working examples!
+Have a look at the `demo folder <https://github.com/siegfriedkaidisch/RIIGID/tree/main/demo>`_ for working examples!
 Note, that for the demo to work, ASE must be able to execute your VASP installation, see the `ASE documentation <https://wiki.fysik.dtu.dk/ase/ase/calculators/vasp.html#environment-variables.>`_
 
 
 Known issues
 ------------
 
-For a list of known issues please see the `issues page on GitHub <https://github.com/siegfriedkaidisch/RIIGID.py/issues>`_, otherwise please open a new issue.
+For a list of known issues please see the `issues page on GitHub <https://github.com/siegfriedkaidisch/RIIGID/issues>`_, otherwise please open a new issue.
 
 Misc.
 -----

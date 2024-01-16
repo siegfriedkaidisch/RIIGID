@@ -9,7 +9,7 @@ from riigid.library.misc import get_indices_of_atoms1_in_atoms2
 class Structure:
     """Structure containing all the atoms and defined fragments.
 
-    In RIIGID.py a structure is a set of atoms separated into disjunctive subsets called fragments.
+    In RIIGID a structure is a set of atoms separated into disjunctive subsets called fragments.
     The fragments are treated as rigid bodies, that is, the bonds between all atoms belonging to
     the same fragment are frozen.
     As already said, all these fragments together then form the structure.

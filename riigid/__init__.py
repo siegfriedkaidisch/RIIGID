@@ -1,13 +1,13 @@
 """
-RIIGID.py
+RIIGID
 =====
 
 RIgid Interface Geometry IDentification in Python
 ----------------------------------------------------
 
-Introduction to RIIGID.py: https://github.com/siegfriedkaidisch/RIIGID.py
+Introduction to RIIGID: https://github.com/siegfriedkaidisch/RIIGID
 
-Detailed explanations on how to use RIIGID.py are given in the docstrings within the Code.
+Detailed explanations on how to use RIIGID are given in the docstrings within the Code.
 
 Author: Siegfried Kaidisch (siegfried.kaidisch(at)uni-graz.at)
 

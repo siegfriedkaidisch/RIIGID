@@ -9,7 +9,7 @@
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="riigid_bar.svg"
-   inkscape:export-filename="/home/siegfried_kaidisch/Documents/GitHub/RIIGID.py/riigid/resources/images/riigid_bar.png"
+   inkscape:export-filename="/home/siegfried_kaidisch/Documents/GitHub/RIIGID/riigid/resources/images/riigid_bar.png"
    inkscape:export-xdpi="400"
    inkscape:export-ydpi="400"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -104,14 +104,14 @@
          x="32.832424"
          y="17.933863"
          id="text7329"
-         inkscape:export-filename="/home/siegfried_kaidisch/Documents/GitHub/RIIGID.py/riigid/resources/images/text7329.png"
+         inkscape:export-filename="/home/siegfried_kaidisch/Documents/GitHub/RIIGID/riigid/resources/images/text7329.png"
          inkscape:export-xdpi="1102.999"
          inkscape:export-ydpi="1102.999"><tspan
            sodipodi:role="line"
            id="tspan7327"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.9333px;font-family:NATS;-inkscape-font-specification:'NATS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0f7171;fill-opacity:1;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none"
            x="32.832424"
-           y="17.933863">RIIGID.py</tspan><tspan
+           y="17.933863">RIIGID</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.7px;font-family:NATS;-inkscape-font-specification:'NATS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0f7171;fill-opacity:1;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none"
            x="32.832424"
