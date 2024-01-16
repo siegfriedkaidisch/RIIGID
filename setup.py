@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="ROMIS",
+    name="RIIGID.py",
     version="1.0.0a",
-    description="Rigid Optimization of Molecular Interface Structures",
+    description="RIgid Interface Geometry IDentification in Python",
     packages=find_packages(),
     license="MIT",
     python_requires=">3.8.0",
-    url="https://github.com/siegfriedkaidisch/ROMIS",
+    url="https://github.com/siegfriedkaidisch/RIIGID.py",
     author="Siegfried Kaidisch",
     author_email="siegfried.kaidisch@uni-graz.at",
     install_requires=["numpy", "ase"],

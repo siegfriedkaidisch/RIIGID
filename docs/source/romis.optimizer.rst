@@ -1,18 +1,18 @@
-romis.optimizer package
+riigid.optimizer package
 =======================
 
-romis.optimizer.GDWAS module
+riigid.optimizer.GDWAS module
 ----------------------------
 
-.. automodule:: romis.optimizer.GDWAS
+.. automodule:: riigid.optimizer.GDWAS
    :members:
    :undoc-members:
    :show-inheritance:
 
-romis.optimizer.optimizer module
+riigid.optimizer.optimizer module
 --------------------------------
 
-.. automodule:: romis.optimizer.optimizer
+.. automodule:: riigid.optimizer.optimizer
    :members:
    :undoc-members:
    :show-inheritance:

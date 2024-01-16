@@ -4,7 +4,7 @@
 import numpy as np
 
 ######################################################################################################################
-# The following functions are currently used by ROMIS.
+# The following functions are currently used by RIIGID.
 
 
 def get_indices_of_atoms1_in_atoms2(atoms1, atoms2, cutoff=1e-4):
@@ -103,7 +103,7 @@ def copy_docstring(take_from_fct):
 
 
 ######################################################################################################################
-# The following functions are currently not used by ROMIS
+# The following functions are currently not used by RIIGID
 # They are still stored here, for possible future purposes
 
 

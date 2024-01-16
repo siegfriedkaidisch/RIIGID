@@ -1,19 +1,19 @@
-"""Minimal example of a ROMIS geometry optimization
+"""Minimal example of a RIIGID.py geometry optimization
 
 """
 
 from ase.io.vasp import read_vasp
 
-from romis import ROMIS
-from romis.library.misc import get_atoms_indices_by_height
+from riigid import RIIGID
+from riigid.library.misc import get_atoms_indices_by_height
 
 ###############################################################################################
 
 # Define full system
 atoms = read_vasp(file="./POSCAR_start")
 
-# Instantiate a ROMIS calculation object using an ASE atoms object of the full system
-romis = ROMIS(atoms=atoms, name="example")
+# Instantiate a RIIGID calculation object using an ASE atoms object of the full system
+riigid = RIIGID(atoms=atoms, name="example")
 
 # Define a fragment using the molecule's indices and define what kind of motion is allowed
 # Maybe at some point additional ways of defining fragments... e.g. by adding an additional atoms object
@@ -21,7 +21,7 @@ middle_height = 9.0  # in Angstroem, used to separate molecule and surface
 molecule_indices = get_atoms_indices_by_height(
     all_atoms=atoms, middle_height=middle_height, above=True, direction="z"
 )
-romis.define_fragment_by_indices(
+riigid.define_fragment_by_indices(
     indices=molecule_indices, allowed_translation="xy", allowed_rotation="z"
 )
 
@@ -64,9 +64,9 @@ vasp_settings = {
     "gamma": True,  # Gamma-centered k-mesh
     "setups": "recommended",
 }
-romis.set_calculator(calculator="Vasp", settings=vasp_settings)
+riigid.set_calculator(calculator="Vasp", settings=vasp_settings)
 
 ###############################################################################################
 
-# Start the ROMIS optimization
-romis.run()
+# Start the RIIGID optimization
+riigid.run()

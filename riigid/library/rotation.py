@@ -1,4 +1,4 @@
-"""A collection of functions related to the rotation of fragments in ROMIS.
+"""A collection of functions related to the rotation of fragments in RIIGID.
 
 They are stored here, in a separate file, because they may also be useful somewhere else than just 
 inside the Fragment class.
@@ -7,7 +7,7 @@ inside the Fragment class.
 import numpy as np
 
 ######################################################################################################################
-# The following functions are currently used by ROMIS.
+# The following functions are currently used by RIIGID.
 
 
 def angle_between_vectors(v1, v2):
@@ -102,7 +102,7 @@ def rotmat(axis, angle):
 
 
 ######################################################################################################################
-# The following functions are currently not used by ROMIS
+# The following functions are currently not used by RIIGID
 # They are still stored here, for possible future purposes
 
 
@@ -158,7 +158,7 @@ def get_normal_vector_fragment(fragment):
 
     Parameters
     ----------
-    fragment: romis.Fragment
+    fragment: riigid.Fragment
         The planar, non-linear fragment whose normal vector shall be calculated
 
     Returns

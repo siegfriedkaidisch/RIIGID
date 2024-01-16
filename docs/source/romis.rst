@@ -1,34 +1,34 @@
 Code Documentation
 ==================
 
-romis.romis module
+riigid.riigid module
 ------------------
 
-.. automodule:: romis.romis
+.. automodule:: riigid.riigid
    :members:
    :undoc-members:
    :show-inheritance:
 
-romis.structure module
+riigid.structure module
 ----------------------
 
-.. automodule:: romis.structure
+.. automodule:: riigid.structure
    :members:
    :undoc-members:
    :show-inheritance:
 
-romis.fragment module
+riigid.fragment module
 ---------------------
 
-.. automodule:: romis.fragment
+.. automodule:: riigid.fragment
    :members:
    :undoc-members:
    :show-inheritance:
 
-romis.optimization\_step module
+riigid.optimization\_step module
 -------------------------------
 
-.. automodule:: romis.optimization_step
+.. automodule:: riigid.optimization_step
    :members:
    :undoc-members:
    :show-inheritance:
@@ -39,6 +39,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   romis.convergence
-   romis.library
-   romis.optimizer
+   riigid.convergence
+   riigid.library
+   riigid.optimizer

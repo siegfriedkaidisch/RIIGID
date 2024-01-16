@@ -1,18 +1,18 @@
-romis.convergence package
+riigid.convergence package
 =========================
 
-romis.convergence.criterion module
+riigid.convergence.criterion module
 ----------------------------------
 
-.. automodule:: romis.convergence.criterion
+.. automodule:: riigid.convergence.criterion
    :members:
    :undoc-members:
    :show-inheritance:
 
-romis.convergence.displacement module
+riigid.convergence.displacement module
 -------------------------------------
 
-.. automodule:: romis.convergence.displacement
+.. automodule:: riigid.convergence.displacement
    :members:
    :undoc-members:
    :show-inheritance:

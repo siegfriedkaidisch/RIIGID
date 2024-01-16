@@ -1,10 +1,10 @@
 import numpy as np
 
-from romis.convergence.criterion import Criterion
+from riigid.convergence.criterion import Criterion
 
 
 class Criterion_Displacement(Criterion):
-    """ROMIS convergence criterion: Displacement
+    """RIIGID convergence criterion: Displacement
 
     If all atoms move less than cutoff, the criterion is fulfilled.
 
@@ -45,7 +45,7 @@ class Criterion_Displacement(Criterion):
 
         Parameters
         ----------
-        optimization_history: list of romis.Optimization_Step
+        optimization_history: list of riigid.Optimization_Step
             The history of the optimization, which shall be checked for convergence.
             (The optimization history is an attribute of the optimizer.)
 
