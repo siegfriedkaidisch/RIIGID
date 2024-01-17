@@ -1,8 +1,8 @@
 riigid.convergence package
-=========================
+==========================
 
 riigid.convergence.criterion module
-----------------------------------
+-----------------------------------
 
 .. automodule:: riigid.convergence.criterion
    :members:
@@ -10,7 +10,7 @@ riigid.convergence.criterion module
    :show-inheritance:
 
 riigid.convergence.displacement module
--------------------------------------
+--------------------------------------
 
 .. automodule:: riigid.convergence.displacement
    :members:

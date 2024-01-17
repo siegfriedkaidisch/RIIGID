@@ -2,7 +2,7 @@ Code Documentation
 ==================
 
 riigid.riigid module
-------------------
+--------------------
 
 .. automodule:: riigid.riigid
    :members:
@@ -10,7 +10,7 @@ riigid.riigid module
    :show-inheritance:
 
 riigid.structure module
-----------------------
+-----------------------
 
 .. automodule:: riigid.structure
    :members:
@@ -18,7 +18,7 @@ riigid.structure module
    :show-inheritance:
 
 riigid.fragment module
----------------------
+----------------------
 
 .. automodule:: riigid.fragment
    :members:
@@ -26,7 +26,7 @@ riigid.fragment module
    :show-inheritance:
 
 riigid.optimization\_step module
--------------------------------
+--------------------------------
 
 .. automodule:: riigid.optimization_step
    :members:

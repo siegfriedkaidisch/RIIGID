@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 project = 'RIIGID'
 copyright = '2024, Siegfried Kaidisch'
 author = 'Siegfried Kaidisch'
-release = '1.0.0a0'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to RIIGID's documentation!
-=================================
+==================================
 
 RIIGID is a geometry optimization package intended to be used in theoretical solid state physics and quantum chemistry. 
 

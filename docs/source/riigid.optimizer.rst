@@ -1,8 +1,8 @@
 riigid.optimizer package
-=======================
+========================
 
 riigid.optimizer.GDWAS module
-----------------------------
+-----------------------------
 
 .. automodule:: riigid.optimizer.GDWAS
    :members:
@@ -10,7 +10,7 @@ riigid.optimizer.GDWAS module
    :show-inheritance:
 
 riigid.optimizer.optimizer module
---------------------------------
+---------------------------------
 
 .. automodule:: riigid.optimizer.optimizer
    :members:

@@ -1,8 +1,8 @@
 riigid.library package
-=====================
+======================
 
 riigid.library.misc module
--------------------------
+--------------------------
 
 .. automodule:: riigid.library.misc
    :members:
@@ -10,7 +10,7 @@ riigid.library.misc module
    :show-inheritance:
 
 riigid.library.rotation module
------------------------------
+------------------------------
 
 .. automodule:: riigid.library.rotation
    :members:
