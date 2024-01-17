@@ -1,3 +1,6 @@
+.. image:: https://raw.githubusercontent.com/siegfriedkaidisch/RIIGID/main/riigid/resources/images/riigid_bar.png
+  :alt: Logo
+
 Introduction
 ============
 
@@ -8,6 +11,10 @@ How It Works
 
 The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them (usually molecules), thus forming a rigid body. Using an `ASE <https://wiki.fysik.dtu.dk/ase/>`_ calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques. This way, the energy of this system of (rigid) fragments is minimized.
 
+`Read the Docs <https://riigid.readthedocs.io/en/latest/index.html>`_
+
+.. image:: https://raw.githubusercontent.com/siegfriedkaidisch/RIIGID/main/demo/Cu(O)_benzene/demo_CU(O)_benzene.gif
+  :alt: Example of a molecule moving on surface
 
 Authors
 -------

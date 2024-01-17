@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. image:: https://raw.githubusercontent.com/siegfriedkaidisch/RIIGID/main/riigid/resources/images/riigid_bar.png
+  :alt: Logo
+
 Welcome to RIIGID's documentation!
 ==================================
 

@@ -1,4 +1,4 @@
-![Logo](https://github.com/siegfriedkaidisch/RIIGID/blob/main/riigid/resources/images/riigid_bar.png)
+![Logo](https://raw.githubusercontent.com/siegfriedkaidisch/RIIGID/main/riigid/resources/images/riigid_bar.png)
 
 RIIGID is a geometry optimization package written in Python, intended to be used in theoretical solid state physics and quantum chemistry. While its initial purpose was to identify energetically favorable (surface-molecule) interface geometries, it is not restricted to periodic systems. As an example, it can also be used to find the separation between the two molecules in a dimer (gas-phase calculation).
 
@@ -10,7 +10,7 @@ The structure under investigation is separated into so-called fragments, which a
 Author: Siegfried Kaidisch (siegfried.kaidisch(at)uni-graz.at)
 
 
-![Demo Cu(O)_benzene](https://github.com/siegfriedkaidisch/RIIGID/blob/main/demo/Cu(O)_benzene/demo_CU(O)_benzene.gif)
+![Demo Cu(O)_benzene](https://raw.githubusercontent.com/siegfriedkaidisch/RIIGID/main/demo/Cu(O)_benzene/demo_CU(O)_benzene.gif)
 
 ## Quickstart
 
