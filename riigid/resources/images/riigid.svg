@@ -9,9 +9,9 @@
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="riigid.svg"
-   inkscape:export-filename="/home/siegfried_kaidisch/Documents/GitHub/RIIGID/riigid/resources/images/logo_400.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96"
+   inkscape:export-filename="/home/siegfried_kaidisch/Documents/GitHub/RIIGID/riigid/resources/images/logo_1280.png"
+   inkscape:export-xdpi="307.20001"
+   inkscape:export-ydpi="307.20001"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -97,18 +97,18 @@
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.7px;line-height:1.25;font-family:NATS;-inkscape-font-specification:'NATS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0f7171;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none"
-         x="24.889635"
-         y="56.390785"
+         x="34.359867"
+         y="57.621361"
          id="text7329"><tspan
            sodipodi:role="line"
            id="tspan7327"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.9333px;font-family:NATS;-inkscape-font-specification:'NATS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0f7171;fill-opacity:1;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none"
-           x="24.889635"
-           y="56.390785">RIIGID.py</tspan><tspan
+           x="34.359867"
+           y="57.621361">RIIGID</tspan><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.7px;font-family:NATS;-inkscape-font-specification:'NATS, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#0f7171;fill-opacity:1;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none"
-           x="24.889635"
-           y="73.802879"
+           x="34.359867"
+           y="75.033455"
            id="tspan14523" /></text>
     </g>
   </g>
