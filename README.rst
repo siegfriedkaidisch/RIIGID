@@ -50,7 +50,8 @@ From PyPI:
     pip install RIIGID
 
 From GitHub:
-::
+
+..  code-block:: python
 
     git clone https://github.com/siegfriedkaidisch/RIIGID
     cd RIIGID
