@@ -51,7 +51,7 @@ From PyPI:
 
 From GitHub:
 
-..  code-block:: python
+..  code:: bash
 
     git clone https://github.com/siegfriedkaidisch/RIIGID
     cd RIIGID
