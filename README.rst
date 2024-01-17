@@ -45,12 +45,12 @@ Installation
 ------------
 
 From PyPI:
-::
+.. code-block:: bash
 
     pip install RIIGID
 
 From GitHub:
-::
+.. code-block:: bash
 
     git clone https://github.com/siegfriedkaidisch/RIIGID
     cd RIIGID
