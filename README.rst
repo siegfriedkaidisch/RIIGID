@@ -45,6 +45,7 @@ Installation
 ------------
 
 From PyPI:
+
 ..  code:: bash
 
     pip install RIIGID
