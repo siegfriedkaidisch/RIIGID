@@ -50,6 +50,7 @@ From PyPI:
 
     pip install RIIGID
 
+
 From GitHub:
 
 ..  code:: bash
