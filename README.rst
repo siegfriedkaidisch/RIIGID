@@ -25,7 +25,7 @@ Siegfried Kaidisch (siegfried.kaidisch(at)uni-graz.at)
 Quickstart
 ----------
 
-..  code-block:: python
+..  code:: python
 
     from riigid import RIIGID
 
@@ -45,14 +45,13 @@ Installation
 ------------
 
 From PyPI:
-::
+..  code:: bash
 
     pip install RIIGID
 
 From GitHub:
 
 ..  code:: bash
-
     git clone https://github.com/siegfriedkaidisch/RIIGID
     cd RIIGID
     pip install .
