@@ -15,7 +15,7 @@ RIIGID is a geometry optimization package intended to be used in theoretical sol
    :maxdepth: 2
    :caption: Contents:
 
-   Introduction <introduction>
+   README <readme>
    Code Documentation <riigid>
 
 

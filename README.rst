@@ -2,7 +2,7 @@
   :alt: Logo
 
 Introduction
-============
+------------
 
 RIIGID is a geometry optimization package written in Python, intended to be used in theoretical solid state physics and quantum chemistry. While its initial purpose was to identify energetically favorable (surface-molecule) interface geometries, it is not restricted to periodic systems. As an example, it can also be used to find the separation between the two molecules in a dimer (gas-phase calculation).
 
