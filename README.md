@@ -33,7 +33,7 @@ riigid.run()
     
 From PyPI:
 
-    pip install riigid
+    pip install RIIGID
 
 From GitHub:
 
