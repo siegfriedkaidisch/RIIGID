@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="RIIGID",
-    version="0.0.1a",
+    version="0.0.2a",
     description="RIIGID - RIgid Interface Geometry IDentification in Python",
     packages=find_packages(),
     license="MIT",
