@@ -4,7 +4,7 @@ Introduction
 RIIGID is a geometry optimization package written in Python, intended to be used in theoretical solid state physics and quantum chemistry. While its initial purpose was to identify energetically favorable (surface-molecule) interface geometries, it is not restricted to periodic systems. As an example, it can also be used to find the separation between the two molecules in a dimer (gas-phase calculation).
 
 How It Works
-""""""""""""
+------------
 
 The structure under investigation is separated into so-called fragments, which are a set of atoms with fixed bonds between them (usually molecules), thus forming a rigid body. Using an `ASE <https://wiki.fysik.dtu.dk/ase/>`_ calculator, the forces on each atom are found, which are then used to calculate the force and torque on each fragment. Just like rigid bodies, the fragments are then moved in accordance to these forces and torques. This way, the energy of this system of (rigid) fragments is minimized.
 

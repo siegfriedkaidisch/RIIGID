@@ -1,6 +1,8 @@
 Code Documentation
 ==================
 
+Here you can browse RIIGID's code.
+
 riigid.riigid module
 --------------------
 
