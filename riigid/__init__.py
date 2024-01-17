@@ -2,7 +2,7 @@
 RIIGID
 =====
 
-RIgid Interface Geometry IDentification in Python
+RIgid Interface Geometry IDentification
 ----------------------------------------------------
 
 Introduction to RIIGID: https://github.com/siegfriedkaidisch/RIIGID

@@ -12,7 +12,7 @@ from riigid.optimizer.GDWAS import GDWAS
 
 
 class RIIGID:
-    """RIgid Interface Geometry IDentification in Python
+    """RIgid Interface Geometry IDentification
 
     The structure under investigation is separated into so-called fragments, which are a
     set of atoms with fixed bonds between them, thus forming a rigid body. Using an ASE
