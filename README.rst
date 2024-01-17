@@ -54,6 +54,7 @@ From PyPI:
 From GitHub:
 
 ..  code:: bash
+  
     git clone https://github.com/siegfriedkaidisch/RIIGID
     cd RIIGID
     pip install .
