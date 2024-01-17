@@ -3,3 +3,4 @@ sphinx_rtd_theme
 sphinxcontrib-napoleon
 ase
 numpy
+sphinx-copybutton
