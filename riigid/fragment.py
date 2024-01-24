@@ -283,21 +283,47 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        tmp = self.inertia_matrix_inv @ torque_on_center
-        if "x" not in self.allowed_rotation:
-            tmp[0] = 0
-        if "y" not in self.allowed_rotation:
-            tmp[1] = 0
-        if "z" not in self.allowed_rotation:
-            tmp[2] = 0
+        axis, angle = self.get_rotation_axis_and_angle_from_torque(
+            torque_on_center=torque_on_center, stepsize=stepsize
+        )
 
-        angle = np.linalg.norm(tmp) * (180 / np.pi) * stepsize  # in °
         if angle != 0:
-            axis = tmp / np.linalg.norm(tmp)
             self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
             self.update_rotation_properties(angle=angle, axis=axis)
 
         return copy(self.atoms.positions)
+
+    def get_rotation_axis_and_angle_from_torque(self, torque_on_center, stepsize=1.0):
+        """Get the (normalized) rotation axis and angle corresponding to the applied applied torque and the given stepsize.
+
+        Parameters
+        ----------
+        torque_on_fragment: numpy.ndarray of shape (3,)
+            Torque acting on the fragment (relative to center of mass of fragment); [eV]
+        stepsize: number, default:1.0
+            Timestep; [Da*Å**2/eV]
+
+        Returns
+        -------
+        numpy.ndarray of shape (3,)
+            The normalized rotation axis
+        number
+            The rotation angle; [°]
+
+        """
+        axis = self.inertia_matrix_inv @ torque_on_center
+        if "x" not in self.allowed_rotation:
+            axis[0] = 0
+        if "y" not in self.allowed_rotation:
+            axis[1] = 0
+        if "z" not in self.allowed_rotation:
+            axis[2] = 0
+
+        angle = np.linalg.norm(axis) * (180 / np.pi) * stepsize  # in °
+        if angle != 0:
+            axis = axis / np.linalg.norm(axis)
+
+        return axis, angle
 
     def translate_by_force(self, force_on_center, stepsize):
         """Translate fragment following the applied net force.
@@ -315,17 +341,41 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        fragment_mass = np.sum(self.atoms.get_masses())
+        translation_vector = self.get_translation_vector_from_force(
+            force_on_center=force_on_center, stepsize=stepsize
+        )
         for atom in self.atoms:
-            if "x" in self.allowed_translation:
-                atom.position[0] += stepsize * force_on_center[0] / fragment_mass
-            if "y" in self.allowed_translation:
-                atom.position[1] += stepsize * force_on_center[1] / fragment_mass
-            if "z" in self.allowed_translation:
-                atom.position[2] += stepsize * force_on_center[2] / fragment_mass
+            atom.position += translation_vector
         # self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
 
         return copy(self.atoms.positions)
+
+    def get_translation_vector_from_force(self, force_on_center, stepsize=1.0):
+        """Get the fragment's translation vector corresponding to the net force and the stepsize.
+
+        Parameters
+        ----------
+        force_on_fragment: numpy.ndarray of shape (3,)
+            The net force acting on the fragment; [eV/Å]
+        stepsize: number, default:1.0
+            Timestep; [Da*Å**2/eV]
+
+        Returns
+        -------
+        numpy.ndarray of shape (3,)
+            The translation vector; [Å]
+
+        """
+        fragment_mass = np.sum(self.atoms.get_masses())
+        translation_vector = np.zeros(3)
+        if "x" in self.allowed_translation:
+            translation_vector[0] += stepsize * force_on_center[0] / fragment_mass
+        if "y" in self.allowed_translation:
+            translation_vector[1] += stepsize * force_on_center[1] / fragment_mass
+        if "z" in self.allowed_translation:
+            translation_vector[2] += stepsize * force_on_center[2] / fragment_mass
+
+        return translation_vector
 
     def rotate_by_angle_and_axis(self, angle, axis):
         """Rotate fragment around its center of mass with given axis and angle.
