@@ -360,3 +360,76 @@ class Structure:
 
         new_positions = deepcopy(self.atoms.positions)
         return new_positions
+
+    def get_fragment_rotation_angles_from_forces(self, forces, stepsize):
+        """Get the fragments' rotation angles corresponding to the forces.
+
+        Given the forces on all individual atoms and a stepsize, calculate the rotation angle of each fragment.
+
+        The functions first calculates the torque acting on each fragment.
+        Then, the rotation angles are calculated and returned.
+
+        Note
+        ----
+        This function does NOT move/alter the fragments in any way!
+        It is mainly intended to be used in optimizers, whose behavior depends on the rotation angles.
+
+        Parameters
+        ----------
+        forces: numpy.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
+        stepsize: number
+            Timestep; [Da*Å**2/eV]
+
+        Returns
+        -------
+        list of numbers
+            The rotation angles of the fragments; [°]
+
+        """
+        torque_on_fragments = self.calculate_torque_on_fragments(forces=forces)
+        rotation_angles = []
+        for i, fragment in enumerate(self.fragments):
+            rotation_angles.append(
+                fragment.get_rotation_axis_and_angle_from_torque(
+                    torque_on_center=torque_on_fragments[i], stepsize=stepsize
+                )[1]
+            )
+
+        return rotation_angles
+
+    def get_fragment_translation_distances_from_forces(self, forces, stepsize):
+        """Get the fragments' translation distances corresponding to the forces.
+
+        Given the forces on all individual atoms and a stepsize, calculate the translation distance of each fragment.
+
+        The functions first calculates the net force acting on each fragment.
+        Then, the translation distances are calculated and returned.
+
+        Note
+        ----
+        This function does NOT move/alter the fragments in any way!
+        It is mainly intended to be used in optimizers, whose behavior depends on the translation distances.
+
+        Parameters
+        ----------
+        forces: numpy.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
+        stepsize: number
+            Timestep; [Da*Å**2/eV]
+
+        Returns
+        -------
+        list of numbers
+            The translation distances of the fragments; [Å]
+
+        """
+        force_on_fragments = self.calculate_net_force_on_fragments(forces=forces)
+        translation_distances = []
+        for i, fragment in enumerate(self.fragments):
+            translation_vector = fragment.get_translation_vector_from_force(
+                force_on_center=force_on_fragments[i], stepsize=stepsize
+            )
+            translation_distances.append(np.linalg.norm(translation_vector))
+
+        return translation_distances
