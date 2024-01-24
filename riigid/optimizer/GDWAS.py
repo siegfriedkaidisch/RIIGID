@@ -14,7 +14,7 @@ class GDWAS(Optimizer):
     is continued from the previous structure. This way, climbing upwards in the potential energy
     surface (PES) is prohibited and the probability for jumping into a different potential well is
     lowered.
-    Additionally, a hard cap on the movement of individual atoms is enforced by max_step. This again
+    Additionally, a hard cap on the movement of individual fragments is enforced by max_trans and max_rot. This again
     helps in reducing the probability of the structure leaving a local minimum.
 
     The stepsize is adaptive and can change for two reasons:
@@ -24,12 +24,14 @@ class GDWAS(Optimizer):
     On the other hand, if the energy increased, the stepsize is lowered by multiplying with
     stepsize_factor_dn.
 
-    2.) As described above, a hard cap on the movement of individual atoms is enforced by max_step.
-    If an atom is found to move more than it is allowed to, the stepsize is lowered in such a way,
-    that the maximal displacement of the atoms is exactly max_step.
+    2.) As described above, a hard cap on the movement of individual fragments is enforced by max_trans and max_rot.
+    If a fragment is found to translate more than max_trans, the stepsize is lowered in such a way,
+    that the maximal displacement of the fragments is exactly max_trans.
+    On the other hand, if a fragment is rotated by more than max_rot, the stepsize is adapted, such that 
+    the maximal rotation (i.e. the rotation of the fragment that rotates the most) is max_rot.
 
-    The user never needs to interact directly with the stepsize. Instead, via max_step_0, the user
-    specifies how much the atoms (at most) shall move in the first optimization step. The stepsize
+    The user never needs to interact directly with the stepsize. Instead, via max_trans_0 and max_rot_0, the user
+    specifies how much the fragments (at most) shall move in the first optimization step. The stepsize
     is then initialized accordingly and from there on adapted automatically, as described above.
 
     Attributes
@@ -44,11 +46,13 @@ class GDWAS(Optimizer):
         Increase stepsize by this factor, if last optimization step lowered the total energy
     stepsize_factor_dn: number < 1
         Decrease stepsize by this factor, if last optimization step increased the total energy
-    max_step: number
-        The maximum distance atoms are allowed to move per optimization step; [Å]
-    max_step_0: number
-        In the first optimization step, the stepsize is chosen such that the atom(s) moving
-        the farthest change their position by this value; [Å]
+    max_trans: number
+        The maximum distance fragments are allowed to translate per optimization step; [Å]
+    max_rot: number
+        The maximum angle fragments are allowed to rotate per optimization step; [°]
+    max_trans_0, max_rot_0: number, number
+        In the first optimization step, the stepsize is chosen such that the fragment(s) moving/rotating
+        the most, translate and rotate by (one of) these value; [Å], [°]
     start_with_random_step: bool
         Shall the fragments forming the structure be randomly translated and rotated before the
         first optimization step? This can be used to escape a saddle point starting-geometry.

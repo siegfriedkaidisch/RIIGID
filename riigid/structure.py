@@ -374,6 +374,10 @@ class Structure:
         This function does NOT move/alter the fragments in any way!
         It is mainly intended to be used in optimizers, whose behavior depends on the rotation angles.
 
+        Note
+        ----
+        The restrictions on the movement (Fragment.allowed_rotation) ARE taken into account!
+
         Parameters
         ----------
         forces: numpy.ndarray of shape (n_atoms, 3)
@@ -410,6 +414,10 @@ class Structure:
         ----
         This function does NOT move/alter the fragments in any way!
         It is mainly intended to be used in optimizers, whose behavior depends on the translation distances.
+
+        Note
+        ----
+        The restrictions on the movement (Fragment.allowed_translation) ARE taken into account!
 
         Parameters
         ----------

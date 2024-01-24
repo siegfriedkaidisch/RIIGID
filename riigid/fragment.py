@@ -303,6 +303,10 @@ class Fragment:
         stepsize: number, default:1.0
             Timestep; [Da*Å**2/eV]
 
+        Note
+        ----
+        The restrictions on the movement (Fragment.allowed_rotation) ARE taken into account!
+
         Returns
         -------
         numpy.ndarray of shape (3,)
@@ -360,6 +364,10 @@ class Fragment:
         stepsize: number, default:1.0
             Timestep; [Da*Å**2/eV]
 
+        Note
+        ----
+        The restrictions on the movement (Fragment.allowed_translation) ARE taken into account!
+
         Returns
         -------
         numpy.ndarray of shape (3,)
@@ -369,11 +377,11 @@ class Fragment:
         fragment_mass = np.sum(self.atoms.get_masses())
         translation_vector = np.zeros(3)
         if "x" in self.allowed_translation:
-            translation_vector[0] += stepsize * force_on_center[0] / fragment_mass
+            translation_vector[0] = stepsize * force_on_center[0] / fragment_mass
         if "y" in self.allowed_translation:
-            translation_vector[1] += stepsize * force_on_center[1] / fragment_mass
+            translation_vector[1] = stepsize * force_on_center[1] / fragment_mass
         if "z" in self.allowed_translation:
-            translation_vector[2] += stepsize * force_on_center[2] / fragment_mass
+            translation_vector[2] = stepsize * force_on_center[2] / fragment_mass
 
         return translation_vector
 
