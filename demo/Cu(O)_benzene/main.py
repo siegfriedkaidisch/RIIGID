@@ -76,12 +76,14 @@ riigid.set_calculator(calculator)
 optimizer_settings = {
     "stepsize_factor_up": 1.2,
     "stepsize_factor_dn": 0.2,
-    "max_step": 0.1,
-    "max_step_0": 0.01,
+    "max_trans": 0.1,
+    "max_rot": 3,
+    "max_trans_0": 0.001,
+    "max_rot_0": 0.03,
     "start_with_random_step": True,
     "displacement_r0": 0.01,
     "angle_r0": 0.1,
-    "respect_restrictions_r0": False,
+    "respect_restrictions_r0": True,
     "seed_r0": 1234,
     "max_iter": 100,
 }

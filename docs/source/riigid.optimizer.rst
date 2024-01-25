@@ -16,3 +16,11 @@ riigid.optimizer.optimizer module
    :members:
    :undoc-members:
    :show-inheritance:
+
+riigid.optimizer.Deprecated_GDWAS module
+----------------------------------------
+
+.. automodule:: riigid.optimizer.Deprecated_GDWAS
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -441,3 +441,48 @@ class Structure:
             translation_distances.append(np.linalg.norm(translation_vector))
 
         return translation_distances
+
+    def get_largest_translation_distance_and_largest_rotation_angle_from_forces(
+        self, forces, stepsize
+    ):
+        """Get the largest translation distance and the largest rotation angle (of the fragments) corresponding to the applied forces.
+
+        Given the forces on all individual atoms and a stepsize, this function first calculates the translation distances and rotation angles of all fragments.
+        Then, the maximal translation distance and the biggest angle are returned.
+
+        This function is mainly intended to be used by optimizers.
+
+        Note
+        ----
+        This function does NOT move/alter the fragments in any way!
+
+        Note
+        ----
+        The restrictions on the movement (Fragment.allowed_translation) ARE taken into account!
+
+        Parameters
+        ----------
+        forces: numpy.ndarray of shape (n_atoms, 3)
+            Forces acting on the atoms in Structure.atoms; [eV/Å]
+        stepsize: number
+            Timestep; [Da*Å**2/eV]
+
+        Returns
+        -------
+        number
+            The translation distance of the fragment that translates the most; [Å]
+        number
+            The rotation angle of the fragment that rotates the most; [°]
+
+        """
+
+        rotation_angles = self.get_fragment_rotation_angles_from_forces(
+            forces=forces, stepsize=stepsize
+        )
+        translation_distances = self.get_fragment_translation_distances_from_forces(
+            forces=forces, stepsize=stepsize
+        )
+        max_found_angle = max(rotation_angles)
+        max_found_translation_distance = max(translation_distances)
+
+        return max_found_translation_distance, max_found_angle

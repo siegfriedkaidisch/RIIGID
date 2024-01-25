@@ -4,8 +4,12 @@ from riigid.optimization_step import OptimizationStep
 from riigid.optimizer.optimizer import Optimizer
 
 
-class GDWAS(Optimizer):
-    """RIIGID optimizer: Gradient Descent with Adaptive Stepsize
+class Deprecated_GDWAS(Optimizer):
+    """This version of GDWAS is DEPRECATED! Use the new GDWAS instead for better performance.
+    (The new verion replaces max_step(_0) by max_trans/rot(_0) and allows for more control over the allowed stepsize.
+    This way, better performance can be achieved.)
+    
+    RIIGID optimizer: Gradient Descent with Adaptive Stepsize
 
     Calculates force and torque on each fragment and moves them accordingly (like rigid bodies).
 
@@ -14,7 +18,7 @@ class GDWAS(Optimizer):
     is continued from the previous structure. This way, climbing upwards in the potential energy
     surface (PES) is prohibited and the probability for jumping into a different potential well is
     lowered.
-    Additionally, a hard cap on the movement of individual fragments is enforced by max_trans and max_rot. This again
+    Additionally, a hard cap on the movement of individual atoms is enforced by max_step. This again
     helps in reducing the probability of the structure leaving a local minimum.
 
     The stepsize is adaptive and can change for two reasons:
@@ -24,14 +28,12 @@ class GDWAS(Optimizer):
     On the other hand, if the energy increased, the stepsize is lowered by multiplying with
     stepsize_factor_dn.
 
-    2.) As described above, a hard cap on the movement of individual fragments is enforced by max_trans and max_rot.
-    If a fragment is found to translate more than max_trans, the stepsize is lowered in such a way,
-    that the maximal displacement of the fragments is exactly max_trans.
-    On the other hand, if a fragment is rotated by more than max_rot, the stepsize is adapted, such that
-    the maximal rotation (i.e. the rotation of the fragment that rotates the most) is max_rot.
+    2.) As described above, a hard cap on the movement of individual atoms is enforced by max_step.
+    If an atom is found to move more than it is allowed to, the stepsize is lowered in such a way,
+    that the maximal displacement of the atoms is exactly max_step.
 
-    The user never needs to interact directly with the stepsize. Instead, via max_trans_0 and max_rot_0, the user
-    specifies how much the fragments (at most) shall move in the first optimization step. The stepsize
+    The user never needs to interact directly with the stepsize. Instead, via max_step_0, the user
+    specifies how much the atoms (at most) shall move in the first optimization step. The stepsize
     is then initialized accordingly and from there on adapted automatically, as described above.
 
     Attributes
@@ -46,13 +48,11 @@ class GDWAS(Optimizer):
         Increase stepsize by this factor, if last optimization step lowered the total energy
     stepsize_factor_dn: number < 1
         Decrease stepsize by this factor, if last optimization step increased the total energy
-    max_trans: number
-        The maximum distance fragments are allowed to translate per optimization step; [Å]
-    max_rot: number
-        The maximum angle fragments are allowed to rotate per optimization step; [°]
-    max_trans_0, max_rot_0: number, number
-        In the first optimization step, the stepsize is chosen such that the fragment(s) translating/rotating
-        the most, translate/rotate by (one of) these value; [Å], [°]
+    max_step: number
+        The maximum distance atoms are allowed to move per optimization step; [Å]
+    max_step_0: number
+        In the first optimization step, the stepsize is chosen such that the atom(s) moving
+        the farthest change their position by this value; [Å]
     start_with_random_step: bool
         Shall the fragments forming the structure be randomly translated and rotated before the
         first optimization step? This can be used to escape a saddle point starting-geometry.
@@ -90,10 +90,8 @@ class GDWAS(Optimizer):
         self,
         stepsize_factor_up=1.2,
         stepsize_factor_dn=0.2,
-        max_trans=0.1,
-        max_rot=3,
-        max_trans_0=0.001,
-        max_rot_0=0.03,
+        max_step=0.1,
+        max_step_0=0.01,
         start_with_random_step=True,
         displacement_r0=0.01,
         angle_r0=0.1,
@@ -109,13 +107,11 @@ class GDWAS(Optimizer):
             Increase stepsize by this factor, if last optimization step lowered the total energy
         stepsize_factor_dn: number < 1, default: 0.2
             Decrease stepsize by this factor, if last optimization step increased the total energy
-        max_trans: number
-            The maximum distance fragments are allowed to translate per optimization step; [Å]
-        max_rot: number
-            The maximum angle fragments are allowed to rotate per optimization step; [°]
-        max_trans_0, max_rot_0: number, number
-            In the first optimization step, the stepsize is chosen such that the fragment(s) translating/rotating
-            the most, translate/rotate by (one of) these value; [Å], [°]
+        max_step: number, default: 0.1
+            The maximum distance atoms are allowed to move per optimization step; [Å]
+        max_step_0: number, default: 0.01
+            In the first optimization step, the stepsize is chosen such that the atom(s) moving
+            the farthest change their position by this value; [Å]
         start_with_random_step: bool, default:True
             Shall the fragments forming the structure be randomly translated and rotated before the
             first optimization step? This can be used to escape a saddle point starting-geometry.
@@ -140,10 +136,8 @@ class GDWAS(Optimizer):
         self.stepsize = 100  # initial stepsize, value doesn't matter, is later adapted to max_step_0
         self.stepsize_factor_up = stepsize_factor_up
         self.stepsize_factor_dn = stepsize_factor_dn
-        self.max_trans = max_trans
-        self.max_rot = max_rot
-        self.max_trans_0 = max_trans_0
-        self.max_rot_0 = max_rot_0
+        self.max_step = max_step
+        self.max_step_0 = max_step_0
         self.start_with_random_step = start_with_random_step
         self.displacement_r0 = displacement_r0
         self.angle_r0 = angle_r0
@@ -200,12 +194,14 @@ class GDWAS(Optimizer):
             # undo last update if energy got larger
             self.drop_last_step_if_energy_got_larger()
 
-            if (
-                self.iteration == 0
-            ):  # Initialize stepsize accordingly to max_rot/trans_0
-                self.initialize_stepsize_in_first_iteration()
-            else:  # Adapt stepsize again, if necessary
-                self.adapt_stepsize_to_prevent_too_large_steps()
+            # Adapt stepsize again, if necessary (do test step to prevent too large movement)
+            test_structure = deepcopy(self.current_structure)
+            max_atomic_displacement_test, _ = test_structure.move(
+                forces=self.current_forces, stepsize=self.stepsize
+            )
+            self.adapt_stepsize_to_prevent_too_large_steps(
+                max_atomic_displacement=max_atomic_displacement_test
+            )
 
             # Move atoms
             updated_structure = deepcopy(self.current_structure)
@@ -264,58 +260,32 @@ class GDWAS(Optimizer):
                 self.current_energy = copy(self.optimization_history[-1].energy)
                 self.optimization_history.pop()
 
-    def adapt_stepsize_to_prevent_too_large_steps(self):
-        """Prevent too large movement of the fragments.
+    def adapt_stepsize_to_prevent_too_large_steps(self, max_atomic_displacement):
+        """Prevent too large atomic movement.
 
-        If a fragment is found to translate more than self.max_trans, the stepsize is lowered in such a way,
-        that the maximal displacement of the fragments is exactly self.max_trans.
-        On the other hand, if a fragment is rotated by more than self.max_rot, the stepsize is adapted, such that
-        the maximal rotation (i.e. the rotation of the fragment that rotates the most) is self.max_rot.
-        (The weaker condition is fulfilled, i.e. the one with less movement/smaller stepsize.)
+        If max_atomic_displacement > self.max_step, the stepsize is lowered, such that
+        max_atomic_displacement = self.max_step.
+
+        Parameters
+        ----------
+        max_atomic_displacement: number
+            In the last update, how far did the atoms move at most (in rotations not all atoms
+            move equally as far); [Å]
 
         Note
         ----
-        Translation distances and rotation angles of fragments are directly proportional to the stepsize.
-        This is used here to turn down too large stepsizes.
-
-        """
-        # Given the current stepsize, find the maximal rotation/translation of the fragments
-        (
-            max_found_translation_distance,
-            max_found_angle,
-        ) = self.current_structure.get_largest_translation_distance_and_largest_rotation_angle_from_forces(
-            forces=self.current_forces, stepsize=self.stepsize
-        )
-
-        factor_rot = self.max_rot / max_found_angle
-        factor_trans = self.max_trans / max_found_translation_distance
-        factor = min([factor_rot, factor_trans])
-        factor = min([1.0, factor])  # this function never makes the stepsize larger
-        self.stepsize *= factor
-
-    def initialize_stepsize_in_first_iteration(self):
-        """Initialize the stepsize in the first iteration of the optimization.
-
         During the first iteration of the optimizations, this function adapts the stepsize
-        such that the maximum displacement of the fragments is exactly self.max_trans_0 or the maximum
-        rotation is exactly self.max_rot_0.
-        (The weaker condition is fulfilled, i.e. the one with less movement/smaller stepsize.)
-
-        Note
-        ----
-        Translation distances and rotation angles of fragments are directly proportional to the stepsize.
-        This is used here to turn down too large stepsizes.
+        such that the maximum movement of the atoms is exactly max_step_0.
 
         """
-        # Given the current stepsize, find the maximal rotation/translation of the fragments
-        (
-            max_found_translation_distance,
-            max_found_angle,
-        ) = self.current_structure.get_largest_translation_distance_and_largest_rotation_angle_from_forces(
-            forces=self.current_forces, stepsize=self.stepsize
-        )
-
-        factor_rot = self.max_rot_0 / max_found_angle
-        factor_trans = self.max_trans_0 / max_found_translation_distance
-        factor = min([factor_rot, factor_trans])
+        # Initialize stepsize or adapt it to too large atomic displacements
+        if (
+            self.iteration == 0
+        ):  # In the first iteration we determine the initial stepsize, such that a step of max_step_0 is performed
+            factor = self.max_step_0 / max_atomic_displacement
+        else:  # In later iterations, calc factor to prevent too large atomic deplacements
+            if max_atomic_displacement > self.max_step:
+                factor = self.max_step / max_atomic_displacement
+            else:
+                factor = 1.0
         self.stepsize *= factor

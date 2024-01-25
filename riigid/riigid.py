@@ -9,6 +9,7 @@ from riigid.structure import Structure
 from riigid.convergence.displacement import Criterion_Displacement
 from riigid.library.misc import copy_docstring
 from riigid.optimizer.GDWAS import GDWAS
+from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
 
 
 class RIIGID:
@@ -144,6 +145,8 @@ class RIIGID:
 
             if optimizer.lower() == "gdwas":
                 optimizer = GDWAS(**settings)
+            elif optimizer.lower() == "deprecated_gdwas":
+                optimizer = Deprecated_GDWAS(**settings)
             else:
                 raise Exception(
                     "Optimizer not known... did you write the name correctly? Tip: Maybe initialize the optimizer in your code and hand it to RIIGID, instead of handing its name (string) to RIIGID."
