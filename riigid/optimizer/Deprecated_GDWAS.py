@@ -93,8 +93,8 @@ class Deprecated_GDWAS(Optimizer):
         max_step=0.1,
         max_step_0=0.01,
         start_with_random_step=True,
-        displacement_r0=0.01,
-        angle_r0=0.1,
+        displacement_r0=0.001,
+        angle_r0=0.03,
         respect_restrictions_r0=True,
         seed_r0=1234,
         max_iter=500,
@@ -117,9 +117,9 @@ class Deprecated_GDWAS(Optimizer):
             first optimization step? This can be used to escape a saddle point starting-geometry.
             The parameters with '_r0' at the end further specify this random step before the first
             optimization step.
-        displacement_r0: number, default:0.01
+        displacement_r0: number, default:0.001
             How far shall the fragments be translated; [Å]
-        angle_r0: number, default:0.1
+        angle_r0: number, default:0.03
             How much shall the fragments be rotated; [°]
         respect_restrictions_r0: bool, default:True
             If True, fragment.allowed_translation/rotation is respected.

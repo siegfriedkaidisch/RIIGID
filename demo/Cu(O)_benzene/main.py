@@ -78,14 +78,14 @@ optimizer_settings = {
     "stepsize_factor_dn": 0.2,
     "max_trans": 0.1,
     "max_rot": 3,
-    "max_trans_0": 0.001,
-    "max_rot_0": 0.03,
+    "max_trans_0": 0.01,
+    "max_rot_0": 0.3,
     "start_with_random_step": True,
-    "displacement_r0": 0.01,
-    "angle_r0": 0.1,
+    "displacement_r0": 0.001,
+    "angle_r0": 0.03,
     "respect_restrictions_r0": True,
     "seed_r0": 1234,
-    "max_iter": 100,
+    "max_iter": 1000
 }
 optimizer = GDWAS(**optimizer_settings)  # gradient descent with adaptive stepsize
 riigid.set_optimizer(optimizer)

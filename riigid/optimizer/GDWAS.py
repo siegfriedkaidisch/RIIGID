@@ -92,11 +92,11 @@ class GDWAS(Optimizer):
         stepsize_factor_dn=0.2,
         max_trans=0.1,
         max_rot=3,
-        max_trans_0=0.001,
-        max_rot_0=0.03,
+        max_trans_0=0.01,
+        max_rot_0=0.3,
         start_with_random_step=True,
-        displacement_r0=0.01,
-        angle_r0=0.1,
+        displacement_r0=0.001,
+        angle_r0=0.03,
         respect_restrictions_r0=True,
         seed_r0=1234,
         max_iter=500,
@@ -109,11 +109,11 @@ class GDWAS(Optimizer):
             Increase stepsize by this factor, if last optimization step lowered the total energy
         stepsize_factor_dn: number < 1, default: 0.2
             Decrease stepsize by this factor, if last optimization step increased the total energy
-        max_trans: number
+        max_trans: number, default: 0.1
             The maximum distance fragments are allowed to translate per optimization step; [Å]
-        max_rot: number
+        max_rot: number, default: 3
             The maximum angle fragments are allowed to rotate per optimization step; [°]
-        max_trans_0, max_rot_0: number, number
+        max_trans_0, max_rot_0: number, number, default: 0.01, 0.3
             In the first optimization step, the stepsize is chosen such that the fragment(s) translating/rotating
             the most, translate/rotate by (one of) these value; [Å], [°]
         start_with_random_step: bool, default:True
@@ -121,9 +121,9 @@ class GDWAS(Optimizer):
             first optimization step? This can be used to escape a saddle point starting-geometry.
             The parameters with '_r0' at the end further specify this random step before the first
             optimization step.
-        displacement_r0: number, default:0.01
+        displacement_r0: number, default:0.001
             How far shall the fragments be translated; [Å]
-        angle_r0: number, default:0.1
+        angle_r0: number, default:0.03
             How much shall the fragments be rotated; [°]
         respect_restrictions_r0: bool, default:True
             If True, fragment.allowed_translation/rotation is respected.
