@@ -6,7 +6,7 @@ from riigid.optimizer.optimizer import Optimizer
 
 class Deprecated_GDWAS(Optimizer):
     """This version of GDWAS is DEPRECATED! Use the new GDWAS instead for better performance.
-    (The new verion replaces max_step(_0) by max_trans/rot(_0) and allows for more control over the allowed stepsize.
+    (The new version replaces max_step(_0) by max_trans/rot(_0) and allows for more control over the allowed stepsize.
     This way, better performance can be achieved.)
     
     RIIGID optimizer: Gradient Descent with Adaptive Stepsize
