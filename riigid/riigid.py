@@ -253,15 +253,11 @@ class RIIGID:
             start_structure=self.start_structure,
             calculator=self.calculator,
             convergence_criterion=self.convergence_criterion,
-            callback=self.create_trajectory_file_from_optimization_history,
+            callback=self.save_optimization_progress,
         )
 
         # Save some results
-        self.save_optimization_history()
-        self.create_trajectory_file_from_optimization_history()
-
-        # Print some results
-        self.print_optimization_summary()
+        self.save_optimization_progress()
 
         # Print duration
         print()
@@ -279,20 +275,22 @@ class RIIGID:
         )
         print()
 
+    def save_optimization_progress(self):
+        """Saves the progress of the optimization."""
+        self.save_optimization_history()
+        self.create_trajectory_file_from_optimization_history()
+        self.save_optimization_summary()
+
     def save_optimization_history(self):
         """Save the optimization history (list of optimization steps) as a pickle file."""
-        print()
         optimization_history = self.optimizer.optimization_history
         fn = self.name + ".pk"
         f = open(fn, "wb")
         pickle.dump(optimization_history, f)
         f.close()
-        print("Optimization history saved as pickle file: ", fn)
-        print()
 
     def create_trajectory_file_from_optimization_history(self):
         """Creates and saves the trajectory file of the optimization."""
-        print()
         optimization_history = self.optimizer.optimization_history
         fn = self.name + ".traj"
         traj = Trajectory(fn, "w")
@@ -301,15 +299,13 @@ class RIIGID:
                 atoms=optimization_step.structure.atoms, energy=optimization_step.energy
             )
         traj.close()
-        print("Optimization trajectory saved as ", fn)
-        print()
 
-    def print_optimization_summary(self):
-        """Print Information about the Optimization."""
-        print()
-        print("Summary of Optimization:")
-        optimization_history = self.optimizer.optimization_history
-        for iteration, step in enumerate(optimization_history):
-            print("Optimization Step " + str(iteration) + ":")
-            print("   Energy [eV]: " + str(step.energy))
-        print()
+    def save_optimization_summary(self):
+        """Save Information about the optimization to a separate file."""
+        fn = self.name + ".optimization_info"
+        with open(fn, "w") as file:
+            file.write("Summary of Optimization:\n")
+            optimization_history = self.optimizer.optimization_history
+            for iteration, step in enumerate(optimization_history):
+                file.write("Optimization Step " + str(iteration) + ":\n")
+                file.write("   Energy [eV]: " + str(step.energy) + "\n")
