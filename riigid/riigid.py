@@ -253,6 +253,7 @@ class RIIGID:
             start_structure=self.start_structure,
             calculator=self.calculator,
             convergence_criterion=self.convergence_criterion,
+            callback=self.create_trajectory_file_from_optimization_history,
         )
 
         # Save some results

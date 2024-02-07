@@ -32,7 +32,7 @@ class Optimizer:
         self.iteration = 0
         self.max_iter = max_iter
 
-    def run(self, start_structure, calculator, convergence_criterion):
+    def run(self, start_structure, calculator, convergence_criterion, callback=None):
         """Let the optimizer run its optimization on the structure.
 
         Parameters
@@ -43,6 +43,8 @@ class Optimizer:
             The used ASE calculator object
         convergence_criterion : riigid.convergence.Criterion
             The used convergence criterion object
+        callback : function, default:None
+            A callback function can be used to safe the optimization progress after each step.
 
         """
         # implement restart/continue flag?
