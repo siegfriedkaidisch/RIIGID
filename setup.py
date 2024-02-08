@@ -13,4 +13,5 @@ setup(
     install_requires=["numpy", "ase"],
     extras_require={"dev": ["twine", "wheel"]},
     include_package_data=True,
+    package_data={'riigid': ['config.json']},
 )
