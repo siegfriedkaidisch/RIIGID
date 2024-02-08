@@ -2,6 +2,7 @@ import pickle
 import time
 import warnings
 import json
+from importlib import resources
 
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
@@ -13,7 +14,7 @@ from riigid.optimizer.GDWAS import GDWAS
 from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
 
 # Load the configuration file
-with open("config.json", "r") as config_file:
+with resources.open_text("riigid", "config.json") as config_file:
     config = json.load(config_file)
 # Accessing file names from the configuration
 out_file = config["output_files"]["out_file"]
