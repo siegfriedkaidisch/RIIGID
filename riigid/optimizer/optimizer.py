@@ -1,3 +1,5 @@
+import sys
+
 class Optimizer:
     """Base class for RIIGID optimizers
 
@@ -66,3 +68,5 @@ class Optimizer:
                     "   Optimizer did not converge within the maximal number of allowed iterations (optimizer.max_iter)."
                 )
         print()
+        sys.stdout.flush()  # Flush the output immediately
+

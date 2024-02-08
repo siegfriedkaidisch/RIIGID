@@ -1,4 +1,5 @@
 from copy import copy, deepcopy
+import sys
 
 from riigid.optimization_step import OptimizationStep
 from riigid.optimizer.optimizer import Optimizer
@@ -166,6 +167,7 @@ class GDWAS(Optimizer):
 
         """
         print("Starting optimization...")
+        sys.stdout.flush()  # Flush the output immediately
         self.start_structure = start_structure
         self.calculator = calculator
         self.convergence_criterion = convergence_criterion
