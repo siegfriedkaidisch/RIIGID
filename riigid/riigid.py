@@ -1,15 +1,26 @@
 import pickle
 import time
 import warnings
+import json
+from importlib import resources
 
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
 
 from riigid.structure import Structure
 from riigid.convergence.displacement import Criterion_Displacement
-from riigid.library.misc import copy_docstring
+from riigid.library.misc import copy_docstring, redirect_stdout_to_file
 from riigid.optimizer.GDWAS import GDWAS
 from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
+
+# Load the configuration file
+with resources.open_text("riigid", "config.json") as config_file:
+    config = json.load(config_file)
+# Accessing file names from the configuration
+out_file = config["output_files"]["out_file"]
+opt_file = config["output_files"]["opt_file"]
+traj_file = config["output_files"]["traj_file"]
+opt_hist_file = config["output_files"]["opt_hist_file"]
 
 
 class RIIGID:
@@ -29,8 +40,6 @@ class RIIGID:
     ----------
     start_structure: riigid.Structure
             The structure to be optimized
-    name : str
-        The name of the studied system.
     calculator : ase.calculators.calculator.Calculator
         The used ASE calculator object
     optimizer : riigid.optimizer.Optimizer
@@ -40,7 +49,8 @@ class RIIGID:
 
     """
 
-    def __init__(self, atoms, name):
+    @redirect_stdout_to_file(out_file)
+    def __init__(self, atoms):
         """Initialize a RIIGID geometry optimization.
 
         Parameters
@@ -49,24 +59,24 @@ class RIIGID:
             The atoms forming the structure to be optimized.
             This is an ase.Atoms object and should include the
             correct unit cell (for periodic systems).
-        name : str
-            The name of the studied system. E.g.: "Benzene"
 
         """
+
         self.start_structure = Structure(atoms=atoms)
-        self.name = name
         self.calculator = None
         self.optimizer = None
         self.convergence_criterion = None
+
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
-        print("RIIGID geometry optimization of: ", self.name)
+        print("RIIGID geometry optimization")
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
         print()
 
+    @redirect_stdout_to_file(out_file)
     @copy_docstring(Structure.define_fragment_by_indices)
     def define_fragment_by_indices(self, *args, **kwargs):
         print()
@@ -74,6 +84,7 @@ class RIIGID:
         print("New fragment defined using indices.")
         print()
 
+    @redirect_stdout_to_file(out_file)
     def set_calculator(self, calculator, settings={}):
         """Set the ASE Calculator to be used for optimizing the structure.
 
@@ -116,6 +127,7 @@ class RIIGID:
             print("   - " + str(entry) + ": " + str(self.calculator.parameters[entry]))
         print()
 
+    @redirect_stdout_to_file(out_file)
     def set_optimizer(self, optimizer, settings={}):
         """Set the optimizer to be used for optimizing the structure.
 
@@ -168,6 +180,7 @@ class RIIGID:
             )
         print()
 
+    @redirect_stdout_to_file(out_file)
     def set_convergence_criterion(self, convergence_criterion, settings={}):
         """Set the convergence criterion for optimizing the structure.
 
@@ -218,6 +231,7 @@ class RIIGID:
             )
         print()
 
+    @redirect_stdout_to_file(out_file)
     def run(self):
         """Run the optimization
 
@@ -253,14 +267,11 @@ class RIIGID:
             start_structure=self.start_structure,
             calculator=self.calculator,
             convergence_criterion=self.convergence_criterion,
+            callback=self.save_optimization_progress,
         )
 
         # Save some results
-        self.save_optimization_history()
-        self.create_trajectory_file_from_optimization_history()
-
-        # Print some results
-        self.print_optimization_summary()
+        self.save_optimization_progress()
 
         # Print duration
         print()
@@ -272,43 +283,47 @@ class RIIGID:
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
-        print("Finished RIIGID geometry optimization of: ", self.name)
+        print("Finished RIIGID geometry optimization")
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
         print()
 
+    @redirect_stdout_to_file(out_file)
+    def save_optimization_progress(self):
+        """Saves the progress of the optimization."""
+        self.save_optimization_history()
+        self.create_trajectory_file_from_optimization_history()
+        self.save_optimization_summary()
+
+    @redirect_stdout_to_file(out_file)
     def save_optimization_history(self):
         """Save the optimization history (list of optimization steps) as a pickle file."""
-        print()
         optimization_history = self.optimizer.optimization_history
-        fn = self.name + ".pk"
+        fn = opt_hist_file
         f = open(fn, "wb")
         pickle.dump(optimization_history, f)
         f.close()
-        print("Optimization history saved as pickle file: ", fn)
-        print()
 
+    @redirect_stdout_to_file(out_file)
     def create_trajectory_file_from_optimization_history(self):
         """Creates and saves the trajectory file of the optimization."""
-        print()
         optimization_history = self.optimizer.optimization_history
-        fn = self.name + ".traj"
+        fn = traj_file
         traj = Trajectory(fn, "w")
         for optimization_step in optimization_history:
             traj.write(
                 atoms=optimization_step.structure.atoms, energy=optimization_step.energy
             )
         traj.close()
-        print("Optimization trajectory saved as ", fn)
-        print()
 
-    def print_optimization_summary(self):
-        """Print Information about the Optimization."""
-        print()
-        print("Summary of Optimization:")
-        optimization_history = self.optimizer.optimization_history
-        for iteration, step in enumerate(optimization_history):
-            print("Optimization Step " + str(iteration) + ":")
-            print("   Energy [eV]: " + str(step.energy))
-        print()
+    @redirect_stdout_to_file(out_file)
+    def save_optimization_summary(self):
+        """Save Information about the optimization to a separate file."""
+        fn = opt_file
+        with open(fn, "w") as file:
+            file.write("Summary of Optimization:\n")
+            optimization_history = self.optimizer.optimization_history
+            for iteration, step in enumerate(optimization_history):
+                file.write("Optimization Step " + str(iteration) + ":\n")
+                file.write("   Energy [eV]: " + str(step.energy) + "\n")

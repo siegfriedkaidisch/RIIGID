@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="RIIGID",
-    version="1.0.2",
+    version="1.0.3",
     description="RIIGID - RIgid Interface Geometry IDentification",
     packages=find_packages(),
     license="MIT",
@@ -13,4 +13,5 @@ setup(
     install_requires=["numpy", "ase"],
     extras_require={"dev": ["twine", "wheel"]},
     include_package_data=True,
+    package_data={'riigid': ['config.json']},
 )

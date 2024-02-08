@@ -31,11 +31,10 @@ Quickstart
 
     atoms = <an ASE Atoms object>
     indices = <list of indices of atoms to form a Fragment>
-    name = "free to choose, e.g.: the name of the system"
     calculator_name = "the name of the calculator you want to use"
     calculator_settings = <dict of calculator settings>
 
-    riigid = RIIGID(atoms=atoms, name=name)
+    riigid = RIIGID(atoms=atoms)
     riigid.define_fragment_by_indices(indices=indices, allowed_translation="xyz", allowed_rotation="xyz")
     riigid.set_calculator(calculator=calculator_name, settings=calculator_settings)
     riigid.run()

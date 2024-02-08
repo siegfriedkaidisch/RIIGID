@@ -1,4 +1,5 @@
 from copy import copy, deepcopy
+import sys
 
 from riigid.optimization_step import OptimizationStep
 from riigid.optimizer.optimizer import Optimizer
@@ -8,7 +9,7 @@ class Deprecated_GDWAS(Optimizer):
     """This version of GDWAS is DEPRECATED! Use the new GDWAS instead for better performance.
     (The new version replaces max_step(_0) by max_trans/rot(_0) and allows for more control over the allowed stepsize.
     This way, better performance can be achieved.)
-    
+
     RIIGID optimizer: Gradient Descent with Adaptive Stepsize
 
     Calculates force and torque on each fragment and moves them accordingly (like rigid bodies).
@@ -144,7 +145,7 @@ class Deprecated_GDWAS(Optimizer):
         self.respect_restrictions_r0 = respect_restrictions_r0
         self.seed_r0 = seed_r0
 
-    def run(self, start_structure, calculator, convergence_criterion):
+    def run(self, start_structure, calculator, convergence_criterion, callback=None):
         """Let the optimizer run its optimization on the structure.
 
         Parameters
@@ -155,9 +156,12 @@ class Deprecated_GDWAS(Optimizer):
             The used ASE calculator object
         convergence_criterion : riigid.convergence.criterion
             The used convergence criterion object
+        callback : function, default:None
+            A callback function can be used to safe the optimization progress after each step.
 
         """
         print("Starting optimization...")
+        sys.stdout.flush()  # Flush the output immediately
         self.start_structure = start_structure
         self.calculator = calculator
         self.convergence_criterion = convergence_criterion
@@ -225,6 +229,10 @@ class Deprecated_GDWAS(Optimizer):
             self.convergence_criterion.check(
                 optimization_history=self.optimization_history
             )
+
+            # If a callback function was provided, execute it. Useful to save data after every step
+            if callback:
+                callback()
 
         self.print_reason_for_end_of_optimization()
 

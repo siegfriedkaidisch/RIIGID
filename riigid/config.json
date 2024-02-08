@@ -1,0 +1,8 @@
+{
+    "output_files": {
+        "out_file": "riigid.out",
+        "opt_file": "riigid.opt",
+        "traj_file": "riigid.traj",
+        "opt_hist_file": "riigid.opt_hist.pk"
+    }
+}
