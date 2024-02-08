@@ -16,7 +16,7 @@ from riigid.optimizer import GDWAS
 atoms = read_vasp(file="./POSCAR_start")
 
 # Instantiate a RIIGID calculation object using an ASE atoms object of the full system
-riigid = RIIGID(atoms=atoms, name="example")
+riigid = RIIGID(atoms=atoms)
 
 # Define a fragment using the molecule's indices and define what kind of motion is allowed
 # Maybe at some point additional ways of defining fragments... e.g. by adding an additional atoms object

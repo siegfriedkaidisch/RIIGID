@@ -1,6 +1,9 @@
 """A collection of miscellaneous functions.
 
 """
+import sys
+from functools import wraps
+
 import numpy as np
 
 ######################################################################################################################
@@ -98,6 +101,36 @@ def copy_docstring(take_from_fct):
     def decorator(give_to_fct):
         give_to_fct.__doc__ = docstring
         return give_to_fct
+
+    return decorator
+
+
+def redirect_stdout_to_file(filename):
+    """
+    Decorator to redirect standard output (stdout) to a file during the execution of a function.
+
+    Parameters
+    ----------
+    filename : str
+        The name of the file to which stdout will be redirected.
+
+    Returns
+    -------
+    callable
+        A decorator that takes a function and returns a wrapped function with stdout redirected.
+    """
+
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            original_stdout = sys.stdout  # Save the original stdout
+            with open(filename, "a") as f:  # Open the file
+                sys.stdout = f  # Redirect stdout to the file
+                result = func(*args, **kwargs)  # Call the decorated function
+            sys.stdout = original_stdout  # Restore the original stdout
+            return result
+
+        return wrapper
 
     return decorator
 
