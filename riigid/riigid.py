@@ -6,6 +6,7 @@ from importlib import resources
 
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
+from ase.io import write as ase_write
 
 from riigid.structure import Structure
 from riigid.convergence.displacement import Criterion_Displacement
@@ -20,6 +21,7 @@ with resources.open_text("riigid", "config.json") as config_file:
 out_file = config["output_files"]["out_file"]
 opt_file = config["output_files"]["opt_file"]
 traj_file = config["output_files"]["traj_file"]
+final_geometry_file = config["output_files"]["final_geometry_file"]
 opt_hist_file = config["output_files"]["opt_hist_file"]
 
 
@@ -294,6 +296,7 @@ class RIIGID:
         """Saves the progress of the optimization."""
         self.save_optimization_history()
         self.create_trajectory_file_from_optimization_history()
+        self.save_final_geometry()
         self.save_optimization_summary()
 
     @redirect_stdout_to_file(out_file)
@@ -316,6 +319,14 @@ class RIIGID:
                 atoms=optimization_step.structure.atoms, energy=optimization_step.energy
             )
         traj.close()
+
+    @redirect_stdout_to_file(out_file)
+    def save_final_geometry(self):
+        """Saves the final geometry as an xyz file."""
+        ase_write(
+            filename=final_geometry_file,
+            images=self.optimizer.optimization_history[-1].structure.atoms,
+        )
 
     @redirect_stdout_to_file(out_file)
     def save_optimization_summary(self):
