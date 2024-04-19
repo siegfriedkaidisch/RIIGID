@@ -41,7 +41,7 @@ class Structure:
         """
         self.atoms = atoms
         self.fragments = []
-        rest_fragment_indices = get_indices_of_atoms1_in_atoms2(
+        rest_fragment_indices, _ = get_indices_of_atoms1_in_atoms2(
             atoms1=self.atoms, atoms2=self.atoms
         )
         self.rest_fragment = Fragment(
@@ -115,7 +115,7 @@ class Structure:
         del rest_fragment_atoms[indices_of_new_fragment_in_rest_fragment]
 
         # Update rest-fragment and append new fragment to list of fragments
-        rest_fragment_indices = get_indices_of_atoms1_in_atoms2(
+        rest_fragment_indices, _ = get_indices_of_atoms1_in_atoms2(
             atoms1=rest_fragment_atoms, atoms2=self.atoms
         )
         self.rest_fragment = Fragment(
@@ -273,7 +273,7 @@ class Structure:
 
         """
         for fragment in self.fragments + [self.rest_fragment]:
-            self.atoms.positions[fragment.indices_in_structure] = deepcopy(
+            self.atoms.positions[list(fragment.indices_in_structure),:] = deepcopy(
                 fragment.atoms.positions
             )
 
