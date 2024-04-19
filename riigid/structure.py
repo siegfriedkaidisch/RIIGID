@@ -41,8 +41,14 @@ class Structure:
         """
         self.atoms = atoms
         self.fragments = []
+        rest_fragment_indices = get_indices_of_atoms1_in_atoms2(
+            atoms1=self.atoms, atoms2=self.atoms
+        )
         self.rest_fragment = Fragment(
-            atoms=self.atoms, allowed_translation="", allowed_rotation=""
+            atoms=self.atoms,
+            indices_in_structure=rest_fragment_indices,
+            allowed_translation="",
+            allowed_rotation="",
         )
 
     def define_fragment_by_indices(
@@ -90,6 +96,7 @@ class Structure:
 
         new_fragment = Fragment(
             atoms=fragment_atoms,
+            indices_in_structure=indices,
             allowed_translation=allowed_translation,
             allowed_rotation=allowed_rotation,
         )
@@ -108,8 +115,14 @@ class Structure:
         del rest_fragment_atoms[indices_of_new_fragment_in_rest_fragment]
 
         # Update rest-fragment and append new fragment to list of fragments
+        rest_fragment_indices = get_indices_of_atoms1_in_atoms2(
+            atoms1=rest_fragment_atoms, atoms2=self.atoms
+        )
         self.rest_fragment = Fragment(
-            atoms=rest_fragment_atoms, allowed_translation="", allowed_rotation=""
+            atoms=rest_fragment_atoms,
+            indices_in_structure=rest_fragment_indices,
+            allowed_translation="",
+            allowed_rotation="",
         )
         self.fragments.append(new_fragment)
 
@@ -255,11 +268,14 @@ class Structure:
         When individual fragments are moved, the atoms object of the structure must also be updated
         accordingly.
 
-        """
-        self.atoms = deepcopy(self.rest_fragment.atoms)
+        The function also makes sure that the order of the atoms in Structure.atoms
+        is not changed!
 
-        for fragment in self.fragments:
-            self.atoms += deepcopy(fragment.atoms)
+        """
+        for fragment in self.fragments + [self.rest_fragment]:
+            self.atoms.positions[fragment.indices_in_structure] = deepcopy(
+                fragment.atoms.positions
+            )
 
     def move(self, forces, stepsize):
         """Move the fragments according to the forces.

@@ -25,6 +25,9 @@ class Fragment:
     ----------
     atoms: ase.atoms.Atoms
         The atoms forming the fragment.
+    indices_in_structure: list of int
+        Indices of the Fragment's atoms, relative to the Structure, that the Fragment is
+        a part of.
     allowed_translation: str
         How shall the fragment be allowed to translate?
         See docstring of __init__ for more details.
@@ -40,13 +43,18 @@ class Fragment:
 
     """
 
-    def __init__(self, atoms: Atoms, allowed_translation, allowed_rotation):
+    def __init__(
+        self, atoms: Atoms, indices_in_structure, allowed_translation, allowed_rotation
+    ):
         """Define a new fragment using an ASE Atoms object
 
         Parameters
         ----------
         atoms: ase.atoms.Atoms
             The atoms forming the fragment.
+        indices_in_structure: list of int
+            Indices of the Fragment's atoms, relative to the Structure, that the Fragment is
+            a part of.
         allowed_translation: str
             How shall the fragment be allowed to translate?
             If the string contains an "x", translation in x-direction is allowed, etc.
@@ -68,6 +76,7 @@ class Fragment:
 
         # Initialize using an already existing Atoms object
         self.atoms = deepcopy(atoms)
+        self.indices_in_structure = indices_in_structure
 
         # Tranlation and rotation, which the fragment is allowed to do
         self.allowed_translation = allowed_translation
