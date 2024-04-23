@@ -3,6 +3,7 @@
         "out_file": "riigid.out",
         "opt_file": "riigid.opt",
         "traj_file": "riigid.traj",
+        "final_geometry_file": "riigid.final_geometry.xyz",
         "opt_hist_file": "riigid.opt_hist.pk"
     }
 }

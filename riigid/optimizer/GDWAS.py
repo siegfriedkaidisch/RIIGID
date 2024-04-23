@@ -235,7 +235,7 @@ class GDWAS(Optimizer):
             )
 
             # If a callback function was provided, execute it. Useful to save data after every step
-            if callback:
+            if callback is not None:
                 callback()
 
         self.print_reason_for_end_of_optimization()
