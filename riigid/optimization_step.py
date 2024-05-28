@@ -24,11 +24,11 @@ class OptimizationStep:
 
     max_force_on_fragment: (float, int)
         - Maximal force on a fragment in self.structure; [eV/Å]
-        - Index of the corresponding fragments.
+        - Index of the corresponding fragment.
 
     max_torque_on_fragment: (float, int)
         - Maximal torque on a fragment in self.structure; [eV]
-        - Index of the corresponding fragments.
+        - Index of the corresponding fragment.
 
 
     Note
