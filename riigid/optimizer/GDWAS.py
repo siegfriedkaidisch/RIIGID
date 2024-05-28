@@ -220,7 +220,7 @@ class GDWAS(Optimizer):
             # Add Optimization step to history
             new_step = OptimizationStep(
                 structure=self.current_structure,
-                forces=self.current_forces,
+                force_on_atoms=self.current_forces,
                 energy=self.current_energy,
                 updated_structure=updated_structure,
             )
@@ -268,7 +268,7 @@ class GDWAS(Optimizer):
                 self.current_structure = deepcopy(
                     self.optimization_history[-1].structure
                 )
-                self.current_forces = copy(self.optimization_history[-1].forces)
+                self.current_forces = copy(self.optimization_history[-1].force_on_atoms)
                 self.current_energy = copy(self.optimization_history[-1].energy)
                 self.optimization_history.pop()
 

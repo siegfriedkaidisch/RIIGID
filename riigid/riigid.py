@@ -333,8 +333,23 @@ class RIIGID:
         """Save Information about the optimization to a separate file."""
         fn = opt_file
         with open(fn, "w") as file:
-            file.write("Summary of Optimization:\n")
+            # Write the header
+            # file.write("Summary of Optimization:\n")
+            file.write(
+                f"{'':<6}|{'':>20}|{'Max. Force on Fragments':>25}|{'Max. Torque on Fragments':>25}|{'Max. Force on Atoms':>25}|\n"
+            )
+            file.write(
+                f"{'Step':<6}|{'Energy [eV]':>20}|{'[eV/Å]':>20}{'#':>5}|{'[eV]':>20}{'#':>5}|{'[eV/Å]':>20}{'#':>5}|\n"
+            )
+            file.write("=" * (6 + 20 + 25 + 25 + 25 + 5 * 1) + "\n")
+
+            # Write the data rows
             optimization_history = self.optimizer.optimization_history
             for iteration, step in enumerate(optimization_history):
-                file.write("Optimization Step " + str(iteration) + ":\n")
-                file.write("   Energy [eV]: " + str(step.energy) + "\n")
+                energy = step.energy
+                fmax_fragments = step.max_force_on_fragment
+                tmax_fragments = step.max_torque_on_fragment
+                fmax_atoms = step.max_force_on_atom
+                file.write(
+                    f"{iteration:<6}|{energy:>20.10f}|{fmax_fragments[0]:>20.10f}{fmax_fragments[1]:>5}|{tmax_fragments[0]:>20.10f}{tmax_fragments[1]:>5}|{fmax_atoms[0]:>20.10f}{fmax_atoms[1]:>5}|\n"
+                )
