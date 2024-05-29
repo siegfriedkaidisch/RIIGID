@@ -13,6 +13,7 @@ from riigid.convergence.displacement import Criterion_Displacement
 from riigid.library.misc import copy_docstring, redirect_stdout_to_file
 from riigid.optimizer.GDWAS import GDWAS
 from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
+from riigid.optimizer.GPR import GPR
 
 # Load the configuration file
 with resources.open_text("riigid", "config.json") as config_file:
@@ -161,6 +162,8 @@ class RIIGID:
                 optimizer = GDWAS(**settings)
             elif optimizer.lower() == "deprecated_gdwas":
                 optimizer = Deprecated_GDWAS(**settings)
+            elif optimizer.lower() == "gpr":
+                optimizer = GPR(**settings)
             else:
                 raise Exception(
                     "Optimizer not known... did you write the name correctly? Tip: Maybe initialize the optimizer in your code and hand it to RIIGID, instead of handing its name (string) to RIIGID."
