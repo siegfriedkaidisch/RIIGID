@@ -66,7 +66,7 @@ The user has to define the *atomic system* (as an ASE Atoms object), define the 
 
 RIIGID comes with its own optimizers and convergence criteria. The user can choose explicitly which optimizer and convergence criterion to use, or keep the defaults.
 
-Information about the optimization is written to the standard output. 
+Information about the optimization is written to RIIGID's own output files. 
 Additionally, an ASE trajectory file is produced. 
 
 Have a look at the `demo folder <https://github.com/siegfriedkaidisch/RIIGID/tree/main/demo>`_ for working examples!

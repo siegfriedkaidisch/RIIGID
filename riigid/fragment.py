@@ -292,13 +292,14 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        axis, angle = self.get_rotation_axis_and_angle_from_torque(
-            torque_on_center=torque_on_center, stepsize=stepsize
-        )
+        if len(self.atoms) > 1:
+            axis, angle = self.get_rotation_axis_and_angle_from_torque(
+                torque_on_center=torque_on_center, stepsize=stepsize
+            )
 
-        if angle != 0:
-            self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
-            self.update_rotation_properties(angle=angle, axis=axis)
+            if angle != 0:
+                self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
+                self.update_rotation_properties(angle=angle, axis=axis)
 
         return copy(self.atoms.positions)
 
@@ -412,8 +413,9 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
-        self.update_rotation_properties(angle=angle, axis=axis)
+        if len(self.atoms) > 1:
+            self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
+            self.update_rotation_properties(angle=angle, axis=axis)
         return copy(self.atoms.positions)
 
     def move_random_step(self, displacement, angle, respect_restrictions, seed=1234):
