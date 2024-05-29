@@ -1,6 +1,7 @@
 from copy import copy, deepcopy
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF
 
@@ -56,12 +57,12 @@ class GPR(Optimizer):
         num_steps = 6
         data_x = []
         data_y = []
+        data_x_pred = np.linspace(x_range[0], x_range[1], 1000, endpoint=True)
 
         for i in range(num_steps):
             if i == 0:
                 x = (x_range[1] - x_range[0]) / 2
             else:
-                data_x_pred = np.linspace(x_range[0], x_range[1], 1000, endpoint=True)
                 gaussian_process = GaussianProcessRegressor()
                 gaussian_process.fit(data_x, data_y)
                 mean_prediction, std_prediction = gaussian_process.predict(
@@ -82,3 +83,25 @@ class GPR(Optimizer):
 
             data_x.append(deepcopy(x))
             data_y.append(deepcopy(self.current_energy))
+
+            # Plots
+            gaussian_process = GaussianProcessRegressor()
+            gaussian_process.fit(data_x, data_y)
+            mean_prediction, std_prediction = gaussian_process.predict(
+                data_x_pred, return_std=True
+            )
+            plt.figure()
+            plt.scatter(data_x, data_y, label="Calculations")
+            plt.plot(data_x_pred, mean_prediction, label="Mean prediction")
+            plt.fill_between(
+                data_x_pred,
+                mean_prediction - 1.96 * std_prediction,
+                mean_prediction + 1.96 * std_prediction,
+                alpha=0.5,
+                label=r"95% confidence interval",
+            )
+            plt.legend()
+            plt.xlabel("$x [A]$")
+            plt.ylabel("$Energy [eV]$")
+            plt.title("Gaussian process regression")
+            plt.savefig("./gpr_pred"+str(i)+".svg")
