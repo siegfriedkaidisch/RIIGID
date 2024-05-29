@@ -64,9 +64,9 @@ class GPR(Optimizer):
                 x = (x_range[1] - x_range[0]) / 2
             else:
                 gaussian_process = GaussianProcessRegressor()
-                gaussian_process.fit(data_x, data_y)
+                gaussian_process.fit(data_x.reshape(-1, 1), data_y.reshape(-1))
                 mean_prediction, std_prediction = gaussian_process.predict(
-                    data_x_pred, return_std=True
+                    data_x_pred.reshape(-1, 1), return_std=True
                 )
                 x = data_x_pred[np.argmax(std_prediction)]
             self.current_structure = deepcopy(start_structure)
@@ -86,9 +86,9 @@ class GPR(Optimizer):
 
             # Plots
             gaussian_process = GaussianProcessRegressor()
-            gaussian_process.fit(data_x, data_y)
+            gaussian_process.fit(data_x.reshape(-1, 1), data_y.reshape(-1))
             mean_prediction, std_prediction = gaussian_process.predict(
-                data_x_pred, return_std=True
+                data_x_pred.reshape(-1, 1), return_std=True
             )
             plt.figure()
             plt.scatter(data_x, data_y, label="Calculations")
@@ -104,4 +104,4 @@ class GPR(Optimizer):
             plt.xlabel("$x [A]$")
             plt.ylabel("$Energy [eV]$")
             plt.title("Gaussian process regression")
-            plt.savefig("./gpr_pred"+str(i)+".svg")
+            plt.savefig("./gpr_pred" + str(i) + ".svg")
