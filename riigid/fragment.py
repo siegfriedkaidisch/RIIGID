@@ -484,6 +484,28 @@ class Fragment:
             self.update_rotation_properties(angle=angle, axis=axis)
         return copy(self.atoms.positions)
 
+    def translate_by_shift(self, shift):
+        """Translate fragment by simply shifting all atoms.
+
+        Parameters
+        ----------
+        shift: numpy.ndarray of shape (3,) or equivalent list
+            The vector to shift the fragment by; [Å]
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_atoms_in_fragment,3)
+            The positions of the fragment's atoms after the transformation; [Å]
+
+        """
+        translation_vector = deepcopy(shift)
+        translation_vector = np.array(translation_vector).reshape(-1)
+        for atom in self.atoms:
+            atom.position += translation_vector
+        # self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
+
+        return copy(self.atoms.positions)
+
     def move_random_step(self, displacement, angle, respect_restrictions, seed=1234):
         """Randomly rotate and translate the fragment.
 
