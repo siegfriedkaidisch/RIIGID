@@ -64,7 +64,7 @@ class GPR(Optimizer):
                 x = (x_range[1] - x_range[0]) / 2
             else:
                 gaussian_process = GaussianProcessRegressor()
-                gaussian_process.fit(data_x.reshape(-1, 1), data_y.reshape(-1))
+                gaussian_process.fit(np.array(data_x).reshape(-1, 1), np.array(data_y).reshape(-1))
                 mean_prediction, std_prediction = gaussian_process.predict(
                     data_x_pred.reshape(-1, 1), return_std=True
                 )
@@ -86,7 +86,7 @@ class GPR(Optimizer):
 
             # Plots
             gaussian_process = GaussianProcessRegressor()
-            gaussian_process.fit(data_x.reshape(-1, 1), data_y.reshape(-1))
+            gaussian_process.fit(np.array(data_x).reshape(-1, 1), np.array(data_y).reshape(-1))
             mean_prediction, std_prediction = gaussian_process.predict(
                 data_x_pred.reshape(-1, 1), return_std=True
             )
