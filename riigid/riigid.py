@@ -339,7 +339,7 @@ class RIIGID:
                 f"{'':<6}|{'':>20}|{'Max. Force on Fragments':>25}|{'Max. Torque on Fragments':>25}|{'Max. Force on Atoms':>25}|\n"
             )
             file.write(
-                f"{'Step':<6}|{'Energy [eV]':>20}|{'[eV/Å]':>20}{'#':>5}|{'[eV]':>20}{'#':>5}|{'[eV/Å]':>20}{'#':>5}|\n"
+                f"{'Step':<6}|{'Energy [eV]':>20}|{'[eV/A]':>20}{'#':>5}|{'[eV]':>20}{'#':>5}|{'[eV/A]':>20}{'#':>5}|\n"
             )
             file.write("=" * (6 + 20 + 25 + 25 + 25 + 5 * 1) + "\n")
 
