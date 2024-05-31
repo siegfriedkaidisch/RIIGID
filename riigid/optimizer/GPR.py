@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF
+from sklearn.gaussian_process.kernels import RBF, Matern, RationalQuadratic, WhiteKernel
 
 from riigid.optimization_step import OptimizationStep
 from riigid.optimizer.optimizer import Optimizer
@@ -63,7 +63,8 @@ class GPR(Optimizer):
             if i == 0:
                 x = (x_range[1] - x_range[0]) / 2
             else:
-                gaussian_process = GaussianProcessRegressor()
+                kernel = RBF()
+                gaussian_process = GaussianProcessRegressor(kernel=kernel, normalize_y=True)
                 gaussian_process.fit(np.array(data_x).reshape(-1, 1), np.array(data_y).reshape(-1))
                 mean_prediction, std_prediction = gaussian_process.predict(
                     data_x_pred.reshape(-1, 1), return_std=True
@@ -85,7 +86,8 @@ class GPR(Optimizer):
             data_y.append(deepcopy(self.current_energy))
 
             # Plots
-            gaussian_process = GaussianProcessRegressor()
+            kernel = RBF()
+            gaussian_process = GaussianProcessRegressor(kernel=kernel, normalize_y=True)
             gaussian_process.fit(np.array(data_x).reshape(-1, 1), np.array(data_y).reshape(-1))
             mean_prediction, std_prediction = gaussian_process.predict(
                 data_x_pred.reshape(-1, 1), return_std=True
