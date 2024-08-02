@@ -73,6 +73,7 @@ class GPR(Optimizer):
             self.current_structure = deepcopy(start_structure)
             frag = self.current_structure.fragments[0]
             frag.translate_by_shift(shift=[x, 0, 0])
+            self.current_structure.update_atoms_attribute_from_fragments()
 
             # Do Calculation to get energy and forces
             (
@@ -89,11 +90,14 @@ class GPR(Optimizer):
             kernel = RBF()
             gaussian_process = GaussianProcessRegressor(kernel=kernel, normalize_y=True)
             gaussian_process.fit(np.array(data_x).reshape(-1, 1), np.array(data_y).reshape(-1))
+            #print(gaussian_process.kernel_)
+            #print(data_x)
+            #print(data_y)
             mean_prediction, std_prediction = gaussian_process.predict(
                 data_x_pred.reshape(-1, 1), return_std=True
             )
             plt.figure()
-            plt.scatter(data_x, data_y, label="Calculations")
+            plt.scatter(data_x, np.array(data_y), label="Calculations")
             plt.plot(data_x_pred, mean_prediction, label="Mean prediction")
             plt.fill_between(
                 data_x_pred,
