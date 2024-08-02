@@ -12,7 +12,7 @@ from riigid.optimizer.optimizer import Optimizer
 class GPR(Optimizer):
     """RIIGID optimizer: Gaussian Process Regression
 
-    blablabla
+    NOT yet ready for use.
 
     Attributes
     ----------
