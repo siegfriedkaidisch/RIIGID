@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF, Matern, RationalQuadratic, WhiteKernel
+from sklearn.gaussian_process.kernels import RBF, Matern, RationalQuadratic, WhiteKernel, ConstantKernel
 
 from riigid.optimization_step import OptimizationStep
 from riigid.optimizer.optimizer import Optimizer
@@ -54,7 +54,7 @@ class GPR(Optimizer):
         self.convergence_criterion = convergence_criterion
 
         x_range = (0, 10)
-        num_steps = 6
+        num_steps = 20
         data_x = []
         data_y = []
         data_x_pred = np.linspace(x_range[0], x_range[1], 1000, endpoint=True)
@@ -79,7 +79,7 @@ class GPR(Optimizer):
                 self.current_energy,
                 self.current_forces,
             ) = self.current_structure.calculate_energy_and_forces(
-                calculator=calculator
+                calculator=deepcopy(calculator)
             )
 
             data_x.append(deepcopy(x))
@@ -105,5 +105,6 @@ class GPR(Optimizer):
             plt.legend()
             plt.xlabel("$x [A]$")
             plt.ylabel("$Energy [eV]$")
+            plt.ylim(np.min(mean_prediction - 1.96 * std_prediction), np.max(mean_prediction + 1.96 * std_prediction))
             plt.title("Gaussian process regression")
             plt.savefig("./gpr_pred" + str(i) + ".svg")
