@@ -479,7 +479,7 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        if len(self.atoms) > 1:
+        if len(self.atoms) > 1 and angle != 0:
             self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
             self.update_rotation_properties(angle=angle, axis=axis)
         return copy(self.atoms.positions)
@@ -498,11 +498,12 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        translation_vector = deepcopy(shift)
-        translation_vector = np.array(translation_vector).reshape(-1)
-        for atom in self.atoms:
-            atom.position += translation_vector
-        # self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
+        if np.sum(np.abs(shift) ** 2) != 0:
+            translation_vector = deepcopy(shift)
+            translation_vector = np.array(translation_vector).reshape(-1)
+            for atom in self.atoms:
+                atom.position += translation_vector
+            # self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
 
         return copy(self.atoms.positions)
 

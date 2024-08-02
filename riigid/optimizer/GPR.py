@@ -71,9 +71,7 @@ class GPR(Optimizer):
                 )
                 x = data_x_pred[np.argmax(std_prediction)]
             self.current_structure = deepcopy(start_structure)
-            frag = self.current_structure.fragments[0]
-            frag.translate_by_shift(shift=[x, 0, 0])
-            self.current_structure.update_atoms_attribute_from_fragments()
+            self.current_structure.shift_and_rotate_a_fragment(fragment_index=0, shift=[x, 0, 0], angle=0, axis=[1,1,1])
 
             # Do Calculation to get energy and forces
             (
