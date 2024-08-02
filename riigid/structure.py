@@ -273,7 +273,7 @@ class Structure:
 
         """
         for fragment in self.fragments + [self.rest_fragment]:
-            self.atoms.positions[list(fragment.indices_in_structure),:] = deepcopy(
+            self.atoms.positions[list(fragment.indices_in_structure), :] = deepcopy(
                 fragment.atoms.positions
             )
 
@@ -502,3 +502,39 @@ class Structure:
         max_found_translation_distance = max(translation_distances)
 
         return max_found_translation_distance, max_found_angle
+
+    def shift_and_rotate_a_fragment(self, fragment_index, shift, angle, axis):
+        """Shift and rotate a fragment from Structure.fragments.
+
+        Can be useful for optimizers, e.g. GPR.
+
+        Parameters
+        ----------
+        fragment_index: int
+            Structure.fragments[fragment_index] will be shifted and rotated
+        shift: numpy.ndarray of shape (3,) or equivalent list
+            The vector to shift the fragment by; [Å]
+        angle: number
+            How much shall the fragments be rotated; [°]
+        axis: list of length 3 or numpy.ndarray of shape (3,)
+            The rotation axis
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_atoms_in_structure,3)
+            The positions of the structure's atoms after the transformation; [Å]
+
+        Note
+        ----
+        This method ignores `Structure.allowed_translation` and `Structure.allowed_rotation`!
+
+        """
+        # Select the fragment and rotate/translate it
+        frag = self.fragments[fragment_index]
+        frag.translate_by_shift(shift=shift)
+        frag.rotate_by_angle_and_axis(angle=angle, axis=axis)
+
+        # Update Structure attributes and return new atomic positions
+        self.update_atoms_attribute_from_fragments()
+        new_positions = deepcopy(self.atoms.positions)
+        return new_positions

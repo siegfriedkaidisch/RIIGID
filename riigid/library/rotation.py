@@ -1,9 +1,10 @@
 """A collection of functions related to the rotation of fragments in RIIGID.
 
-They are stored here, in a separate file, because they may also be useful somewhere else than just 
+They are stored here, in a separate file, because they may also be useful somewhere else than just
 inside the Fragment class.
 
 """
+
 import numpy as np
 
 ######################################################################################################################
@@ -48,7 +49,12 @@ def signed_angle_between_vectors(v1, v2, axis):
 
     """
     # First, calculate unsigned angle (in rad).
-    phi = np.arccos(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2)))
+    tmp = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    if (tmp > 1 or tmp < -1) and np.abs(tmp) - 1 < 1e-10:
+        # Catch rounding problems
+        phi = 0.0
+    else:
+        phi = np.arccos(tmp)
 
     # Next, calculate the sign of the angle.
     sign = np.sign(np.dot(np.cross(v1, v2), axis))
@@ -81,7 +87,7 @@ def rotmat(axis, angle):
 
     References
     ----------
-    Cole, Ian R. (2015). Modelling CPV. Loughborough University. Thesis. https://hdl.handle.net/2134/18050 
+    Cole, Ian R. (2015). Modelling CPV. Loughborough University. Thesis. https://hdl.handle.net/2134/18050
 
     """
     angle *= np.pi / 180  # convert to rad

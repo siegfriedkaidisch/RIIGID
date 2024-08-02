@@ -124,6 +124,8 @@ class Fragment:
 
         (Body-fixed axes are given in space-fixed-coordinates.)
 
+        See: https://en.wikipedia.org/wiki/Euler_angles
+
         Parameters
         ----------
         space_fixed_axis_x/y/z: list of length 3 or numpy.ndarray of shape (3,)
@@ -395,6 +397,70 @@ class Fragment:
 
         return translation_vector
 
+    def rotate_by_euler_angles(self, alpha, beta, gamma):
+        """Rotate fragment around its center of mass with given Euler angles to rotate by.
+
+        WARNING: this functions currently ignores self.allowed_rotations!
+
+        Note
+        ----
+        This method rotates the fragment by alpha, beta, gamma, relative to current
+        body-fixed axes! I.e., the final euler angles of the fragment, relative to the
+        space-fixed axes (=self.euler_angles) will usually be different than alpha, beta
+        and gamma. (Unless, self.euler_angles was [0,0,0] before calling this method.)
+
+        Parameters
+        ----------
+        alpha, beta, gamma: float (0-360), float (0-180), float (0-360)
+            The Euler angles; [°]
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_atoms_in_fragment,3)
+            The positions of the fragment's atoms after the transformation; [Å]
+
+        Raises
+        ------
+        ValueError
+            If the given angles are not within the boundaries specified above.
+
+        """
+        if not (0 <= alpha <= 360):
+            raise ValueError(
+                f"Euler angle alpha {alpha} is not within the range [{0}, {360}]."
+            )
+        if not (0 <= beta <= 180):
+            raise ValueError(
+                f"Euler angle beta {beta} is not within the range [{0}, {180}]."
+            )
+        if not (0 <= gamma <= 360):
+            raise ValueError(
+                f"Euler angle gamma {gamma} is not within the range [{0}, {360}]."
+            )
+
+        self.rotate_by_angle_and_axis(angle=alpha, axis=self.body_fixed_axis_z)
+        self.rotate_by_angle_and_axis(angle=beta, axis=self.body_fixed_axis_x)
+        self.rotate_by_angle_and_axis(angle=gamma, axis=self.body_fixed_axis_z)
+        return copy(self.atoms.positions)
+
+    def set_to_euler_angles(self, alpha, beta, gamma):
+        """
+        tbd
+
+        """
+        raise Exception("Not fully implemented/tested yet.")
+        """
+        # First, remove current euler angles, s.t. body axes = space axes
+        self.rotate_by_angle_and_axis(angle=-self.euler_angles[2], axis=self.body_fixed_axis_z)
+        self.rotate_by_angle_and_axis(angle=-self.euler_angles[1], axis=self.body_fixed_axis_x)
+        self.rotate_by_angle_and_axis(angle=-self.euler_angles[0], axis=self.body_fixed_axis_z)
+
+        # Then, 
+        self.rotate_by_angle_and_axis(angle=alpha, axis=self.body_fixed_axis_z)
+        self.rotate_by_angle_and_axis(angle=beta, axis=self.body_fixed_axis_x)
+        self.rotate_by_angle_and_axis(angle=gamma, axis=self.body_fixed_axis_z)
+        """
+
     def rotate_by_angle_and_axis(self, angle, axis):
         """Rotate fragment around its center of mass with given axis and angle.
 
@@ -413,9 +479,32 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        if len(self.atoms) > 1:
+        if len(self.atoms) > 1 and angle != 0:
             self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
             self.update_rotation_properties(angle=angle, axis=axis)
+        return copy(self.atoms.positions)
+
+    def translate_by_shift(self, shift):
+        """Translate fragment by simply shifting all atoms.
+
+        Parameters
+        ----------
+        shift: numpy.ndarray of shape (3,) or equivalent list
+            The vector to shift the fragment by; [Å]
+
+        Returns
+        -------
+        numpy.ndarray of shape (n_atoms_in_fragment,3)
+            The positions of the fragment's atoms after the transformation; [Å]
+
+        """
+        if np.sum(np.abs(shift) ** 2) != 0:
+            translation_vector = deepcopy(shift)
+            translation_vector = np.array(translation_vector).reshape(-1)
+            for atom in self.atoms:
+                atom.position += translation_vector
+            # self.update_rotation_properties(angle=0.0, axis=[0.0,0.0,1.0]) #rotation properties are unaffected by translations -> not needed
+
         return copy(self.atoms.positions)
 
     def move_random_step(self, displacement, angle, respect_restrictions, seed=1234):
