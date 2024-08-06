@@ -151,7 +151,7 @@ class GDWAS(Optimizer):
         self.respect_restrictions_r0 = respect_restrictions_r0
         self.seed_r0 = seed_r0
 
-    def run(self, start_structure, calculator, convergence_criterion, callback=None):
+    def run(self, start_structure, calculator, convergence_criterion, constraints, callback=None):
         """Let the optimizer run its optimization on the structure.
 
         Parameters
@@ -162,6 +162,8 @@ class GDWAS(Optimizer):
             The used ASE calculator object
         convergence_criterion : riigid.convergence.criterion
             The used convergence criterion object
+        constraints : riigid.constraints.List_of_Constraints
+            The constraints to be applied to the structure.
         callback : function, default:None
             A callback function can be used to safe the optimization progress after each step.
 
@@ -171,6 +173,8 @@ class GDWAS(Optimizer):
         self.start_structure = start_structure
         self.calculator = calculator
         self.convergence_criterion = convergence_criterion
+        self.constraints = constraints
+        self.constraints.init_internally(start_structure=self.start_structure)
 
         while not convergence_criterion.is_converged and self.iteration < self.max_iter:
             # Get current structure (starting structure or updated structure from last step)
@@ -189,6 +193,7 @@ class GDWAS(Optimizer):
                     respect_restrictions=self.respect_restrictions_r0,
                     seed=self.seed_r0,
                 )
+                self.constraints.apply(structure=self.current_structure)
 
             # Do Calculation to get energy and forces
             (
@@ -216,6 +221,7 @@ class GDWAS(Optimizer):
             _, _ = updated_structure.move(
                 forces=self.current_forces, stepsize=self.stepsize
             )
+            self.constraints.apply(structure=updated_structure)
 
             # Add Optimization step to history
             new_step = OptimizationStep(

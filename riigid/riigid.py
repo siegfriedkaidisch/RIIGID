@@ -14,6 +14,7 @@ from riigid.library.misc import copy_docstring, redirect_stdout_to_file
 from riigid.optimizer.GDWAS import GDWAS
 from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
 from riigid.optimizer.GPR import GPR
+from riigid.constraints.constraint import List_of_Contraints
 
 # Load the configuration file
 with resources.open_text("riigid", "config.json") as config_file:
@@ -49,6 +50,8 @@ class RIIGID:
         The used optimizer object
     convergence_criterion : riigid.convergence.Criterion
         The used convergence criterion object
+    constraints : riigid.constraints.List_of_Contraints
+        The constraints on the structure
 
     """
 
@@ -69,6 +72,7 @@ class RIIGID:
         self.calculator = None
         self.optimizer = None
         self.convergence_criterion = None
+        self.constraints = List_of_Contraints()
 
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
@@ -77,6 +81,21 @@ class RIIGID:
         print(
             "+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+"
         )
+        print()
+
+    @redirect_stdout_to_file(out_file)
+    def add_constraint(self, constraint):
+        """Add a constraint to the RIIGID calculation.
+
+        Parameters
+        ----------
+        constraint : riigid.constraints.Constraint
+            The new constraint to be added to the calculation
+
+        """
+        print()
+        self.constraints.add(constraint=constraint)
+        print("New constraint added.")
         print()
 
     @redirect_stdout_to_file(out_file)
@@ -272,6 +291,7 @@ class RIIGID:
             start_structure=self.start_structure,
             calculator=self.calculator,
             convergence_criterion=self.convergence_criterion,
+            constraints = self.constraints,
             callback=self.save_optimization_progress,
         )
 

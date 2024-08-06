@@ -32,7 +32,7 @@ class GPR(Optimizer):
         super().__init__(max_iter=max_iter)
         # self.stepsize = 100
 
-    def run(self, start_structure, calculator, convergence_criterion, callback=None):
+    def run(self, start_structure, calculator, convergence_criterion, constraints, callback=None):
         """Let the optimizer run its optimization on the structure.
 
         Parameters
@@ -43,6 +43,9 @@ class GPR(Optimizer):
             The used ASE calculator object
         convergence_criterion : riigid.convergence.criterion
             The used convergence criterion object
+        constraints : riigid.constraints.List_of_Constraints
+            The constraints to be applied to the structure.
+            NOT YET IMPLEMENTED/USED!!!
         callback : function, default:None
             A callback function can be used to safe the optimization progress after each step.
 
