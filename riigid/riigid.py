@@ -12,7 +12,6 @@ from riigid.structure import Structure
 from riigid.convergence.displacement import Criterion_Displacement
 from riigid.library.misc import copy_docstring, redirect_stdout_to_file
 from riigid.optimizer.GDWAS import GDWAS
-from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
 from riigid.optimizer.GPR import GPR
 from riigid.constraints.constraint import List_of_Contraints
 
@@ -179,8 +178,6 @@ class RIIGID:
 
             if optimizer.lower() == "gdwas":
                 optimizer = GDWAS(**settings)
-            elif optimizer.lower() == "deprecated_gdwas":
-                optimizer = Deprecated_GDWAS(**settings)
             elif optimizer.lower() == "gpr":
                 optimizer = GPR(**settings)
             else:
