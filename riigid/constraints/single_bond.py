@@ -3,12 +3,11 @@ import numpy as np
 from riigid.constraints.constraint import Constraint
 
 
-class Fix_Bond_length(Constraint):
-    """Constraint: Fix bond length between atoms of different fragments.
+class Single_Bond(Constraint):
+    """Constraint: Take one atom per fragment and freeze the bond length between them.
 
-    This can for example be used to allow functional groups of molecules to change their
-    orientation relative to the molecule's core. To do so, define functional group and core
-    as different fragments and then fix the bond length between the two atoms that bind them together.
+    Example: Separate 6T into six different fragments and fix the bond length between
+    neighboring tiophenes.
 
     Attributes
     ----------

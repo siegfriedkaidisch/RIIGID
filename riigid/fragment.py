@@ -564,6 +564,60 @@ class Fragment:
         self.allowed_rotation = copy(backup_allowed_rotation)
         return copy(self.atoms.positions)
 
+    def get_normal_axis(self):
+        """Get the normal axis of a planar fragment.
+
+        Note
+        ----
+        Do NOT use this with heavily non-planar fragments, as the result will not make any sense!
+
+        Note
+        ----
+        Do NOT use this with linear or one-atomic fragments, since there is no normal axis for those!
+
+        Returns
+        -------
+        numpy.ndarray of shape (3,)
+            The normalized normal axis
+            Convention: If z!=0 we select the z>0 axis, if z=0 we select the y>0 axis.
+            If y is also zero, we choose the x>0 axis.
+
+        """
+        # Use the first two atoms to span the surface
+        p1 = self.atoms[0].position
+        p2 = self.atoms[1].position
+
+        # Choose a third atom, which must NOT lie in a line with the first two
+        found_third_atom = False
+        counter = 0
+        while not found_third_atom:
+            # Select the third atom
+            p3 = self.atoms[2+counter].position
+            # Calculate the normal vector
+            p12 = p1 - p2
+            p32 = p3 - p2
+            v_norm = np.cross(p12, p32)
+            norm = np.linalg.norm(v_norm)
+            # Not in line -> norm!=0
+            if norm > 0:
+                v_norm /= norm
+                found_third_atom = True
+            else:
+                counter += 1
+
+        # Apply the conventions
+        if v_norm[2] < 0:
+            v_norm *= -1
+        elif v_norm[2] == 0:
+            if v_norm[1] < 0:
+                v_norm *= -1
+            elif v_norm[1] == 0:
+                if v_norm[0] < 0:
+                    v_norm *= -1
+                else:
+                    raise Exception("Could not apply the conventions!")
+        return v_norm
+
     #########################################################################################################
 
     def apply_boundaries(self, xmin, xmax, ymin, ymax):
