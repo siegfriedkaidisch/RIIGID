@@ -173,6 +173,9 @@ class GDWAS(Optimizer):
         self.convergence_criterion = convergence_criterion
 
         while not convergence_criterion.is_converged and self.iteration < self.max_iter:
+            print("Starting iteration " + str(self.iteration + 1))
+            sys.stdout.flush()
+
             # Get current structure (starting structure or updated structure from last step)
             if self.iteration == 0:
                 self.current_structure = deepcopy(start_structure)
@@ -183,6 +186,8 @@ class GDWAS(Optimizer):
 
             # Before first calculation, perform a random step, if start_with_random_step==True
             if self.start_with_random_step and self.iteration == 0:
+                print("Doing random step before first calculation.")
+                sys.stdout.flush()
                 self.current_structure.move_random_step(
                     displacement=self.displacement_r0,
                     angle=self.angle_r0,
@@ -234,6 +239,21 @@ class GDWAS(Optimizer):
                 optimization_history=self.optimization_history
             )
 
+            # Log some info (Note: We never know, if last step was successful or not. -> is not yet finished)
+            print(
+                "Performed step "
+                + str(self.iteration)
+                + " with stepsize: "
+                + str(self.stepsize)
+            )
+            print(
+                "Successful/Finished Steps: "
+                + str(len(self.optimization_history) - 1)
+                + "/"
+                + str(self.iteration - 1)
+            )
+            sys.stdout.flush()
+
             # If a callback function was provided, execute it. Useful to save data after every step
             if callback is not None:
                 callback()
@@ -271,6 +291,9 @@ class GDWAS(Optimizer):
                 self.current_forces = copy(self.optimization_history[-1].force_on_atoms)
                 self.current_energy = copy(self.optimization_history[-1].energy)
                 self.optimization_history.pop()
+
+                print("Latest step made energy larger and was undone!")
+                sys.stdout.flush()
 
     def adapt_stepsize_to_prevent_too_large_steps(self):
         """Prevent too large movement of the fragments.
