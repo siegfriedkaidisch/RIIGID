@@ -173,7 +173,7 @@ class GDWAS(Optimizer):
         self.convergence_criterion = convergence_criterion
 
         while not convergence_criterion.is_converged and self.iteration < self.max_iter:
-            print("Starting iteration " + str(self.iteration + 1))
+            print("Starting step " + str(self.iteration))
             sys.stdout.flush()
 
             # Get current structure (starting structure or updated structure from last step)
@@ -231,17 +231,15 @@ class GDWAS(Optimizer):
             )
             self.optimization_history.append(new_step)
 
-            # Prepare next iteration
-            self.iteration += 1
-
             # Check for convergence
             self.convergence_criterion.check(
                 optimization_history=self.optimization_history
             )
 
-            # Log some info (Note: We never know, if last step was successful or not. -> is not yet finished)
+            # Log some info (Note: We never know, if last step was successful or not.)
+            # Steps, that we know were not successful are not stored in optimization history
             print(
-                "Performed step "
+                "Created updated structure of step "
                 + str(self.iteration)
                 + " with stepsize: "
                 + str(self.stepsize)
@@ -250,9 +248,12 @@ class GDWAS(Optimizer):
                 "Successful/Finished Steps: "
                 + str(len(self.optimization_history) - 1)
                 + "/"
-                + str(self.iteration - 1)
+                + str(self.iteration + 1)
             )
             sys.stdout.flush()
+
+            # Prepare next iteration
+            self.iteration += 1
 
             # If a callback function was provided, execute it. Useful to save data after every step
             if callback is not None:
@@ -292,7 +293,7 @@ class GDWAS(Optimizer):
                 self.current_energy = copy(self.optimization_history[-1].energy)
                 self.optimization_history.pop()
 
-                print("Latest step made energy larger and was undone!")
+                print("Previous step made energy larger and was undone!")
                 sys.stdout.flush()
 
     def adapt_stepsize_to_prevent_too_large_steps(self):

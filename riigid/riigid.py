@@ -13,6 +13,7 @@ from riigid.convergence.displacement import Criterion_Displacement
 from riigid.convergence.force_torque import Criterion_Force_Torque
 from riigid.library.misc import copy_docstring, redirect_stdout_to_file
 from riigid.optimizer.GDWAS import GDWAS
+from riigid.optimizer.GD import GD
 from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
 from riigid.optimizer.GPR import GPR
 
@@ -163,6 +164,8 @@ class RIIGID:
                 optimizer = GDWAS(**settings)
             elif optimizer.lower() == "deprecated_gdwas":
                 optimizer = Deprecated_GDWAS(**settings)
+            elif optimizer.lower() == "gd":
+                optimizer = GD(**settings)
             elif optimizer.lower() == "gpr":
                 optimizer = GPR(**settings)
             else:
