@@ -1,2 +1,3 @@
 from riigid.convergence.criterion import Criterion
 from riigid.convergence.displacement import Criterion_Displacement
+from riigid.convergence.force_torque import Criterion_Force_Torque

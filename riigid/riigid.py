@@ -10,6 +10,7 @@ from ase.io import write as ase_write
 
 from riigid.structure import Structure
 from riigid.convergence.displacement import Criterion_Displacement
+from riigid.convergence.force_torque import Criterion_Force_Torque
 from riigid.library.misc import copy_docstring, redirect_stdout_to_file
 from riigid.optimizer.GDWAS import GDWAS
 from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
@@ -215,6 +216,8 @@ class RIIGID:
 
             if convergence_criterion.lower() == "criterion_displacement":
                 convergence_criterion = Criterion_Displacement(**settings)
+            elif convergence_criterion.lower() == "criterion_force_torque":
+                convergence_criterion = Criterion_Force_Torque(**settings)
             else:
                 raise Exception(
                     "Convergence criterion not known... did you write the name correctly? Tip: Maybe initialize the convergence criterion in your code and hand it to RIIGID, instead of handing its name (string) to RIIGID."
