@@ -1,6 +1,4 @@
-"""Example of a RIIGID geometry optimization
-
-"""
+"""Example of a RIIGID geometry optimization"""
 
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.vasp import read_vasp
@@ -34,11 +32,9 @@ riigid.define_fragment_by_indices(
 vasp_settings = {
     "directory": "./vasp/",
     "txt": "out",
-    "istart": 0,
     "npar": 4,
     "lorbit": 11,
     "lvhar": True,
-    "lwave": True,
     "prec": "Accu",
     "encut": 400,
     "ediff": 1e-7,
@@ -54,8 +50,6 @@ vasp_settings = {
     "ldipol": True,
     #    'ispin':2,
     #    'magmom':[0.0]*224 + [1.5],
-    #    'icharg':1,
-    "nsw": 0,  # leave this at zero!
     #    'ldau':True,
     #    'ldautype':2,
     #    'ldaul':[-1]*5 + [2],
@@ -66,6 +60,10 @@ vasp_settings = {
     "kpts": [2, 2, 1],
     "gamma": True,  # Gamma-centered k-mesh
     "setups": "recommended",
+    # The following settings should usually not be changed!
+    "nsw": 0,
+    "icharg": 1,
+    "lcharg": True,
 }
 calculator = Vasp(**vasp_settings)
 riigid.set_calculator(calculator)
@@ -85,7 +83,7 @@ optimizer_settings = {
     "angle_r0": 0.03,
     "respect_restrictions_r0": True,
     "seed_r0": 1234,
-    "max_iter": 1000
+    "max_iter": 1000,
 }
 optimizer = GDWAS(**optimizer_settings)  # gradient descent with adaptive stepsize
 riigid.set_optimizer(optimizer)
