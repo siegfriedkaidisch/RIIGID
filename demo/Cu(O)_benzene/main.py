@@ -64,6 +64,8 @@ vasp_settings = {
     "nsw": 0,
     "icharg": 1,
     "lcharg": True,
+    "istart": 0,
+    "lwave": False,
 }
 calculator = Vasp(**vasp_settings)
 riigid.set_calculator(calculator)

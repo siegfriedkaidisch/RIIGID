@@ -61,6 +61,8 @@ vasp_settings = {
     "nsw": 0,
     "icharg": 1,
     "lcharg": True,
+    "istart": 0,
+    "lwave": False,
 }
 riigid.set_calculator(calculator="Vasp", settings=vasp_settings)
 
