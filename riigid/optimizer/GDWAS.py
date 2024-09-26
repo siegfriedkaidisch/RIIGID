@@ -166,7 +166,7 @@ class GDWAS(Optimizer):
             A callback function can be used to safe the optimization progress after each step.
 
         """
-        print("Starting optimization...")
+        print("Starting GDWAS optimization...")
         sys.stdout.flush()  # Flush the output immediately
         self.start_structure = start_structure
         self.calculator = calculator
@@ -289,8 +289,8 @@ class GDWAS(Optimizer):
                 self.current_structure = deepcopy(
                     self.optimization_history[-1].structure
                 )
-                self.current_forces = copy(self.optimization_history[-1].force_on_atoms)
-                self.current_energy = copy(self.optimization_history[-1].energy)
+                self.current_forces = deepcopy(self.optimization_history[-1].force_on_atoms)
+                self.current_energy = deepcopy(self.optimization_history[-1].energy)
                 self.optimization_history.pop()
 
                 print("Previous step made energy larger and was undone!")

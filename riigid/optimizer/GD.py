@@ -12,6 +12,8 @@ class GD(Optimizer):
     The stepsize/timestep remains unchanged during the whole optimization. So, this is basically
     normal gradient descent.
 
+    Force mixing can be used to dampen oscillations
+
     Attributes
     ----------
     optimization_history: list of riigid.Optimization_Step
@@ -20,6 +22,14 @@ class GD(Optimizer):
         Counts the number of finished optimization steps
     stepsize: number
         Timestep; [Da*Å**2/eV]
+    alpha: number between 0 and 1
+        Force mixing parameter. f = alpha*f_current + (1-alpha)*f_old
+    ema: bool
+        Shall an exponential moving average be used when mixing forces?
+        This determines what "f_old" in the formula above means.
+        If set to `True`, "f_old" is "f" (lhs above) from the last step, such that we get an
+        exponential moving average.
+        If set to `False`, "f_old" is "f_current" (rhs above) from the previous step.
     start_with_random_step: bool
         Shall the fragments forming the structure be randomly translated and rotated before the
         first optimization step? This can be used to escape a saddle point starting-geometry.
@@ -50,12 +60,16 @@ class GD(Optimizer):
         The energy of current_structure; [eV]
     current_forces: numpy.ndarray of shape (n_atoms_in_current_structure, 3)
         The forces in current_structure; [eV/Å]
+    mixed_forces: numpy.ndarray of shape (n_atoms_in_current_structure, 3)
+        `current_forces` mixed with old forces; used to move fragments; [eV/Å]
 
     """
 
     def __init__(
         self,
         stepsize=1.0,
+        alpha=1.0,
+        ema=False,
         start_with_random_step=True,
         displacement_r0=0.001,
         angle_r0=0.03,
@@ -69,6 +83,14 @@ class GD(Optimizer):
         ----------
         stepsize: number, default:1.0
             Timestep; [Da*Å**2/eV]
+        alpha: number between 0 and 1, default:1.0
+            Force mixing parameter. f = alpha*f_current + (1-alpha)*f_old
+        ema: bool, default:False
+            Shall an exponential moving average be used when mixing forces?
+            This determines what "f_old" in the formula above means.
+            If set to `True`, "f_old" is "f" (lhs above) from the last step, such that we get an
+            exponential moving average.
+            If set to `False`, "f_old" is "f_current" (rhs above) from the previous step.
         start_with_random_step: bool, default:True
             Shall the fragments forming the structure be randomly translated and rotated before the
             first optimization step? This can be used to escape a saddle point starting-geometry.
@@ -91,6 +113,8 @@ class GD(Optimizer):
         """
         super().__init__(max_iter=max_iter)
         self.stepsize = stepsize
+        self.alpha = alpha
+        self.ema = ema
         self.start_with_random_step = start_with_random_step
         self.displacement_r0 = displacement_r0
         self.angle_r0 = angle_r0
@@ -112,7 +136,7 @@ class GD(Optimizer):
             A callback function can be used to safe the optimization progress after each step.
 
         """
-        print("Starting optimization...")
+        print("Starting GD optimization...")
         sys.stdout.flush()  # Flush the output immediately
         self.start_structure = start_structure
         self.calculator = calculator
@@ -149,10 +173,22 @@ class GD(Optimizer):
                 calculator=calculator
             )
 
+            # Force mixing (Easiest way: mix atomic forces)
+            if self.iteration == 0:
+                old_forces = deepcopy(self.current_forces)
+            else:
+                if not self.ema:
+                    old_forces = deepcopy(self.optimization_history[-1].force_on_atoms)
+                else:
+                    old_forces = deepcopy(self.mixed_forces)
+            self.mixed_forces = (
+                self.alpha * self.current_forces + (1 - self.alpha) * old_forces
+            )
+
             # Move atoms
             updated_structure = deepcopy(self.current_structure)
             _, _ = updated_structure.move(
-                forces=self.current_forces, stepsize=self.stepsize
+                forces=self.mixed_forces, stepsize=self.stepsize
             )
 
             # Add Optimization step to history
