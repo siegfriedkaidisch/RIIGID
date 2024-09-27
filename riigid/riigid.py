@@ -269,7 +269,7 @@ class RIIGID:
         if self.convergence_criterion is None:
             print("No convergence criterion defined by user... using default.")
             self.set_convergence_criterion(
-                convergence_criterion="Criterion_Displacement", settings={}
+                convergence_criterion="Criterion_Force_Torque", settings={}
             )
             print()
 

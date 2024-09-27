@@ -17,12 +17,12 @@ class Criterion_Force_Torque(Criterion):
 
     """
 
-    def __init__(self, cutoff_f=0.01, cutoff_t=0.01):
+    def __init__(self, cutoff_f=0.1, cutoff_t=0.1):
         """Initialize the Force+Torque convergence criterion.
 
         Parameters
         ----------
-        cutoff_f, cutoff_t: float, float, both optional, defaults: 0.01, 0.01
+        cutoff_f, cutoff_t: float, float, both optional, defaults: 0.1, 0.1
             Cutoffs for force and torque; [eV/Å], [eV]
 
         """
