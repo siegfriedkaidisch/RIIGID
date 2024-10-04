@@ -531,38 +531,49 @@ class Fragment:
             The positions of the fragment's atoms after the transformation; [Å]
 
         """
-        backup_allowed_translation = copy(self.allowed_translation)
-        backup_allowed_rotation = copy(self.allowed_rotation)
+        # Prepare restrictions
         if not respect_restrictions:
-            self.allowed_translation = "xyz"
-            self.allowed_rotation = "xyz"
+            allowed_translation = "xyz"
+            allowed_rotation = "xyz"
+        else:
+            allowed_translation = self.allowed_translation
+            allowed_rotation = self.allowed_rotation
 
-        # Set like this, s.t. rotation angle and displacement is as requested
-        stepsize = 1.0
-        inertia_matrix_inv = np.eye(3)
-        fragment_mass = np.sum(self.atoms.get_masses())
 
+        # Get random translation direction and rotation axis
         backup_seed = np.random.randint(2**32 - 1)
         np.random.seed(seed)
-        force = np.random.rand(3)
-        torque = np.random.rand(3)
+        trans_dir = np.random.rand(3)
+        rot_ax = np.random.rand(3)
         np.random.seed(backup_seed)
 
-        # Set like this, s.t. rotation angle and displacement is as requested
-        force /= np.linalg.norm(force)
-        torque /= np.linalg.norm(torque)
-        force *= displacement * fragment_mass
-        torque *= angle * (np.pi / 180)
+        # Apply restrictions
+        if "x" not in allowed_translation:
+            trans_dir[0] = 0
+        if "y" not in allowed_translation:
+            trans_dir[1] = 0
+        if "z" not in allowed_translation:
+            trans_dir[2] = 0
+        if "x" not in allowed_rotation:
+            rot_ax[0] = 0
+        if "y" not in allowed_rotation:
+            rot_ax[1] = 0
+        if "z" not in allowed_rotation:
+            rot_ax[2] = 0
+        # Normalize translation direction and rotation axis
+        trans_dir /= np.linalg.norm(trans_dir)
+        rot_ax /= np.linalg.norm(rot_ax)
 
-        # Translate fragment
-        self.translate_by_force(force_on_center=force, stepsize=stepsize)
-        # Rotate fragment
-        self.inertia_matrix_inv = inertia_matrix_inv  # temporarily set to diag, such that fragment is rotated arbitrarily
-        self.rotate_by_torque(torque_on_center=torque, stepsize=stepsize)
+        # Apply translation
+        for atom in self.atoms:
+            atom.position += trans_dir * displacement
 
-        self.allowed_translation = copy(backup_allowed_translation)
-        self.allowed_rotation = copy(backup_allowed_rotation)
-        return copy(self.atoms.positions)
+        # Apply rotation
+        if angle != 0:
+            self.atoms.rotate(angle, rot_ax, self.atoms.get_center_of_mass())
+            self.update_rotation_properties(angle=angle, axis=rot_ax)
+
+        return deepcopy(self.atoms.positions)
 
     #########################################################################################################
 
