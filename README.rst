@@ -43,7 +43,7 @@ Quickstart
 Installation
 ------------
 
-From PyPI:
+From PyPI (latest stable and tested release):
 
 ..  code:: bash
 
