@@ -3,6 +3,7 @@ import time
 import warnings
 import json
 from importlib import resources
+import numpy as np
 
 from ase.calculators.vasp.vasp import Vasp
 from ase.io.trajectory import Trajectory
@@ -14,7 +15,6 @@ from riigid.convergence.force_torque import Criterion_Force_Torque
 from riigid.library.misc import copy_docstring, redirect_stdout_to_file
 from riigid.optimizer.GDWAS import GDWAS
 from riigid.optimizer.GD import GD
-from riigid.optimizer.Deprecated_GDWAS import Deprecated_GDWAS
 from riigid.optimizer.GPR import GPR
 
 # Load the configuration file
@@ -162,8 +162,6 @@ class RIIGID:
 
             if optimizer.lower() == "gdwas":
                 optimizer = GDWAS(**settings)
-            elif optimizer.lower() == "deprecated_gdwas":
-                optimizer = Deprecated_GDWAS(**settings)
             elif optimizer.lower() == "gd":
                 optimizer = GD(**settings)
             elif optimizer.lower() == "gpr":
@@ -343,22 +341,54 @@ class RIIGID:
         fn = opt_file
         with open(fn, "w") as file:
             # Write the header
-            # file.write("Summary of Optimization:\n")
             file.write(
-                f"{'':<6}|{'':>20}|{'Max. Force on Fragments':>25}|{'Max. Torque on Fragments':>25}|{'Max. Force on Atoms':>25}|\n"
+                f"{'':<5}|{'':>19}|"
+                f"{'Max. Force on Fragments [eV/A] ':>39}|"
+                f"{'Max. Torque on Fragments [eV] ':>39}|"
+                f"{'Max. Force on ':>19}|\n"
             )
             file.write(
-                f"{'Step':<6}|{'Energy [eV]':>20}|{'[eV/A]':>20}{'#':>5}|{'[eV]':>20}{'#':>5}|{'[eV/A]':>20}{'#':>5}|\n"
+                f"{'Step':<5}|{'Energy [eV] ':>19}|"
+                f"{'Raw':>14}{'# ':>5}|{'Allowed':>14}{'# ':>5}|"
+                f"{'Raw':>14}{'# ':>5}|{'Allowed':>14}{'# ':>5}|"
+                f"{'Atoms [eV/A]':>14}{'# ':>5}|\n"
             )
-            file.write("=" * (6 + 20 + 25 + 25 + 25 + 5 * 1) + "\n")
+            file.write("=" * (5 + 1 + 19 + 1 + 39 + 1 + 39 + 1 + 19 + 1) + "\n")
 
             # Write the data rows
             optimization_history = self.optimizer.optimization_history
             for iteration, step in enumerate(optimization_history):
                 energy = step.energy
-                fmax_fragments = step.max_force_on_fragment
-                tmax_fragments = step.max_torque_on_fragment
-                fmax_atoms = step.max_force_on_atom
+                # Get max forces and torques
+                fmax_frags_allowed = np.max(
+                    [np.linalg.norm(f) for f in step.forces_allowed]
+                )
+                fmax_frags_raw = np.max([np.linalg.norm(f) for f in step.forces_raw])
+                tmax_frags_allowed = np.max(
+                    [np.linalg.norm(t) for t in step.torques_allowed]
+                )
+                tmax_frags_raw = np.max([np.linalg.norm(t) for t in step.torques_raw])
+                fmax_atoms = np.max([np.linalg.norm(f) for f in step.forces_on_atoms])
+                # Get corresponding indices
+                ifmax_frags_allowed = np.argmax(
+                    [np.linalg.norm(f) for f in step.forces_allowed]
+                )
+                ifmax_frags_raw = np.argmax(
+                    [np.linalg.norm(f) for f in step.forces_raw]
+                )
+                itmax_frags_allowed = np.argmax(
+                    [np.linalg.norm(t) for t in step.torques_allowed]
+                )
+                itmax_frags_raw = np.argmax(
+                    [np.linalg.norm(t) for t in step.torques_raw]
+                )
+                ifmax_atoms = np.argmax(
+                    [np.linalg.norm(f) for f in step.forces_on_atoms]
+                )
+                # Write each row to the file
                 file.write(
-                    f"{iteration:<6}|{energy:>20.10f}|{fmax_fragments[0]:>20.10f}{fmax_fragments[1]:>5}|{tmax_fragments[0]:>20.10f}{tmax_fragments[1]:>5}|{fmax_atoms[0]:>20.10f}{fmax_atoms[1]:>5}|\n"
+                    f"{iteration:<5}|{energy:>19.10f}|"
+                    f"{fmax_frags_raw:>14.10f}{ifmax_frags_raw:>5}|{fmax_frags_allowed:>14.10f}{ifmax_frags_allowed:>5}|"
+                    f"{tmax_frags_raw:>14.10f}{itmax_frags_raw:>5}|{tmax_frags_allowed:>14.10f}{itmax_frags_allowed:>5}|"
+                    f"{fmax_atoms:>14.10f}{ifmax_atoms:>5}|\n"
                 )

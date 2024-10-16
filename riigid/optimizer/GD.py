@@ -178,7 +178,7 @@ class GD(Optimizer):
                 old_forces = deepcopy(self.current_forces)
             else:
                 if not self.ema:
-                    old_forces = deepcopy(self.optimization_history[-1].force_on_atoms)
+                    old_forces = deepcopy(self.optimization_history[-1].forces_on_atoms)
                 else:
                     old_forces = deepcopy(self.mixed_forces)
             self.mixed_forces = (
@@ -187,14 +187,12 @@ class GD(Optimizer):
 
             # Move atoms
             updated_structure = deepcopy(self.current_structure)
-            _, _ = updated_structure.move(
-                forces=self.mixed_forces, stepsize=self.stepsize
-            )
+            updated_structure.move(forces=self.mixed_forces, stepsize=self.stepsize)
 
             # Add Optimization step to history
             new_step = OptimizationStep(
                 structure=self.current_structure,
-                force_on_atoms=self.current_forces,
+                forces_on_atoms=self.current_forces,
                 energy=self.current_energy,
                 updated_structure=updated_structure,
             )

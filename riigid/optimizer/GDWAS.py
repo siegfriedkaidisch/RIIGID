@@ -1,5 +1,6 @@
 from copy import copy, deepcopy
 import sys
+import numpy as np
 
 from riigid.optimization_step import OptimizationStep
 from riigid.optimizer.optimizer import Optimizer
@@ -218,14 +219,12 @@ class GDWAS(Optimizer):
 
             # Move atoms
             updated_structure = deepcopy(self.current_structure)
-            _, _ = updated_structure.move(
-                forces=self.current_forces, stepsize=self.stepsize
-            )
+            updated_structure.move(forces=self.current_forces, stepsize=self.stepsize)
 
             # Add Optimization step to history
             new_step = OptimizationStep(
                 structure=self.current_structure,
-                force_on_atoms=self.current_forces,
+                forces_on_atoms=self.current_forces,
                 energy=self.current_energy,
                 updated_structure=updated_structure,
             )
@@ -289,7 +288,9 @@ class GDWAS(Optimizer):
                 self.current_structure = deepcopy(
                     self.optimization_history[-1].structure
                 )
-                self.current_forces = deepcopy(self.optimization_history[-1].force_on_atoms)
+                self.current_forces = deepcopy(
+                    self.optimization_history[-1].forces_on_atoms
+                )
                 self.current_energy = deepcopy(self.optimization_history[-1].energy)
                 self.optimization_history.pop()
 
@@ -312,12 +313,14 @@ class GDWAS(Optimizer):
 
         """
         # Given the current stepsize, find the maximal rotation/translation of the fragments
-        (
-            max_found_translation_distance,
-            max_found_angle,
-        ) = self.current_structure.get_largest_translation_distance_and_largest_rotation_angle_from_forces(
+        test_structure = deepcopy(self.current_structure)
+        _, angles, shifts = test_structure.move(
             forces=self.current_forces, stepsize=self.stepsize
         )
+        max_found_translation_distance = np.max(
+            [np.linalg.norm(shift) for shift in shifts]
+        )
+        max_found_angle = np.max(np.abs(angles))
 
         factor_rot = self.max_rot / max_found_angle
         factor_trans = self.max_trans / max_found_translation_distance
@@ -340,12 +343,14 @@ class GDWAS(Optimizer):
 
         """
         # Given the current stepsize, find the maximal rotation/translation of the fragments
-        (
-            max_found_translation_distance,
-            max_found_angle,
-        ) = self.current_structure.get_largest_translation_distance_and_largest_rotation_angle_from_forces(
+        test_structure = deepcopy(self.current_structure)
+        _, angles, shifts = test_structure.move(
             forces=self.current_forces, stepsize=self.stepsize
         )
+        max_found_translation_distance = np.max(
+            [np.linalg.norm(shift) for shift in shifts]
+        )
+        max_found_angle = np.max(np.abs(angles))
 
         factor_rot = self.max_rot_0 / max_found_angle
         factor_trans = self.max_trans_0 / max_found_translation_distance

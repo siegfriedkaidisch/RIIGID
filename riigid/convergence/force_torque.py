@@ -8,6 +8,10 @@ class Criterion_Force_Torque(Criterion):
 
     If max force and torque on fragments are below cutoffs, the criterion is fulfilled.
 
+    Note
+    ----
+    It checks for convergence of force and torque in ALLOWED directions, NOT the RAW ones!
+
     Attributes
     ----------
     is_converged: bool
@@ -44,8 +48,8 @@ class Criterion_Force_Torque(Criterion):
         """
         # Get max force and torque on fragments from last optimization step
         last_step = optimization_history[-1]
-        max_f = last_step.max_force_on_fragment[0]
-        max_t = last_step.max_torque_on_fragment[0]
+        max_f = np.max([np.linalg.norm(f) for f in last_step.forces_allowed])
+        max_t = np.max([np.linalg.norm(t) for t in last_step.torques_allowed])
 
         if (max_f < self.cutoff_f) and (max_t < self.cutoff_t):
             self.is_converged = True

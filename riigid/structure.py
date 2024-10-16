@@ -142,6 +142,21 @@ class Structure:
         """
         raise Exception("Not yet implemented")
 
+    def update_atoms_attribute_from_fragments(self):
+        """Update Structure.atoms after movement of fragments.
+
+        When individual fragments are moved, the atoms object of the structure must also be updated
+        accordingly.
+
+        The function also makes sure that the order of the atoms in Structure.atoms
+        is not changed!
+
+        """
+        for fragment in self.fragments + [self.rest_fragment]:
+            self.atoms.positions[list(fragment.indices_in_structure), :] = deepcopy(
+                fragment.atoms.positions
+            )
+
     def calculate_energy_and_forces(self, calculator):
         """Calculate forces on all atoms and total energy.
 
@@ -165,125 +180,14 @@ class Structure:
         forces = atoms.get_forces()
         return energy, forces
 
-    def get_indices_of_fragments(self):
-        """Get the indices (relative to Structure.atoms) of the atoms in each fragment.
-
-        Returns
-        -------
-        list of lists of int
-            A list containing one list per fragment (excluding the rest_fragment) containing
-            the indices of the fragment
-
-        Raises
-        ------
-        RuntimeError
-            Raises an exception if not all indices of the fragment's atoms could be found.
-
-        """
-        fragments_indices = []
-        for fragment in self.fragments:
-            fragment_indices, found = get_indices_of_atoms1_in_atoms2(
-                atoms1=fragment.atoms, atoms2=self.atoms, cutoff=1e-4
-            )
-            if not found:
-                raise RuntimeError("Error while looking for indices of fragment...")
-            fragments_indices.append(fragment_indices)
-        return fragments_indices
-
-    def get_forces_on_fragments(self, forces):
-        """Assign forces to fragments.
-
-        Given the forces on all individual atoms, get one numpy array per fragment, containing
-        the forces on all the atoms inside the fragment.
-
-        Parameters
-        ----------
-        forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/Å]
-
-        Returns
-        -------
-        list of numpy.ndarrays of shape (depends_on_fragment, 3)
-            One numpy array per fragment with the forces on atoms belonging to the fragment; [eV/Å]
-
-        """
-        fragments_indices = self.get_indices_of_fragments()
-        forces_on_fragments = [forces[indices_i] for indices_i in fragments_indices]
-        return forces_on_fragments
-
-    def calculate_net_force_on_fragments(self, forces):
-        """Get net force on each fragment.
-
-        Given the forces on all individual atoms, get the net force acting on each fragment.
-
-        Parameters
-        ----------
-        forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/Å]
-
-        Returns
-        -------
-        list of numpy.ndarrays of shape (3,)
-            Net force on each fragment; [eV/Å]
-
-        """
-        forces_on_fragments = self.get_forces_on_fragments(forces=forces)
-        net_force_on_fragments = []
-        for i, fragment in enumerate(self.fragments):
-            net_force_on_fragment = fragment.calculate_net_force_on_fragment(
-                forces=forces_on_fragments[i]
-            )
-            net_force_on_fragments.append(net_force_on_fragment)
-        return net_force_on_fragments
-
-    def calculate_torque_on_fragments(self, forces):
-        """Get torque on each fragment, relative to the fragment's center of mass.
-
-        Given the forces on all individual atoms, get the net torque acting on each fragment.
-        (The torque is calculated relative to the center of mass of the fragment.)
-
-        Parameters
-        ----------
-        forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/Å]
-
-        Returns
-        -------
-        list of numpy.ndarrays of shape (3,)
-            Torque on each fragment; [eV]
-
-        """
-        forces_on_fragments = self.get_forces_on_fragments(forces=forces)
-        torque_on_fragments = []
-        for i, fragment in enumerate(self.fragments):
-            torque_on_fragment = fragment.calculate_torque_on_fragment(
-                forces=forces_on_fragments[i]
-            )
-            torque_on_fragments.append(torque_on_fragment)
-        return torque_on_fragments
-
-    def update_atoms_attribute_from_fragments(self):
-        """Update Structure.atoms after movement of fragments.
-
-        When individual fragments are moved, the atoms object of the structure must also be updated
-        accordingly.
-
-        The function also makes sure that the order of the atoms in Structure.atoms
-        is not changed!
-
-        """
-        for fragment in self.fragments + [self.rest_fragment]:
-            self.atoms.positions[list(fragment.indices_in_structure), :] = deepcopy(
-                fragment.atoms.positions
-            )
-
     def move(self, forces, stepsize):
         """Move the fragments according to the forces.
 
         Given the forces on all individual atoms and a stepsize, move the fragments.
 
-        The functions first calculates the net force and the torque acting on each fragment.
-        Then, the fragments are moved.
+        Note
+        ----
+        DOES enforce allowed_translations and allowed_rotations of fragments.
 
         Parameters
         ----------
@@ -294,32 +198,31 @@ class Structure:
 
         Returns
         -------
-        number
-            The farthest distance an atom was moved in this update step; [Å]
-        numpy.ndarray of shape (n_atoms, 3)
-            xyz displacement of each atom; [Å]
+        list of numpy.ndarray of shape (3,)
+            The rotation axis (normalized, if angle!=0) of each fragment;
+        list of float
+            The rotation angle of each fragment; [°]
+        list of numpy.ndarray of shape (3,)
+            The translation vector of each fragment; [Å]
 
         """
-        old_positions = deepcopy(self.atoms.positions)
-
-        force_on_fragments = self.calculate_net_force_on_fragments(forces=forces)
-        torque_on_fragments = self.calculate_torque_on_fragments(forces=forces)
-
+        # Move the fragments
+        axes = []
+        angles = []
+        shifts = []
         for i, fragment in enumerate(self.fragments):
-            fragment.move(
-                force_on_fragment=force_on_fragments[i],
-                torque_on_fragment=torque_on_fragments[i],
+            axis_i, angle_i, shift_i = fragment.move_by_forces(
+                forces_structure=forces,
                 stepsize=stepsize,
             )
+            axes.append(axis_i)
+            angles.append(angle_i)
+            shifts.append(shift_i)
 
         # update self.atoms by summing up all fragments.atoms
         self.update_atoms_attribute_from_fragments()
 
-        new_positions = deepcopy(self.atoms.positions)
-
-        atomic_displacements = new_positions - old_positions
-        max_atomic_displacement = np.max(np.linalg.norm(atomic_displacements, axis=1))
-        return max_atomic_displacement, atomic_displacements
+        return axes, angles, shifts
 
     def move_random_step(self, displacement, angle, respect_restrictions, seed=1234):
         """Randomly rotate and translate the fragments.
@@ -341,15 +244,18 @@ class Structure:
 
         Returns
         -------
-        numpy.ndarray of shape (n_atoms_in_structure,3)
-            The positions of the structure's atoms after the transformation; [Å]
+        list of numpy.ndarray of shape (3,)
+            The rotation axis (normalized, if angle!=0) of each fragment;
+        list of float
+            The rotation angle of each fragment; [°]
+        list of numpy.ndarray of shape (3,)
+            The translation vector of each fragment; [Å]
 
         Note
         ----
-        The different fragments are rotated/translated around different axes/
+        - The different fragments are rotated/translated around different axes/
         in different directions.
-
-        The rest_fragment is not moved!
+        - The rest_fragment is not moved!
 
         """
 
@@ -363,150 +269,33 @@ class Structure:
         np.random.seed(backup_seed)
 
         # Randomly move all fragments except the rest_fragment
+        axes = []
+        angles = []
+        shifts = []
         for i, fragment in enumerate(self.fragments):
-            fragment.move_random_step(
+            axis_i, angle_i, shift_i = fragment.move_random_step(
                 displacement=displacement,
                 angle=angle,
                 respect_restrictions=respect_restrictions,
                 seed=seeds_for_fragments[i],
             )
+            axes.append(axis_i)
+            angles.append(angle_i)
+            shifts.append(shift_i)
 
         # update self.atoms by summing up all fragments.atoms
         self.update_atoms_attribute_from_fragments()
 
-        new_positions = deepcopy(self.atoms.positions)
-        return new_positions
-
-    def get_fragment_rotation_angles_from_forces(self, forces, stepsize):
-        """Get the fragments' rotation angles corresponding to the forces.
-
-        Given the forces on all individual atoms and a stepsize, calculate the rotation angle of each fragment.
-
-        The functions first calculates the torque acting on each fragment.
-        Then, the rotation angles are calculated and returned.
-
-        Note
-        ----
-        This function does NOT move/alter the fragments in any way!
-        It is mainly intended to be used in optimizers, whose behavior depends on the rotation angles.
-
-        Note
-        ----
-        The restrictions on the movement (Fragment.allowed_rotation) ARE taken into account!
-
-        Parameters
-        ----------
-        forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/Å]
-        stepsize: number
-            Timestep; [Da*Å**2/eV]
-
-        Returns
-        -------
-        list of numbers
-            The rotation angles of the fragments; [°]
-
-        """
-        torque_on_fragments = self.calculate_torque_on_fragments(forces=forces)
-        rotation_angles = []
-        for i, fragment in enumerate(self.fragments):
-            rotation_angles.append(
-                fragment.get_rotation_axis_and_angle_from_torque(
-                    torque_on_center=torque_on_fragments[i], stepsize=stepsize
-                )[1]
-            )
-
-        return rotation_angles
-
-    def get_fragment_translation_distances_from_forces(self, forces, stepsize):
-        """Get the fragments' translation distances corresponding to the forces.
-
-        Given the forces on all individual atoms and a stepsize, calculate the translation distance of each fragment.
-
-        The functions first calculates the net force acting on each fragment.
-        Then, the translation distances are calculated and returned.
-
-        Note
-        ----
-        This function does NOT move/alter the fragments in any way!
-        It is mainly intended to be used in optimizers, whose behavior depends on the translation distances.
-
-        Note
-        ----
-        The restrictions on the movement (Fragment.allowed_translation) ARE taken into account!
-
-        Parameters
-        ----------
-        forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/Å]
-        stepsize: number
-            Timestep; [Da*Å**2/eV]
-
-        Returns
-        -------
-        list of numbers
-            The translation distances of the fragments; [Å]
-
-        """
-        force_on_fragments = self.calculate_net_force_on_fragments(forces=forces)
-        translation_distances = []
-        for i, fragment in enumerate(self.fragments):
-            translation_vector = fragment.get_translation_vector_from_force(
-                force_on_center=force_on_fragments[i], stepsize=stepsize
-            )
-            translation_distances.append(np.linalg.norm(translation_vector))
-
-        return translation_distances
-
-    def get_largest_translation_distance_and_largest_rotation_angle_from_forces(
-        self, forces, stepsize
-    ):
-        """Get the largest translation distance and the largest rotation angle (of the fragments) corresponding to the applied forces.
-
-        Given the forces on all individual atoms and a stepsize, this function first calculates the translation distances and rotation angles of all fragments.
-        Then, the maximal translation distance and the biggest angle are returned.
-
-        This function is mainly intended to be used by optimizers.
-
-        Note
-        ----
-        This function does NOT move/alter the fragments in any way!
-
-        Note
-        ----
-        The restrictions on the movement (Fragment.allowed_translation) ARE taken into account!
-
-        Parameters
-        ----------
-        forces: numpy.ndarray of shape (n_atoms, 3)
-            Forces acting on the atoms in Structure.atoms; [eV/Å]
-        stepsize: number
-            Timestep; [Da*Å**2/eV]
-
-        Returns
-        -------
-        number
-            The translation distance of the fragment that translates the most; [Å]
-        number
-            The rotation angle of the fragment that rotates the most; [°]
-
-        """
-
-        rotation_angles = self.get_fragment_rotation_angles_from_forces(
-            forces=forces, stepsize=stepsize
-        )
-        translation_distances = self.get_fragment_translation_distances_from_forces(
-            forces=forces, stepsize=stepsize
-        )
-        max_found_angle = max(rotation_angles)
-        max_found_translation_distance = max(translation_distances)
-
-        return max_found_translation_distance, max_found_angle
+        return axes, angles, shifts
 
     def shift_and_rotate_a_fragment(self, fragment_index, shift, angle, axis):
         """Shift and rotate a fragment from Structure.fragments.
 
         Can be useful for optimizers, e.g. GPR.
+
+        Note
+        ----
+        DOES NOT enforce allowed_translations and allowed_rotations of fragments.
 
         Parameters
         ----------
@@ -523,10 +312,6 @@ class Structure:
         -------
         numpy.ndarray of shape (n_atoms_in_structure,3)
             The positions of the structure's atoms after the transformation; [Å]
-
-        Note
-        ----
-        This method ignores `Structure.allowed_translation` and `Structure.allowed_rotation`!
 
         """
         # Select the fragment and rotate/translate it
