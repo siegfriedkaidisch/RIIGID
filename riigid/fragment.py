@@ -193,7 +193,10 @@ class Fragment:
                         )
                     else:
                         inertia_matrix[j, k] += atom.mass * (-r_l[j] * r_l[k])
-        inertia_matrix_inv = np.linalg.inv(inertia_matrix)
+        if len(self.atoms) == 1:
+            inertia_matrix_inv = np.zeros([3, 3])
+        elif len(self.atoms) > 1:
+            inertia_matrix_inv = np.linalg.inv(inertia_matrix)
 
         self.inertia_matrix = inertia_matrix
         self.inertia_matrix_inv = inertia_matrix_inv
@@ -372,7 +375,9 @@ class Fragment:
             axis /= np.linalg.norm(axis)
             self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
             self.update_rotation_properties(angle=angle, axis=axis)
-        return axis, angle
+            return axis, angle
+        else:
+            return np.array([1, 0, 0]), 0.0
 
     def rotate_by_torque(self, torque_on_center, stepsize):
         """Rotate fragment around its center of mass following the applied torque.
@@ -408,7 +413,9 @@ class Fragment:
                 self.atoms.rotate(angle, axis, self.atoms.get_center_of_mass())
                 self.update_rotation_properties(angle=angle, axis=axis)
 
-        return axis, angle
+            return axis, angle
+        else:
+            return np.array([1, 0, 0]), 0.0
 
     def rotate_by_euler_angles(self, alpha, beta, gamma):
         """Rotate fragment around its center of mass with given Euler angles to rotate by.
@@ -559,9 +566,18 @@ class Fragment:
             rot_ax[1] = 0
         if "z" not in allowed_rotation:
             rot_ax[2] = 0
+
         # Normalize translation direction and rotation axis
-        trans_dir /= np.linalg.norm(trans_dir)
-        rot_ax /= np.linalg.norm(rot_ax)
+        if allowed_translation == "":
+            trans_dir = np.array([1, 0, 0])
+            displacement = 0.0
+        else:
+            trans_dir /= np.linalg.norm(trans_dir)
+        if allowed_rotation == "":
+            rot_ax = np.array([1, 0, 0])
+            angle = 0.0
+        else:
+            rot_ax /= np.linalg.norm(rot_ax)
 
         # Apply translation
         self.translate_by_shift(shift=trans_dir * displacement)
