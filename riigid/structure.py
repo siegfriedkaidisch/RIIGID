@@ -175,7 +175,7 @@ class Structure:
         """
 
         atoms = deepcopy(self.atoms)
-        atoms.set_calculator(calculator)
+        atoms.calc = calculator
         energy = atoms.get_potential_energy()
         forces = atoms.get_forces()
         return energy, forces
